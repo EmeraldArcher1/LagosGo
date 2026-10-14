@@ -47,3 +47,19 @@ Status legend: **Planned** = not implemented; **Prototype** = interface/demo onl
 ## Release rule
 
 A UI-only interaction is **Prototype**, not **Verified**. Payment, wallet, matching, identity, and safety features require server-side enforcement, automated tests, logging, and an explicit security review before being offered to real users.
+## Competitive feature adaptations — Bolt and inDrive references
+
+These are original LagosGo implementations of common mobility-product patterns, not copies of third-party branding or proprietary UI. Every row must pass the release rule above before being described as live.
+
+| Priority | Feature | LagosGo adaptation | Status |
+|---|---|---|---|
+| P1 | Fare choice | Upfront fare estimate as default, with optional rider-suggested offer and clear driver acceptance/decline states. Add bounds, expiry and no hidden fees. | Prototype UI |
+| P1 | Informed driver choice | Show verified driver identity, vehicle, plate, pickup ETA, completed trips and verified ratings when real candidates exist. Never show fabricated profiles or ratings. | Planned; placeholder UI |
+| P1 | Trip safety centre | Share trip with a trusted contact, arrival check-in, safety help/reporting and documented escalation paths. Location sharing is opt-in and time-limited. | Prototype UI |
+| P1 | Live trip lifecycle | Driver acceptance, approach, arrival, trip started/completed, cancellation and receipt updates, with push alerts after backend integration. | Planned |
+| P2 | In-app communication | Privacy-preserving chat or masked calling between matched rider and driver, with abuse reporting. | Planned |
+| P2 | Multiple payment methods | Cash and supported digital payments with clear pre-trip disclosure, server-verified status, idempotent ledger and refund handling. | Planned |
+| P2 | Delivery expansion | Go Send parcel/errand bookings, courier offers, delivery status and proof of delivery after ride dispatch is reliable. | Planned |
+| P2 | Merchant marketplace | Go Food merchant onboarding, real menus, availability, checkout, courier assignment, order tracking, refunds and settlements. | Prototype UI; backend planned |
+| P3 | Intercity and scheduled trips | Scheduled rides and longer-distance travel after zone coverage, driver availability and pricing are validated. | Planned |
+| P3 | Safety evidence tools | Evaluate any audio/evidence feature only after legal/privacy review, explicit consent, secure storage, retention limits and access controls. | Research required |
