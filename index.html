@@ -67,6 +67,37 @@
     </section>
 
 
+
+    <section class="price-choice" id="priceChoice" aria-labelledby="priceChoiceTitle">
+      <div class="section-intro"><p class="eyebrow">MORE CONTROL · YOUR CHOICE</p><h2 id="priceChoiceTitle">A fare that works for you.</h2><p>Choose a clear estimate or suggest a fair offer. You stay in control.</p></div>
+      <div class="price-mode" role="group" aria-label="Fare preference">
+        <button type="button" class="price-mode-btn active" data-price-mode="fixed" aria-pressed="true"><span>✓</span><b>Upfront fare</b><small>See the estimate first</small></button>
+        <button type="button" class="price-mode-btn" data-price-mode="offer" aria-pressed="false"><span>↔</span><b>Offer your fare</b><small>Suggest a price</small></button>
+      </div>
+      <div class="offer-panel" id="offerPanel" hidden>
+        <label for="offerFare">Your suggested fare (₦)</label>
+        <div class="offer-input-wrap"><span>₦</span><input id="offerFare" type="number" min="1000" max="100000" step="100" value="3000" inputmode="numeric"></div>
+        <p>Offers are a request, not a confirmed fare. A real driver-matching and acceptance service is required.</p>
+        <button type="button" class="book-button" id="previewOffer"><span>Preview my offer</span><span class="button-arrow">→</span></button>
+      </div>
+      <div class="driver-choice" id="driverChoice">
+        <div class="food-section-heading"><div><p class="eyebrow">DESIGNED FOR INFORMED CHOICES</p><h3>Know who you’re riding with</h3></div><span class="safety-pill">Safety first</span></div>
+        <article class="driver-preview">
+          <div class="driver-avatar">AO</div><div class="driver-summary"><strong>Driver profile preview</strong><p>Verified identity · Vehicle details · Trip history</p><span class="driver-demo-label">SAMPLE PROFILE · NOT A REAL DRIVER</span></div><span class="driver-rating">★ —</span>
+        </article>
+        <p class="driver-choice-note">When live dispatch is connected, eligible drivers can be compared using fare, pickup ETA, vehicle, completed trips and verified ratings.</p>
+      </div>
+    </section>
+    <section class="safety-hub" id="safetyHub" aria-labelledby="safetyTitle">
+      <div class="section-intro"><p class="eyebrow">YOUR TRIP. YOUR PEACE OF MIND.</p><h2 id="safetyTitle">Safety, within reach.</h2><p>Clear, voluntary controls that put passenger safety first.</p></div>
+      <div class="safety-grid">
+        <button type="button" class="safety-action" data-safety="share"><span>↗</span><b>Share my trip</b><small>Let someone you trust follow your journey</small></button>
+        <button type="button" class="safety-action" data-safety="checkin"><span>✓</span><b>I arrived safely</b><small>Check in when you reach your destination</small></button>
+        <button type="button" class="safety-action" data-safety="help"><span>!</span><b>Safety help</b><small>Find help and report a concern</small></button>
+      </div>
+      <p class="safety-disclaimer">Safety controls are prototypes only. Live trip sharing, emergency escalation and support response are not connected. In an immediate emergency, contact local emergency services.</p>
+    </section>
+
     <section class="city-services" aria-labelledby="servicesTitle">
       <div class="section-intro"><p class="eyebrow">MORE WAYS TO GO</p><h2 id="servicesTitle">One city. More possibilities.</h2><p>Built around the way Lagos lives, works and moves.</p></div>
       <div class="service-grid">
