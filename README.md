@@ -118,3 +118,8 @@ A route duration is the estimated drive time from pickup to destination. It is n
 ## Driver-first launch strategy
 
 Recruit and verify an initial driver supply and fleet partners in defined Lagos operating zones, then win corporate transport pilots with agreed service windows, support, billing and reporting. Open passenger bookings only after the app can match a real driver, show pickup ETA, update both devices during a trip, complete the trip and reconcile payment and driver earnings. The PWA is a pilot-access channel, not a substitute for that end-to-end ride service.
+
+
+## Driver earnings estimator
+
+The driver/fleet section includes a client-side weekly earnings estimator. Rides per day, average fare, working days and platform-fee assumption are editable. Results are gross driver share before fuel, maintenance, insurance, downtime and tax. The default 12% fee is explicitly a planning assumption, not an approved public tariff or earnings promise. Validate fee caps and unit economics with real pilot data before publishing marketing claims.
