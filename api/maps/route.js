@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         origin,
-        destination: { address: destination + ", Lagos, Nigeria" },
+        destination: { address: destinationAddress },
         travelMode: "DRIVE",
         routingPreference: "TRAFFIC_AWARE",
         departureTime: new Date().toISOString(),
@@ -48,7 +48,6 @@ module.exports = async function handler(req, res) {
       distanceMeters: route.distanceMeters,
       durationSeconds: Number.isFinite(durationSeconds) ? durationSeconds : null,
       polyline: route.polyline && route.polyline.encodedPolyline || null,
-      originLocation: leg.startLocation && leg.startLocation.latLng || null,
       originLocation: leg.startLocation && leg.startLocation.latLng || null,
       destinationLocation: leg.endLocation && leg.endLocation.latLng || null,
       steps: (leg.steps || []).slice(0, 80).map(step => ({
