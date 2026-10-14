@@ -91,4 +91,101 @@
     notify('LagosGo has been added to your device.');
   });
   document.getElementById('dismissIosHelp').addEventListener('click', () => { iosHelp.hidden = true; });
+
+  // Push notifications are enabled only when the backend endpoints are configured.
+  const alertsButton = document.getElementById('enableRideAlerts');
+  const alertsStatus = document.getElementById('alertsStatus');
+  const alertsDescription = document.getElementById('alertsDescription');
+  function setAlertStatus(message) {
+    alertsStatus.textContent = message;
+  }
+  function decodeVapidKey(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const raw = window.atob(base64);
+    return Uint8Array.from(raw, char => char.charCodeAt(0));
+  }
+  function isIOSDevice() {
+    return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function iosVersionSupportsWebPush() {
+    const match = navigator.userAgent.match(/OS (\d+)[._](\d+)/);
+    return !match || Number(match[1]) > 16 || (Number(match[1]) === 16 && Number(match[2]) >= 4);
+  }
+  alertsButton.addEventListener('click', async () => {
+    alertsButton.disabled = true;
+    setAlertStatus('Checking device support and LagosGo notification service…');
+    try {
+      if (!window.isSecureContext || !('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+        setAlertStatus('This browser does not support web push notifications. Update your browser or use a supported device.');
+        return;
+      }
+      if (isIOSDevice() && !iosVersionSupportsWebPush()) {
+        setAlertStatus('On iPhone or iPad, web push requires iOS/iPadOS 16.4 or later.');
+        return;
+      }
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+      if (isIOSDevice() && !standalone) {
+        setAlertStatus('On iPhone or iPad, first add LagosGo to your Home Screen from Safari, then open the installed app and try again.');
+        return;
+      }
+      const registration = await navigator.serviceWorker.ready;
+      if (!registration.pushManager) {
+        setAlertStatus('Push messaging is unavailable in this browser.');
+        return;
+      }
+
+      // Check service configuration before prompting for permission.
+      const keyResponse = await fetch('/api/push/public-key', { headers: { 'Accept': 'application/json' } });
+      if (!keyResponse.ok) {
+        setAlertStatus('Ride alerts are not connected to the LagosGo backend yet. No notification permission was requested.');
+        return;
+      }
+      const keyPayload = await keyResponse.json();
+      if (!keyPayload.publicKey) {
+        setAlertStatus('The notification service has not supplied a VAPID public key yet.');
+        return;
+      }
+      if (Notification.permission === 'denied') {
+        setAlertStatus('Notifications are blocked for LagosGo in your device settings. Enable them there, then try again.');
+        return;
+      }
+      const permission = Notification.permission === 'granted'
+        ? 'granted'
+        : await Notification.requestPermission();
+      if (permission !== 'granted') {
+        setAlertStatus('Notifications were not enabled. You can enable them later in your browser or device settings.');
+        return;
+      }
+      let subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: decodeVapidKey(keyPayload.publicKey)
+        });
+      }
+      const saveResponse = await fetch('/api/push/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ subscription: subscription.toJSON() })
+      });
+      if (saveResponse.status === 401 || saveResponse.status === 403) {
+        setAlertStatus('Sign-in is required to link ride alerts to your LagosGo account. Account sign-in is not available in this prototype yet.');
+        return;
+      }
+      if (!saveResponse.ok) {
+        setAlertStatus('The subscription was created on this device, but LagosGo could not save it. Please try again later.');
+        return;
+      }
+      setAlertStatus('Ride alerts are enabled for this device.');
+      alertsButton.textContent = 'Alerts enabled';
+      alertsDescription.textContent = 'You can manage notification permission in your device settings.';
+    } catch (error) {
+      setAlertStatus('Could not enable ride alerts. Check your connection and try again.');
+    } finally {
+      alertsButton.disabled = false;
+    }
+  });
 })();
