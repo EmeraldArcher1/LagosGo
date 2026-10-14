@@ -19,4 +19,4 @@ jobs:
       - name: Check JavaScript syntax
         run: npm test
       - name: Verify core interface files exist
-        run: test -s index.html && test -s styles.css && test -s app.js && test -s README.md && test -s BACKLOG.md
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s README.md && test -s BACKLOG.md && test -s api/maps/config.js && test -s api/maps/route.js && test -s api/maps/landmarks.js && test -s api/leads.js
