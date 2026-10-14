@@ -2,15 +2,38 @@
 
 Status legend: **Planned** = not implemented; **Prototype** = interface/demo only; **In progress** = implementation underway; **Verified** = implemented and tested in the target environment.
 
-## Five Phase 1 customer-facing features
+## P0 — Close the verification gaps
 
-| Priority | Feature | MVP acceptance criteria | Status |
+- [ ] Confirm current production deployment, commit SHA, runtime logs, provider configuration, and real-device behaviour.
+- [ ] Test driver/corporate lead submission end to end and confirm email delivery; add abuse controls and an operational response process.
+- [ ] Test Google Maps configuration, route/landmark endpoints, input validation, quotas and API-key restrictions.
+- [ ] Add automated handler tests, failure-path tests and meaningful CI assertions; syntax checks alone are insufficient.
+- [ ] Record security, privacy, accessibility and release blockers with evidence and acceptance criteria.
+
+## P1 — Operational ride MVP (priority over optional features)
+
+| Priority | Capability | Acceptance criteria | Status |
 |---|---|---|---|
-| P1 | Wallet gifting | Sender selects recipient and amount; recipient is confirmed; limits and consent are enforced server-side; every debit/credit is an idempotent ledger entry; insufficient balance and failed transfers are handled safely. | Planned |
-| P2 | Pay for Me | Rider can designate a payer; payer sees ride, amount/estimate, and pickup context and explicitly approves; no charge before approval; cancellation/refund states are auditable. | Planned |
-| P3 | Ride streak incentives | Rules and progress are visible; eligibility and expiry are explicit; rewards have a defined funding source and ledger trail; abuse and duplicate claims are prevented. | Planned |
-| P4 | I Arrived Safely | Rider can voluntarily check in at arrival; trusted-contact sharing is opt-in; location exposure is minimised; failed or delayed check-ins have clear, non-alarmist handling. | Planned |
-| P5 | Two-tap mutual ratings | Passenger and driver can each rate after a completed trip; one rating per eligible participant; ratings are private until submission or policy-defined release; abuse reporting is available. | Planned |
+| P1 | Passenger/driver identity | Secure sign-up/sign-in, account recovery, role-based access and server-side authorization. | Planned |
+| P1 | Driver/vehicle eligibility | Secure onboarding, required document checks, vehicle eligibility and an auditable approval/rejection process. | Planned |
+| P1 | Durable ride records | Persistent database; validated ride states; ownership checks; auditable transitions and safe retry handling. | Planned |
+| P1 | Driver availability | Authenticated availability and location updates; stale-location expiry; drivers cannot accept overlapping assignments. | Planned |
+| P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and clear booking/cancellation states. | Prototype UI / backend planned |
+| P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Planned |
+| P1 | Live trip lifecycle | Driver accepted → en route → arrived → in progress → completed, with cancellation/error recovery and passenger updates. | Planned |
+| P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent commission and payout reporting. | Planned |
+| P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation path, privacy and retention controls. | Planned |
+| P1 | Verification and CI | Unit/integration tests, end-to-end pilot tests, logs, monitoring, security checks and documented release gates. | Planned |
+
+## P2 — Optional customer-facing features after core rides work
+
+| Priority | Feature | Acceptance criteria | Status |
+|---|---|---|---|
+| P2 | Wallet gifting | Recipient confirmation, limits/consent, idempotent ledger entries, and safe insufficient-balance/failure handling. | Planned |
+| P2 | Pay for Me | Payer explicitly approves ride context and amount before any charge; cancellation/refunds auditable. | Planned |
+| P2 | Ride streak incentives | Explicit eligibility/expiry, defined funding source, ledger trail, and abuse/duplicate-claim prevention. | Planned |
+| P2 | I Arrived Safely | Voluntary check-in, opt-in trusted contact, minimised location exposure and clear failure handling. | Planned |
+| P2 | Two-tap mutual ratings | One rating per eligible participant after a completed trip, with abuse reporting and release rules. | Planned |
 
 ## Essential platform foundation
 
