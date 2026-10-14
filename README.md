@@ -19,6 +19,10 @@ LagosGo is a mobile-first ride-hailing product concept for Lagos State, designed
 - **Respect Code and dispute resolution:** clear conduct expectations, evidence-aware complaints, and human review for serious payment or safety disputes.
 - **Beyond rides:** a roadmap for airport transfers, errands and parcel delivery, Explore Lagos, and later shared rides.
 
+## Backend setup
+
+The initial Supabase/PostgreSQL schema and setup guide are prepared in [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md) and [`supabase/migrations/001_core_schema.sql`](supabase/migrations/001_core_schema.sql). They are not connected to a live Supabase project yet. The ride-request API, driver dispatch, and authentication UI remain unimplemented; see the setup guide before configuring credentials.
+
 ## MVP delivery order
 
 The essential ride-hailing foundation comes first. The app must support a complete, secure and auditable ride lifecycle before optional wallet, loyalty or marketplace features are prioritised.
