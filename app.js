@@ -88,6 +88,15 @@
     button.addEventListener('click', () => notify(button.dataset.restaurant + ' menu is a design preview. Merchant menus and ordering are not connected yet.'));
   });
 
+  document.querySelectorAll('.partner-action').forEach(button => {
+    button.addEventListener('click', () => {
+      const message = button.dataset.partner === 'courier'
+        ? 'LagosGo courier onboarding is planned. Driver identity checks, delivery zones, earnings and payout operations are not connected yet.'
+        : 'LagosGo food-partner registration is planned. Merchant verification, menus, order management and settlements are not connected yet.';
+      notify(message);
+    });
+  });
+
 
   // PWA installation: native prompt on supported Chromium browsers, guidance for iOS Safari.
   const installCard = document.getElementById('installCard');
