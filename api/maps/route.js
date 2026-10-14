@@ -19,6 +19,8 @@ module.exports = async function handler(req, res) {
   const origin = validCoords
     ? { location: { latLng: { latitude: coords.latitude, longitude: coords.longitude } } }
     : { address: pickup };
+  const lowerDestination = destination.toLowerCase();
+  const destinationAddress = lowerDestination.includes("lagos") || lowerDestination.includes("nigeria") ? destination : destination + ", Lagos, Nigeria";
   try {
     const upstream = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
       method: "POST",
