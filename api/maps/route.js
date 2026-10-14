@@ -11,9 +11,12 @@ module.exports = async function handler(req, res) {
   const pickup = typeof body.pickup === "string" ? body.pickup.trim().slice(0, 250) : "";
   const destination = typeof body.destination === "string" ? body.destination.trim().slice(0, 250) : "";
   const coords = body.pickupCoordinates;
+  const destinationCoords = body.destinationCoordinates;
   const validCoords = coords && Number.isFinite(coords.latitude) && Number.isFinite(coords.longitude) &&
     Math.abs(coords.latitude) <= 90 && Math.abs(coords.longitude) <= 180;
-  if ((!pickup && !validCoords) || !destination) {
+  const validDestinationCoords = destinationCoords && Number.isFinite(destinationCoords.latitude) && Number.isFinite(destinationCoords.longitude) &&
+    Math.abs(destinationCoords.latitude) <= 90 && Math.abs(destinationCoords.longitude) <= 180;
+  if ((!pickup && !validCoords) || (!destination && !validDestinationCoords)) {
     return res.status(400).json({ error: "missing_locations", message: "Enter both pickup and destination." });
   }
   const origin = validCoords
@@ -21,6 +24,9 @@ module.exports = async function handler(req, res) {
     : { address: pickup };
   const lowerDestination = destination.toLowerCase();
   const destinationAddress = lowerDestination.includes("lagos") || lowerDestination.includes("nigeria") ? destination : destination + ", Lagos, Nigeria";
+  const destinationInput = validDestinationCoords
+    ? { location: { latLng: { latitude: destinationCoords.latitude, longitude: destinationCoords.longitude } } }
+    : { address: destinationAddress };
   try {
     const upstream = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
       method: "POST",
@@ -31,7 +37,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         origin,
-        destination: { address: destinationAddress },
+        destination: destinationInput,
         travelMode: "DRIVE",
         routingPreference: "TRAFFIC_AWARE",
         departureTime: new Date().toISOString(),
