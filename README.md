@@ -19,17 +19,15 @@ LagosGo is a mobile-first ride-hailing product concept for Lagos State, designed
 - **Respect Code and dispute resolution:** clear conduct expectations, evidence-aware complaints, and human review for serious payment or safety disputes.
 - **Beyond rides:** a roadmap for airport transfers, errands and parcel delivery, Explore Lagos, and later shared rides.
 
-## Phase 1 MVP backlog
+## MVP delivery order
 
-The first five customer-facing features are recorded in BACKLOG.md:
+The essential ride-hailing foundation comes first. The app must support a complete, secure and auditable ride lifecycle before optional wallet, loyalty or marketplace features are prioritised.
 
-1. Wallet gifting
-2. Pay for Me
-3. Ride streak incentives
-4. I Arrived Safely
-5. Two-tap mutual ratings
+**Phase 1 — operational ride MVP:** passenger and driver authentication; secure driver/vehicle onboarding; persistent ride records; pickup/destination and fare estimates; driver availability; road-ETA dispatch with atomic assignment; trip-state transitions; live trip updates; cancellation/recovery; payment and driver-earnings reconciliation; support and safety escalation; automated and end-to-end tests.
 
-These features sit alongside the essential ride-booking foundation: pickup and destination, ride categories, fare estimates, ride states, driver eligibility and matching, and auditable earnings records. The backlog marks what is planned versus implemented; a feature is not considered production-ready until its backend, security, and tests are complete.
+**Later phases — after core rides are verified:** wallet gifting, Pay for Me, ride streaks, I Arrived Safely, mutual ratings, chat, Go Food, parcels, shared rides and additional cities.
+
+See BACKLOG.md for acceptance criteria and the status of each feature. A feature is not considered verified until its implementation, security controls, automated tests and target-environment behaviour are evidenced.
 
 ## Product principles
 
@@ -61,7 +59,7 @@ Acceptance rate must not dominate the ranking. Fairness should use rolling earni
 
 ## Local development
 
-This repository currently starts as a static front-end prototype. Open index.html in a browser to inspect the interface. The booking interactions are demonstrative only: there is no live driver dispatch, payment processing, authentication, persistent database, or production map integration yet.
+**Current release status: front-end prototype; not yet an operational ride-hailing service.** Open index.html to inspect the interface. Booking, sample fares, sample driver information, safety controls and marketplace listings are illustrative. Live driver dispatch, passenger/driver authentication, persistent ride storage, payment processing and production ride tracking are not implemented. Route and lead API handlers require correctly configured provider credentials and end-to-end verification. Do not accept real ride bookings or represent sample prices, drivers or routes as live service data.
 
 ## Security and release gates
 
