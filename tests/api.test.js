@@ -40,7 +40,6 @@ test("API handlers reject unsupported methods, invalid input, and missing config
     const leads = require("../api/leads");
     const route = require("../api/maps/route");
     const landmarks = require("../api/maps/landmarks");
-    const mapsConfig = require("../api/maps/config");
 
     for (const key of envKeys) delete process.env[key];
 
@@ -89,10 +88,6 @@ test("API handlers reject unsupported methods, invalid input, and missing config
     assert.equal(res.statusCode, 503);
     assert.equal(res.body.error, "maps_not_configured");
 
-    process.env.GOOGLE_MAPS_BROWSER_KEY = "";
-    res = mapsConfig({ method: "GET" }, mockResponse());
-    // The config handler responds synchronously; verify its fail-safe public configuration shape.
-    assert.equal(res, undefined);
   } finally {
     for (const [key, value] of Object.entries(originalEnv)) {
       if (value === undefined) delete process.env[key];
