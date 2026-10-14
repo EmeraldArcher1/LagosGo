@@ -71,3 +71,11 @@ This repository currently starts as a static front-end prototype. Open index.htm
 - Apply access controls and retention limits to identity and precise location data.
 - Add automated tests for ride-state transitions, eligibility, duplicate assignment, ledger integrity, and matching fairness before live launch.
 - Do not describe a feature as live until its service, verification, and deployment are confirmed.
+## PWA pilot access
+
+LagosGo now includes a basic Progressive Web App shell for direct home-screen installation over HTTPS. The manifest, branded SVG icons, service worker, install button, and iPhone Safari instructions provide an installable shell and cached interface assets. Offline mode is limited to reopening the interface; live bookings, dispatch, tracking, authentication, payments, and push alerts are not implemented by this shell.
+
+- Android/Chromium: use the **Install LagosGo** button when the browser exposes its install prompt, or use the browser menu.
+- iPhone/iPad: open the site in Safari, tap Share, then **Add to Home Screen**.
+- Push notifications require a separate backend endpoint, stored subscription, VAPID keys, and event delivery; they are not enabled merely by registering the service worker.
+- Test installation on target devices before pilot distribution. Add raster PNG icons if required by browser compatibility or store-packaging tools.
