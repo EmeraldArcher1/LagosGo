@@ -31,7 +31,30 @@
   });
   document.getElementById('compareBtn').addEventListener('click', () => notify('Choose a ride card to compare illustrative fares and pickup estimates.'));
   document.getElementById('fareInfo').addEventListener('click', () => notify('LagosGo is designed for upfront fare estimates and transparent platform fees. These sample prices are not live quotes.'));
-  document.getElementById('locateBtn').addEventListener('click', () => notify('Location access is not connected in this prototype. Enter your pickup manually.'));
+  let pickupCoordinates = null;
+  document.getElementById('locateBtn').addEventListener('click', () => {
+    const input = document.getElementById('pickup');
+    if (!('geolocation' in navigator)) {
+      notify('This browser cannot provide your location. Enter your pickup manually.');
+      return;
+    }
+    input.value = 'Finding your location…';
+    navigator.geolocation.getCurrentPosition(position => {
+      pickupCoordinates = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+      input.value = 'Current location';
+      input.dataset.usesCurrentLocation = 'true';
+      notify('Pickup location found. Calculate your route to see the road estimate.');
+    }, () => {
+      pickupCoordinates = null;
+      input.value = '';
+      input.placeholder = 'Enter pickup location';
+      notify('Location access was unavailable. Enter your pickup manually.');
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+  });
+  document.getElementById('pickup').addEventListener('input', event => {
+    pickupCoordinates = null;
+    delete event.currentTarget.dataset.usesCurrentLocation;
+  });
   document.getElementById('profileBtn').addEventListener('click', () => notify('Passenger profile and sign-in are planned; accounts are not connected yet.'));
 
   // Adapted fare-choice concept: all offers remain illustrative until dispatch is connected.
@@ -72,7 +95,10 @@
       notify(messages[button.dataset.safety] || 'This safety feature is planned.');
     });
   });
-  document.getElementById('driverBtn').addEventListener('click', () => notify('Driver onboarding is on the roadmap, with transparent earnings and verified documents as core requirements.'));
+  document.getElementById('driverBtn').addEventListener('click', () => {
+    document.getElementById('driverLeadForm').scrollIntoView({behavior:'smooth', block:'start'});
+    document.querySelector('#driverLeadForm input[name="name"]').focus({preventScroll:true});
+  });
   document.querySelectorAll('.nav-item').forEach(button => button.addEventListener('click', () => {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
     button.classList.add('active');
