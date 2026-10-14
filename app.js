@@ -40,6 +40,23 @@
     if (button.dataset.tab !== 'Ride') notify(button.dataset.tab + ' is part of the planned LagosGo experience and is not connected yet.');
   }));
 
+
+  document.querySelectorAll('.service-tile').forEach(button => {
+    button.addEventListener('click', () => {
+      const service = button.dataset.service;
+      if (service === 'Ride') {
+        document.querySelector('.booking-panel').scrollIntoView({behavior:'smooth', block:'start'});
+        return;
+      }
+      const states = {
+        'Go Food': 'Go Food is a planned local food-delivery service, not available for orders yet.',
+        'Go Send': 'Go Send is planned for parcels and errands. Dispatch and tracking are not connected yet.',
+        'GoShare': 'GoShare is on the future roadmap and will follow reliable solo-ride dispatch.'
+      };
+      notify(states[service] || (service + ' is planned for a future LagosGo release.'));
+    });
+  });
+
   // PWA installation: native prompt on supported Chromium browsers, guidance for iOS Safari.
   const installCard = document.getElementById('installCard');
   const installBtn = document.getElementById('installBtn');
