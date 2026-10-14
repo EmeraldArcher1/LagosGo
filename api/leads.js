@@ -19,13 +19,14 @@ module.exports = async function handler(req, res) {
   const area = typeof body.area === "string" ? body.area.trim().slice(0, 160) : "";
   const details = typeof body.details === "string" ? body.details.trim().slice(0, 1800) : "";
   const organization = typeof body.organization === "string" ? body.organization.trim().slice(0, 180) : "";
-  if (!type || name.length < 2 || phone.length < 7 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || body.consent !== true) {
+  if (!type || name.length < 2 || phone.length < 7 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || body.consent !== true || (body.type === "driver" && body.vehicleStandards !== true)) {
     return res.status(400).json({ error: "invalid_form", message: "Check the required details and consent checkbox, then try again." });
   }
   const textBody = [
     type, "", "Name: " + name, "Phone: " + phone, "Email: " + email,
     "Operating area: " + (area || "Not supplied"),
-    "Organisation / fleet: " + (organization || "Not supplied"),
+    "Organisation / fleet / vehicle: " + (organization || "Not supplied"),
+    "Vehicle standards confirmed: " + (body.type === "driver" && body.vehicleStandards === true ? "Yes, subject to inspection" : "Not applicable"),
     "", "Additional details:", details || "None supplied"
   ].join("\n");
   try {
