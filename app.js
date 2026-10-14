@@ -97,6 +97,34 @@
       notify(messages[button.dataset.safety] || 'This safety feature is planned.');
     });
   });
+  // Transparent driver earnings calculator; all values are user-editable planning assumptions.
+  const earningsFields = ['earningsRides', 'earningsFare', 'earningsDays', 'earningsFee'];
+  const weeklyShare = document.getElementById('weeklyDriverShare');
+  const earningsBreakdown = document.getElementById('earningsBreakdown');
+  function updateDriverEarnings() {
+    const rides = Number(document.getElementById('earningsRides').value);
+    const fare = Number(document.getElementById('earningsFare').value);
+    const days = Number(document.getElementById('earningsDays').value);
+    const fee = Number(document.getElementById('earningsFee').value);
+    if (!Number.isFinite(rides) || rides < 1 || rides > 30 ||
+        !Number.isFinite(fare) || fare < 500 || fare > 100000 ||
+        !Number.isFinite(days) || days < 1 || days > 7 ||
+        !Number.isFinite(fee) || fee < 0 || fee > 25) {
+      weeklyShare.textContent = 'Check inputs';
+      earningsBreakdown.textContent = 'Enter rides 1–30, fare ₦500–₦100,000, days 1–7, and fee 0–25%.';
+      return;
+    }
+    const weeklyGross = rides * fare * days;
+    const feeAmount = weeklyGross * fee / 100;
+    const driverShare = weeklyGross - feeAmount;
+    weeklyShare.textContent = driverShare.toLocaleString('en-NG', {style:'currency', currency:'NGN', maximumFractionDigits:0});
+    earningsBreakdown.textContent = 'Weekly fares ' + weeklyGross.toLocaleString('en-NG', {style:'currency',currency:'NGN',maximumFractionDigits:0}) +
+      ' · illustrative platform fee ' + feeAmount.toLocaleString('en-NG', {style:'currency',currency:'NGN',maximumFractionDigits:0}) +
+      ' · before fuel, maintenance, insurance, downtime and tax.';
+  }
+  earningsFields.forEach(id => document.getElementById(id).addEventListener('input', updateDriverEarnings));
+  updateDriverEarnings();
+
   document.getElementById('driverBtn').addEventListener('click', () => {
     document.getElementById('driverLeadForm').scrollIntoView({behavior:'smooth', block:'start'});
     document.querySelector('#driverLeadForm input[name="name"]').focus({preventScroll:true});
