@@ -49,6 +49,7 @@ module.exports = async function handler(req, res) {
       durationSeconds: Number.isFinite(durationSeconds) ? durationSeconds : null,
       polyline: route.polyline && route.polyline.encodedPolyline || null,
       originLocation: leg.startLocation && leg.startLocation.latLng || null,
+      originLocation: leg.startLocation && leg.startLocation.latLng || null,
       destinationLocation: leg.endLocation && leg.endLocation.latLng || null,
       steps: (leg.steps || []).slice(0, 80).map(step => ({
         instruction: step.navigationInstruction && step.navigationInstruction.instructions || "Continue on the route",
