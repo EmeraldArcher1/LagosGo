@@ -39,4 +39,56 @@
     button.classList.add('active');
     if (button.dataset.tab !== 'Ride') notify(button.dataset.tab + ' is part of the planned LagosGo experience and is not connected yet.');
   }));
+
+  // PWA installation: native prompt on supported Chromium browsers, guidance for iOS Safari.
+  const installCard = document.getElementById('installCard');
+  const installBtn = document.getElementById('installBtn');
+  const installMessage = document.getElementById('installMessage');
+  const iosHelp = document.getElementById('iosHelp');
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  let deferredInstallPrompt = null;
+
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {
+        notify('LagosGo is available in your browser. Offline shell setup could not be completed on this visit.');
+      });
+    });
+  }
+
+  if (!isStandalone && isIOS) {
+    installCard.hidden = false;
+    installBtn.textContent = 'How to install';
+    installMessage.textContent = 'Add LagosGo to your iPhone Home Screen from Safari.';
+    installBtn.addEventListener('click', () => { iosHelp.hidden = !iosHelp.hidden; });
+  }
+
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    if (!isStandalone) {
+      installCard.hidden = false;
+      installBtn.textContent = 'Install app';
+      installMessage.textContent = 'Add LagosGo to your home screen for faster access.';
+    }
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (!deferredInstallPrompt) {
+      if (isIOS) iosHelp.hidden = false;
+      else notify('If installation is not offered, open your browser menu and choose Install app or Add to Home screen.');
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installCard.hidden = true;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installCard.hidden = true;
+    notify('LagosGo has been added to your device.');
+  });
+  document.getElementById('dismissIosHelp').addEventListener('click', () => { iosHelp.hidden = true; });
 })();
