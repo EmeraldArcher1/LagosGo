@@ -46,16 +46,48 @@
       const service = button.dataset.service;
       if (service === 'Ride') {
         document.querySelector('.booking-panel').scrollIntoView({behavior:'smooth', block:'start'});
-        return;
+      } else if (service === 'Go Food') {
+        document.getElementById('goFood').scrollIntoView({behavior:'smooth', block:'start'});
+        document.getElementById('foodSearch').focus({preventScroll:true});
+      } else {
+        const states = {
+          'Go Send': 'Go Send is planned for parcels and errands. Dispatch and tracking are not connected yet.',
+          'GoShare': 'GoShare is on the future roadmap and will follow reliable solo-ride dispatch.'
+        };
+        notify(states[service] || (service + ' is planned for a future LagosGo release.'));
       }
-      const states = {
-        'Go Food': 'Go Food is a planned local food-delivery service, not available for orders yet.',
-        'Go Send': 'Go Send is planned for parcels and errands. Dispatch and tracking are not connected yet.',
-        'GoShare': 'GoShare is on the future roadmap and will follow reliable solo-ride dispatch.'
-      };
-      notify(states[service] || (service + ' is planned for a future LagosGo release.'));
     });
   });
+
+  // Go Food marketplace preview: search and category filters operate on sample listings only.
+  let selectedFoodCategory = 'All';
+  const foodSearch = document.getElementById('foodSearch');
+  const restaurantCards = [...document.querySelectorAll('.restaurant-card')];
+  function filterFoodListings() {
+    const term = foodSearch.value.trim().toLowerCase();
+    restaurantCards.forEach(card => {
+      const categoryMatches = selectedFoodCategory === 'All' ||
+        card.dataset.foodCategory === selectedFoodCategory ||
+        (selectedFoodCategory === 'Drinks' && /drink|juice|smoothie/i.test(card.dataset.foodName));
+      const termMatches = !term || (card.dataset.foodName + ' ' + card.textContent).toLowerCase().includes(term);
+      card.hidden = !(categoryMatches && termMatches);
+    });
+  }
+  document.querySelectorAll('.food-category').forEach(button => {
+    button.addEventListener('click', () => {
+      selectedFoodCategory = button.dataset.foodCategory;
+      document.querySelectorAll('.food-category').forEach(item => {
+        item.classList.toggle('active', item === button);
+        item.setAttribute('aria-pressed', String(item === button));
+      });
+      filterFoodListings();
+    });
+  });
+  foodSearch.addEventListener('input', filterFoodListings);
+  document.querySelectorAll('.restaurant-action').forEach(button => {
+    button.addEventListener('click', () => notify(button.dataset.restaurant + ' menu is a design preview. Merchant menus and ordering are not connected yet.'));
+  });
+
 
   // PWA installation: native prompt on supported Chromium browsers, guidance for iOS Safari.
   const installCard = document.getElementById('installCard');
