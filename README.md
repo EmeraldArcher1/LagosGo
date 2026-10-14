@@ -106,3 +106,15 @@ LagosGo uses these apps as product references, not templates to copy:
 - Safety patterns inform opt-in trip sharing, arrival check-in, reporting and privacy-preserving support workflows.
 
 The interface now includes prototype screens for fare mode selection, suggested-fare preview, driver transparency and a safety hub. They are not connected to live driver matching, identity records, location sharing, emergency response or dispatch. The safety controls explicitly disclose these limitations. See BACKLOG.md for priorities and acceptance criteria.
+
+## Driver recruitment, corporate contracts, and route preview
+
+The current interface adds driver/fleet pilot interest and corporate transport enquiry forms, current-location pickup, a road-route preview API, trip duration/distance, turn-by-turn instructions, and nearby destination landmarks. See [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) for required Vercel environment variables, setup steps, and release gates.
+
+**Configuration required:** set `GOOGLE_MAPS_BROWSER_KEY` (restricted browser key), `GOOGLE_MAPS_SERVER_KEY` (server-only key with Routes API and Places API enabled), `RESEND_API_KEY`, `LAGOSGO_LEADS_TO`, and `LAGOSGO_FROM_EMAIL` in Vercel, then redeploy. Until these are set, mapping and lead delivery are deliberately not presented as working services.
+
+A route duration is the estimated drive time from pickup to destination. It is not the time a driver will take to reach the passenger. Pickup ETA must be computed from a real assigned/eligible driver's current location and road route after dispatch is implemented.
+
+## Driver-first launch strategy
+
+Recruit and verify an initial driver supply and fleet partners in defined Lagos operating zones, then win corporate transport pilots with agreed service windows, support, billing and reporting. Open passenger bookings only after the app can match a real driver, show pickup ETA, update both devices during a trip, complete the trip and reconcile payment and driver earnings. The PWA is a pilot-access channel, not a substitute for that end-to-end ride service.
