@@ -188,6 +188,19 @@
         <article class="growth-card growth-company"><div class="growth-icon">🏢</div><p class="eyebrow">FOR ORGANISATIONS</p><h3>Transport that works.</h3><p>Discuss staff mobility, airport pickups, recurring journeys, visitor transport and managed ride programmes.</p><ul><li>Centralised ride requests</li><li>Scheduled journeys and trip reporting</li><li>Corporate billing options to be agreed</li></ul><button type="button" class="growth-jump" data-scroll-form="corporateLeadForm">Request a business discussion <span>→</span></button></article>
       </div>
 
+
+      <section class="driver-earnings" aria-labelledby="earningsTitle">
+        <div class="section-intro"><p class="eyebrow">TRANSPARENT DRIVER ECONOMICS</p><h2 id="earningsTitle">See what the numbers could look like.</h2><p>Use this planning calculator to estimate driver earnings before fuel, maintenance, insurance and tax. It is not a promise of income or guaranteed trip volume.</p></div>
+        <div class="earnings-calculator">
+          <label>Completed rides per day <input id="earningsRides" type="number" min="1" max="30" value="8" inputmode="numeric"></label>
+          <label>Average fare per ride (₦) <input id="earningsFare" type="number" min="500" max="100000" step="100" value="4500" inputmode="numeric"></label>
+          <label>Days online per week <input id="earningsDays" type="number" min="1" max="7" value="5" inputmode="numeric"></label>
+          <label>Illustrative platform fee (%) <input id="earningsFee" type="number" min="0" max="25" step="0.5" value="12" inputmode="decimal"></label>
+          <div class="earnings-result"><span>Estimated weekly driver share</span><strong id="weeklyDriverShare">₦158,400</strong><small id="earningsBreakdown">Based on your assumptions, before operating costs and tax.</small></div>
+          <p class="earnings-caveat">The 12% fee is a modelling assumption only, not a published LagosGo rate. Final pricing, driver fee caps, ride demand and payout terms require validation and approval.</p>
+          <button type="button" class="growth-jump" data-scroll-form="driverLeadForm">Join the driver pilot <span>→</span></button>
+        </div>
+      </section>
       <section class="service-standards" aria-labelledby="standardsTitle">
         <div class="section-intro"><p class="eyebrow">THE LAGOSGO STANDARD</p><h2 id="standardsTitle">A better ride starts before pickup.</h2><p>Every vehicle and driver must meet a clear service standard before activation.</p></div>
         <div class="standards-grid">
