@@ -32,6 +32,7 @@
   document.getElementById('compareBtn').addEventListener('click', () => notify('Choose a ride card to compare illustrative fares and pickup estimates.'));
   document.getElementById('fareInfo').addEventListener('click', () => notify('LagosGo is designed for upfront fare estimates and transparent platform fees. These sample prices are not live quotes.'));
   let pickupCoordinates = null;
+  let destinationCoordinates = null;
   document.getElementById('locateBtn').addEventListener('click', () => {
     const input = document.getElementById('pickup');
     if (!('geolocation' in navigator)) {
@@ -55,6 +56,7 @@
     pickupCoordinates = null;
     delete event.currentTarget.dataset.usesCurrentLocation;
   });
+  document.getElementById('destination').addEventListener('input', () => { destinationCoordinates = null; });
   document.getElementById('profileBtn').addEventListener('click', () => notify('Passenger profile and sign-in are planned; accounts are not connected yet.'));
 
   // Adapted fare-choice concept: all offers remain illustrative until dispatch is connected.
@@ -262,7 +264,7 @@
         return;
       }
       const script = document.createElement('script');
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(config.browserKey) + '&libraries=geometry&v=weekly';
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(config.browserKey) + '&libraries=geometry,places&v=weekly';
       script.async = true;
       script.onload = () => {
         try {
@@ -272,6 +274,37 @@
             gestureHandling:'cooperative'
           });
           googleMapsReady = true;
+          const lagosBounds = new google.maps.LatLngBounds(
+            {lat:6.25,lng:2.65},
+            {lat:6.95,lng:4.05}
+          );
+          const autocompleteOptions = {
+            fields:['formatted_address','geometry','name'],
+            componentRestrictions:{country:'ng'},
+            bounds:lagosBounds,
+            strictBounds:false
+          };
+          const pickupAutocomplete = new google.maps.places.Autocomplete(document.getElementById('pickup'), autocompleteOptions);
+          const destinationAutocomplete = new google.maps.places.Autocomplete(document.getElementById('destination'), autocompleteOptions);
+          pickupAutocomplete.addListener('place_changed', () => {
+            const place = pickupAutocomplete.getPlace();
+            if (!place.geometry || !place.geometry.location) {
+              pickupCoordinates = null;
+              return;
+            }
+            pickupCoordinates = {latitude:place.geometry.location.lat(),longitude:place.geometry.location.lng()};
+            document.getElementById('pickup').value = place.formatted_address || place.name || document.getElementById('pickup').value;
+            delete document.getElementById('pickup').dataset.usesCurrentLocation;
+          });
+          destinationAutocomplete.addListener('place_changed', () => {
+            const place = destinationAutocomplete.getPlace();
+            if (!place.geometry || !place.geometry.location) {
+              destinationCoordinates = null;
+              return;
+            }
+            destinationCoordinates = {latitude:place.geometry.location.lat(),longitude:place.geometry.location.lng()};
+            document.getElementById('destination').value = place.formatted_address || place.name || document.getElementById('destination').value;
+          });
           mapCanvas.hidden = false;
           mapIllustration.hidden = true;
           document.getElementById('routeMapLabel').lastChild.textContent = ' LAGOS · INTERACTIVE MAP';
@@ -305,7 +338,7 @@
     try {
       const response = await fetch('/api/maps/route', {
         method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify({pickup, destination, pickupCoordinates})
+        body:JSON.stringify({pickup, destination, pickupCoordinates, destinationCoordinates})
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Route service unavailable');
@@ -361,6 +394,7 @@
       const values = Object.fromEntries(new FormData(form).entries());
       values.type = form.dataset.leadType;
       values.consent = form.querySelector('[name="consent"]').checked;
+      values.vehicleStandards = form.querySelector('[name="vehicleStandards"]')?.checked === true;
       status.textContent = 'Sending securely…';
       submit.disabled = true;
       try {
