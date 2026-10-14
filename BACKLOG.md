@@ -63,3 +63,29 @@ These are original LagosGo implementations of common mobility-product patterns, 
 | P2 | Merchant marketplace | Go Food merchant onboarding, real menus, availability, checkout, courier assignment, order tracking, refunds and settlements. | Prototype UI; backend planned |
 | P3 | Intercity and scheduled trips | Scheduled rides and longer-distance travel after zone coverage, driver availability and pricing are validated. | Planned |
 | P3 | Safety evidence tools | Evaluate any audio/evidence feature only after legal/privacy review, explicit consent, secure storage, retention limits and access controls. | Research required |
+
+## Driver-first launch and corporate demand
+
+### Driver acquisition — first priority
+- [ ] Run an invite-only Lagos pilot with verified independent drivers and fleet operators before public rider promotion.
+- [ ] Publish the driver earnings calculator and platform-fee breakdown before acceptance of any commercial terms.
+- [ ] Onboard vehicle details, licence and required documents through a secure verified workflow; do not collect identity-document uploads through the public interest form.
+- [ ] Inspect vehicle condition before activation: clean exterior/interior, working air conditioning for eligible car categories, seat belts, tyres/lights/roadworthiness, and valid documents.
+- [ ] Create driver support, incident reporting, appeal and payout-reconciliation procedures.
+- [ ] Track driver activation, weekly active drivers, acceptance rate, completed trips, cancellations, net earnings per online hour, and 30/90-day retention.
+- [ ] Do not promise guaranteed rides, earnings or incentives unless funded and contractually defined.
+
+### Corporate and fleet sales — second priority
+- [ ] Recruit anchor accounts: employers with shift workers, hotels, clinics, schools/universities, event organisers, property managers and travel operators.
+- [ ] Offer scheduled employee rides, airport transfers, visitor transport, recurring routes and approved fleet bookings.
+- [ ] Corporate pilot terms should define service hours, service zones, response SLAs, cancellation/no-show rules, invoicing cadence, spending limits, authorised bookers, support escalation and privacy responsibilities.
+- [ ] Add business account roles, cost centres, trip approvals, downloadable trip reports, receipts and monthly invoicing only after authentication and ledger controls exist.
+- [ ] Secure at least 3–5 pilot organisations and validate repeat ride volume before scaling consumer acquisition.
+
+### Quality, mapping and store release gates
+- [ ] Keep Google Maps browser/server keys restricted and configure Maps JavaScript, Places and Routes APIs with billing/quotas before live route tests.
+- [ ] Confirm destination/place selection uses exact coordinates when available; do not show a pickup ETA until a real driver is matched and its location is available.
+- [ ] During a live trip, show driver location, route progress, ETA refresh, rerouting, arrival and destination landmarks using real location and map data.
+- [ ] Add a clear "map not configured" fallback; never substitute the sample illustration for a claimed live route.
+- [ ] Add device/browser QA for PWA install, iOS Safari home-screen flow, low bandwidth, permission denial, offline shell, and accessibility.
+- [ ] Before store submission: production authentication, dispatch, payments/receipts, cancellation/refunds, safety escalation, privacy policy/data retention, driver vetting, monitoring, incident response, load/security testing and store-specific disclosures.
