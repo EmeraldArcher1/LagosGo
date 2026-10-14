@@ -274,37 +274,39 @@
             gestureHandling:'cooperative'
           });
           googleMapsReady = true;
-          const lagosBounds = new google.maps.LatLngBounds(
-            {lat:6.25,lng:2.65},
-            {lat:6.95,lng:4.05}
-          );
-          const autocompleteOptions = {
-            fields:['formatted_address','geometry','name'],
-            componentRestrictions:{country:'ng'},
-            bounds:lagosBounds,
-            strictBounds:false
-          };
-          const pickupAutocomplete = new google.maps.places.Autocomplete(document.getElementById('pickup'), autocompleteOptions);
-          const destinationAutocomplete = new google.maps.places.Autocomplete(document.getElementById('destination'), autocompleteOptions);
-          pickupAutocomplete.addListener('place_changed', () => {
-            const place = pickupAutocomplete.getPlace();
-            if (!place.geometry || !place.geometry.location) {
-              pickupCoordinates = null;
-              return;
+          try {
+            if (google.maps.places && google.maps.places.Autocomplete) {
+              const lagosBounds = new google.maps.LatLngBounds(
+                {lat:6.25,lng:2.65},
+                {lat:6.95,lng:4.05}
+              );
+              const autocompleteOptions = {
+                fields:['formatted_address','geometry','name'],
+                componentRestrictions:{country:'ng'},
+                bounds:lagosBounds,
+                strictBounds:false
+              };
+              const pickupAutocomplete = new google.maps.places.Autocomplete(document.getElementById('pickup'), autocompleteOptions);
+              const destinationAutocomplete = new google.maps.places.Autocomplete(document.getElementById('destination'), autocompleteOptions);
+              pickupAutocomplete.addListener('place_changed', () => {
+                const place = pickupAutocomplete.getPlace();
+                if (!place.geometry || !place.geometry.location) { pickupCoordinates = null; return; }
+                pickupCoordinates = {latitude:place.geometry.location.lat(),longitude:place.geometry.location.lng()};
+                document.getElementById('pickup').value = place.formatted_address || place.name || document.getElementById('pickup').value;
+                delete document.getElementById('pickup').dataset.usesCurrentLocation;
+              });
+              destinationAutocomplete.addListener('place_changed', () => {
+                const place = destinationAutocomplete.getPlace();
+                if (!place.geometry || !place.geometry.location) { destinationCoordinates = null; return; }
+                destinationCoordinates = {latitude:place.geometry.location.lat(),longitude:place.geometry.location.lng()};
+                document.getElementById('destination').value = place.formatted_address || place.name || document.getElementById('destination').value;
+              });
+            } else {
+              mapAttribution.textContent = 'Interactive map loaded. Place suggestions need the Places library enabled; you can still enter addresses manually.';
             }
-            pickupCoordinates = {latitude:place.geometry.location.lat(),longitude:place.geometry.location.lng()};
-            document.getElementById('pickup').value = place.formatted_address || place.name || document.getElementById('pickup').value;
-            delete document.getElementById('pickup').dataset.usesCurrentLocation;
-          });
-          destinationAutocomplete.addListener('place_changed', () => {
-            const place = destinationAutocomplete.getPlace();
-            if (!place.geometry || !place.geometry.location) {
-              destinationCoordinates = null;
-              return;
-            }
-            destinationCoordinates = {latitude:place.geometry.location.lat(),longitude:place.geometry.location.lng()};
-            document.getElementById('destination').value = place.formatted_address || place.name || document.getElementById('destination').value;
-          });
+          } catch (_placesError) {
+            mapAttribution.textContent = 'Interactive map loaded. Place suggestions are unavailable; enter pickup and destination manually.';
+          }
           mapCanvas.hidden = false;
           mapIllustration.hidden = true;
           document.getElementById('routeMapLabel').lastChild.textContent = ' LAGOS · INTERACTIVE MAP';
