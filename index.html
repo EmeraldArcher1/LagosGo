@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5c400">
+  <meta name="description" content="LagosGo — fair fares, safer trips, and a better ride experience for Lagos.">
+  <title>LagosGo — Move Lagos</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="LagosGo home"><span class="brand-mark">L</span><span>Lagos<span class="brand-light">Go</span><small>MOVE YOUR WAY</small></span></a>
+      <button class="avatar" id="profileBtn" aria-label="Profile menu">U</button>
+    </header>
+
+    <section class="welcome">
+      <div><p class="eyebrow">YOUR CITY. YOUR RIDE.</p><h1>Where to,<br><span>Lagos?</span></h1></div>
+      <div class="weather-pill"><span>☀</span> Lagos vibes</div>
+    </section>
+
+    <section class="map-card" aria-label="Illustrative map preview">
+      <div class="map-label"><span class="live-dot"></span> LAGOS · RIDE PREVIEW</div>
+      <svg class="map-art" viewBox="0 0 360 230" role="img" aria-label="Illustrative Lagos street map with a highlighted route">
+        <rect width="360" height="230" fill="#e9e6d8"/>
+        <path d="M-20 42 L80 67 135 20 210 45 272 15 380 44 M-10 104 L78 125 145 90 220 115 370 87 M-20 170 L76 187 142 150 222 173 380 150 M48 -10 L62 240 M119 -10 L135 240 M188 -10 L201 240 M260 -10 L250 240 M321 -10 L309 240" fill="none" stroke="#d1cdbb" stroke-width="10" stroke-linecap="round"/>
+        <path d="M-10 104 L78 125 145 90 220 115 370 87 M48 -10 L62 240 M188 -10 L201 240" fill="none" stroke="#fffdf5" stroke-width="5" stroke-linecap="round"/>
+        <path d="M32 199 C79 186 88 139 135 132 S210 146 230 105 S286 78 322 48" fill="none" stroke="#f5c400" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M32 199 C79 186 88 139 135 132 S210 146 230 105 S286 78 322 48" fill="none" stroke="#171717" stroke-width="2" stroke-dasharray="3 8" stroke-linecap="round"/>
+        <circle cx="32" cy="199" r="9" fill="#171717" stroke="#fff" stroke-width="3"/>
+        <circle cx="322" cy="48" r="10" fill="#f5c400" stroke="#171717" stroke-width="3"/>
+        <g fill="#898675" font-size="8" font-weight="700" letter-spacing="1"><text x="18" y="25">IKEJA</text><text x="146" y="62">MARYLAND</text><text x="231" y="199">VICTORIA ISLAND</text><text x="249" y="24">LEKKI</text><text x="23" y="156">YABA</text></g>
+        <g transform="translate(151 154)"><rect x="0" y="0" width="65" height="24" rx="12" fill="#171717"/><text x="32.5" y="15.5" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">18 min</text></g>
+      </svg>
+      <div class="map-caption"><span><strong>Smart routes.</strong> Better journeys.</span><span class="map-legend"><i></i> Your route</span></div>
+    </section>
+
+    <section class="booking-panel">
+      <div class="panel-heading"><h2>Book a ride</h2><span class="secure-tag">✦ FAIR FARE</span></div>
+      <div class="route-inputs">
+        <label class="location-field"><span class="location-icon pickup-dot"></span><span class="field-content"><small>YOUR PICKUP</small><input id="pickup" value="Ikeja City Mall" autocomplete="street-address" aria-label="Pickup location"></span><button class="locate-btn" id="locateBtn" aria-label="Use current location">◎</button></label>
+        <div class="route-connector"><span></span></div>
+        <label class="location-field"><span class="location-icon destination-pin">●</span><span class="field-content"><small>YOUR DESTINATION</small><input id="destination" placeholder="Where are you going?" aria-label="Destination" autocomplete="off"></span><span class="search-icon">⌕</span></label>
+      </div>
+      <div class="ride-heading"><h3>Choose your ride</h3><button id="compareBtn" class="text-button">Compare fares</button></div>
+      <div class="ride-options" role="group" aria-label="Ride type">
+        <button class="ride-option selected" data-ride="Go Lite" data-price="3200" aria-pressed="true"><span class="car-icon">🚕</span><span class="ride-name">Go Lite</span><span class="ride-detail">Everyday</span><strong>₦3,200</strong><span class="eta">3 min away</span></button>
+        <button class="ride-option" data-ride="Go Comfort" data-price="4600" aria-pressed="false"><span class="car-icon">🚙</span><span class="ride-name">Go Comfort</span><span class="ride-detail">Extra comfort</span><strong>₦4,600</strong><span class="eta">5 min away</span></button>
+        <button class="ride-option" data-ride="Go XL" data-price="6100" aria-pressed="false"><span class="car-icon">🚐</span><span class="ride-name">Go XL</span><span class="ride-detail">More space</span><strong>₦6,100</strong><span class="eta">7 min away</span></button>
+      </div>
+      <div class="fare-note"><span class="shield">✓</span><span><strong>Price shown upfront.</strong> No surprise platform fees.</span><button id="fareInfo" aria-label="About fair fares">i</button></div>
+      <button class="book-button" id="bookBtn"><span>Confirm pickup</span><span class="button-arrow">→</span></button>
+      <p class="demo-note">Preview mode · fares and routes are illustrative, not live quotes.</p>
+    </section>
+
+    <section class="driver-banner">
+      <div class="driver-symbol">↗</div><div><strong>Drive with LagosGo</strong><p>More transparency. Fairer earnings.</p></div><button id="driverBtn" aria-label="Learn about driving with LagosGo">→</button>
+    </section>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-tab="Ride"><span>⌖</span><small>Ride</small></button>
+      <button class="nav-item" data-tab="Activity"><span>◷</span><small>Activity</small></button>
+      <button class="nav-item" data-tab="Rewards"><span>✦</span><small>Rewards</small></button>
+      <button class="nav-item" data-tab="Wallet"><span>▣</span><small>Wallet</small></button>
+    </nav>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
