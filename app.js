@@ -33,6 +33,45 @@
   document.getElementById('fareInfo').addEventListener('click', () => notify('LagosGo is designed for upfront fare estimates and transparent platform fees. These sample prices are not live quotes.'));
   document.getElementById('locateBtn').addEventListener('click', () => notify('Location access is not connected in this prototype. Enter your pickup manually.'));
   document.getElementById('profileBtn').addEventListener('click', () => notify('Passenger profile and sign-in are planned; accounts are not connected yet.'));
+
+  // Adapted fare-choice concept: all offers remain illustrative until dispatch is connected.
+  document.querySelectorAll('.price-mode-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const offerMode = button.dataset.priceMode === 'offer';
+      document.querySelectorAll('.price-mode-btn').forEach(item => {
+        item.classList.toggle('active', item === button);
+        item.setAttribute('aria-pressed', String(item === button));
+      });
+      document.getElementById('offerPanel').hidden = !offerMode;
+      if (offerMode) document.getElementById('offerFare').focus();
+    });
+  });
+  document.getElementById('previewOffer').addEventListener('click', () => {
+    const amount = Number(document.getElementById('offerFare').value);
+    const destination = document.getElementById('destination').value.trim();
+    if (!destination) {
+      document.getElementById('destination').focus();
+      notify('Enter your destination first. No driver will receive this offer in preview mode.');
+      return;
+    }
+    if (!Number.isFinite(amount) || amount < 1000 || amount > 100000) {
+      notify('Enter a suggested fare between ₦1,000 and ₦100,000 for this demo.');
+      return;
+    }
+    notify('Offer preview: ₦' + amount.toLocaleString('en-NG') + ' to ' + destination + '. No driver has received or accepted this offer.');
+  });
+
+  // Safety controls explain intended behaviour but do not imply emergency services are connected.
+  document.querySelectorAll('.safety-action').forEach(button => {
+    button.addEventListener('click', () => {
+      const messages = {
+        share: 'Trip sharing is planned. Live location links and trusted-contact permissions are not connected yet.',
+        checkin: 'Arrival check-in preview only. LagosGo cannot yet verify your arrival or notify a trusted contact.',
+        help: 'Safety support is not connected yet. If you are in immediate danger, contact local emergency services.'
+      };
+      notify(messages[button.dataset.safety] || 'This safety feature is planned.');
+    });
+  });
   document.getElementById('driverBtn').addEventListener('click', () => notify('Driver onboarding is on the roadmap, with transparent earnings and verified documents as core requirements.'));
   document.querySelectorAll('.nav-item').forEach(button => button.addEventListener('click', () => {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
