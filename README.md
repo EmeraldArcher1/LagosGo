@@ -97,3 +97,12 @@ The service worker has push-display and notification-click handlers ready for in
 - tests for permission denial, duplicate subscriptions, unauthenticated writes, expired endpoints, and notification payload privacy.
 
 Do not send sensitive trip or identity data in notification payloads. Keep the push subscription endpoint and keys private, and do not enable the service status flag until storage, authentication and delivery are tested end to end.
+
+## Competitive feature direction: Bolt + inDrive
+
+LagosGo uses these apps as product references, not templates to copy:
+- Bolt's ride experience informs a simple booking journey, clear ride categories, driver onboarding and a path toward a broader city-services marketplace.
+- inDrive's fare-choice model informs an optional rider-suggested fare and more informed driver choice. LagosGo keeps upfront fare estimates as the default and should never present an offer as accepted until a driver actually accepts it.
+- Safety patterns inform opt-in trip sharing, arrival check-in, reporting and privacy-preserving support workflows.
+
+The interface now includes prototype screens for fare mode selection, suggested-fare preview, driver transparency and a safety hub. They are not connected to live driver matching, identity records, location sharing, emergency response or dispatch. The safety controls explicitly disclose these limitations. See BACKLOG.md for priorities and acceptance criteria.
