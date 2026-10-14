@@ -163,6 +163,223 @@
   });
 
 
+
+  // Route preview: road ETA and route steps come from the configured Google Maps backend.
+  let googleMap = null;
+  let activeRouteLine = null;
+  let routeOriginMarker = null;
+  let routeDestinationMarker = null;
+  let googleMapsReady = false;
+  const routeButton = document.getElementById('routePreviewBtn');
+  const routeStatus = document.getElementById('routeStatus');
+  const mapCanvas = document.getElementById('mapCanvas');
+  const mapIllustration = document.querySelector('.map-art');
+  const routeSummary = document.getElementById('routeSummary');
+  const landmarkPanel = document.getElementById('landmarkPanel');
+  const directionsPanel = document.getElementById('directionsPanel');
+  const mapAttribution = document.getElementById('mapAttribution');
+
+  function formatDuration(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) return '—';
+    const mins = Math.max(1, Math.round(seconds / 60));
+    if (mins < 60) return mins + ' min';
+    const hours = Math.floor(mins / 60);
+    const rest = mins % 60;
+    return hours + ' hr' + (rest ? ' ' + rest + ' min' : '');
+  }
+  function formatDistance(meters) {
+    if (!Number.isFinite(meters)) return '—';
+    return meters >= 1000 ? (meters / 1000).toFixed(1) + ' km' : Math.round(meters) + ' m';
+  }
+  function showRouteStats(route) {
+    routeSummary.replaceChildren();
+    [
+      ['Trip estimate', formatDuration(route.durationSeconds), 'Road ETA; traffic-aware when available'],
+      ['Road distance', formatDistance(route.distanceMeters), 'Calculated route distance'],
+      ['Pickup ETA', 'After driver match', 'Requires a real available driver']
+    ].forEach(([label, value, detail]) => {
+      const card = document.createElement('div');
+      card.className = 'route-stat';
+      const strong = document.createElement('strong'); strong.textContent = value;
+      const small = document.createElement('small'); small.textContent = label + ' · ' + detail;
+      card.append(strong, small); routeSummary.append(card);
+    });
+    routeSummary.hidden = false;
+  }
+  function renderDirections(steps) {
+    const list = document.getElementById('directionsList');
+    list.replaceChildren();
+    (steps || []).slice(0, 12).forEach(step => {
+      const li = document.createElement('li');
+      li.append(document.createTextNode(step.instruction || 'Continue on the route'));
+      const small = document.createElement('span');
+      small.textContent = formatDistance(step.distanceMeters || 0);
+      li.append(small); list.append(li);
+    });
+    directionsPanel.hidden = list.children.length === 0;
+  }
+  async function loadNearbyLandmarks(location) {
+    landmarkPanel.hidden = false;
+    const list = document.getElementById('landmarkList');
+    list.replaceChildren();
+    const loading = document.createElement('p');
+    loading.className = 'route-status'; loading.textContent = 'Finding nearby places…'; list.append(loading);
+    try {
+      const response = await fetch('/api/maps/landmarks', {
+        method: 'POST', headers: {'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify({latitude: location.latitude, longitude: location.longitude})
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Landmark service unavailable');
+      list.replaceChildren();
+      if (!data.places || !data.places.length) {
+        list.textContent = 'No mapped landmarks were found near this destination.';
+        return;
+      }
+      data.places.forEach(place => {
+        const item = place.url ? document.createElement('a') : document.createElement('div');
+        item.className = 'landmark-item';
+        if (place.url) { item.href = place.url; item.target = '_blank'; item.rel = 'noopener noreferrer'; }
+        const pin = document.createElement('span'); pin.className = 'landmark-pin'; pin.textContent = '⌖';
+        const copy = document.createElement('span');
+        const name = document.createElement('strong'); name.textContent = place.name;
+        const meta = document.createElement('small'); meta.textContent = [place.type, place.address].filter(Boolean).join(' · ');
+        copy.append(name, meta); item.append(pin, copy); list.append(item);
+      });
+    } catch (_error) {
+      list.replaceChildren();
+      const note = document.createElement('p'); note.className = 'route-status';
+      note.textContent = 'Nearby landmarks will appear when the Places service is configured.';
+      list.append(note);
+    }
+  }
+  async function setupRouteMap() {
+    try {
+      const response = await fetch('/api/maps/config', {cache:'no-store'});
+      const config = await response.json();
+      if (!config.browserKey) {
+        mapAttribution.textContent = 'Interactive map needs GOOGLE_MAPS_BROWSER_KEY in Vercel. Route calculations also need GOOGLE_MAPS_SERVER_KEY. The sample map is illustrative.';
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(config.browserKey) + '&libraries=geometry&v=weekly';
+      script.async = true;
+      script.onload = () => {
+        try {
+          googleMap = new google.maps.Map(mapCanvas, {
+            center: {lat:6.5244,lng:3.3792}, zoom:11, mapTypeControl:false,
+            streetViewControl:false, fullscreenControl:false, clickableIcons:true,
+            gestureHandling:'cooperative'
+          });
+          googleMapsReady = true;
+          mapCanvas.hidden = false;
+          mapIllustration.hidden = true;
+          document.getElementById('routeMapLabel').lastChild.textContent = ' LAGOS · INTERACTIVE MAP';
+          mapAttribution.textContent = 'Map data © Google. Route time is an estimate and may change with traffic.';
+        } catch (_error) {
+          mapAttribution.textContent = 'The map could not initialise. Check the browser API key and its website restrictions.';
+        }
+      };
+      script.onerror = () => {
+        mapAttribution.textContent = 'The map could not load. Check that Maps JavaScript API is enabled and the browser key is correctly restricted.';
+      };
+      document.head.append(script);
+    } catch (_error) {
+      mapAttribution.textContent = 'Map services are not configured yet. The sample map is illustrative.';
+    }
+  }
+  setupRouteMap();
+
+  routeButton.addEventListener('click', async () => {
+    const pickup = document.getElementById('pickup').value.trim();
+    const destination = document.getElementById('destination').value.trim();
+    if ((!pickup && !pickupCoordinates) || !destination) {
+      const missing = !destination ? document.getElementById('destination') : document.getElementById('pickup');
+      missing.focus();
+      routeStatus.textContent = 'Enter both pickup and destination before calculating the route.';
+      return;
+    }
+    routeButton.disabled = true;
+    routeButton.querySelector('.route-button-arrow').textContent = '…';
+    routeStatus.textContent = 'Calculating a road route. This can take a few seconds…';
+    try {
+      const response = await fetch('/api/maps/route', {
+        method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({pickup, destination, pickupCoordinates})
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Route service unavailable');
+      showRouteStats(data);
+      renderDirections(data.steps || []);
+      document.getElementById('mapCaptionText').textContent = 'Calculated road route · ' + formatDistance(data.distanceMeters);
+      routeStatus.textContent = 'Route calculated. This is the trip estimate between pickup and destination—not the driver’s arrival time.';
+      if (googleMapsReady && data.polyline) {
+        const path = google.maps.geometry.encoding.decodePath(data.polyline);
+        if (activeRouteLine) activeRouteLine.setMap(null);
+        if (routeOriginMarker) routeOriginMarker.setMap(null);
+        if (routeDestinationMarker) routeDestinationMarker.setMap(null);
+        activeRouteLine = new google.maps.Polyline({path, geodesic:true, strokeColor:'#171717', strokeOpacity:0.9, strokeWeight:6, map:googleMap});
+        const bounds = new google.maps.LatLngBounds();
+        path.forEach(point => bounds.extend(point));
+        googleMap.fitBounds(bounds, 36);
+        routeOriginMarker = new google.maps.Marker({position:path[0], map:googleMap, title:'Pickup', label:{text:'P',color:'#171717',fontWeight:'bold'}});
+        routeDestinationMarker = new google.maps.Marker({position:path[path.length-1], map:googleMap, title:'Destination', label:{text:'D',color:'#171717',fontWeight:'bold'}});
+      }
+      if (data.destinationLocation) await loadNearbyLandmarks(data.destinationLocation);
+      else {
+        landmarkPanel.hidden = false;
+        document.getElementById('landmarkList').textContent = 'Nearby landmarks are not available for this route.';
+      }
+    } catch (error) {
+      routeStatus.textContent = error.message || 'Could not calculate this route. Try again or use a nearby landmark.';
+    } finally {
+      routeButton.disabled = false;
+      routeButton.querySelector('.route-button-arrow').textContent = '→';
+    }
+  });
+  document.getElementById('destination').addEventListener('keydown', event => {
+    if (event.key === 'Enter') { event.preventDefault(); routeButton.click(); }
+  });
+  document.getElementById('pickup').addEventListener('keydown', event => {
+    if (event.key === 'Enter') { event.preventDefault(); routeButton.click(); }
+  });
+
+  document.querySelectorAll('[data-scroll-form]').forEach(button => {
+    button.addEventListener('click', () => {
+      const form = document.getElementById(button.dataset.scrollForm);
+      form.scrollIntoView({behavior:'smooth', block:'start'});
+      const first = form.querySelector('input:not([type=checkbox])');
+      if (first) first.focus({preventScroll:true});
+    });
+  });
+  document.querySelectorAll('.lead-form').forEach(form => {
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const status = form.querySelector('.lead-status');
+      const submit = form.querySelector('.lead-submit');
+      if (!form.reportValidity()) return;
+      const values = Object.fromEntries(new FormData(form).entries());
+      values.type = form.dataset.leadType;
+      values.consent = form.querySelector('[name="consent"]').checked;
+      status.textContent = 'Sending securely…';
+      submit.disabled = true;
+      try {
+        const response = await fetch('/api/leads', {
+          method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body:JSON.stringify(values)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'This form is not available yet.');
+        status.textContent = data.message || 'Thank you. Your interest has been sent.';
+        form.reset();
+      } catch (error) {
+        status.textContent = error.message || 'We could not submit this form. Please try again later.';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  });
+
   // PWA installation: native prompt on supported Chromium browsers, guidance for iOS Safari.
   const installCard = document.getElementById('installCard');
   const installBtn = document.getElementById('installBtn');
