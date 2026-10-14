@@ -185,8 +185,18 @@
         return;
       }
 
-      // Check service configuration before prompting for permission.
-      const keyResponse = await fetch('/api/push/public-key', { headers: { 'Accept': 'application/json' } });
+      // Fail closed before asking for permission: verify the full backend is enabled first.
+      const statusResponse = await fetch('/api/push/status', { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+      if (!statusResponse.ok) {
+        setAlertStatus('Ride alerts are not connected to an authenticated LagosGo account and delivery service yet. No notification permission was requested.');
+        return;
+      }
+      const serviceStatus = await statusResponse.json();
+      if (serviceStatus.enabled !== true) {
+        setAlertStatus('Ride alerts are not ready yet. No notification permission was requested.');
+        return;
+      }
+      const keyResponse = await fetch('/api/push/public-key', { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       if (!keyResponse.ok) {
         setAlertStatus('Ride alerts are not connected to the LagosGo backend yet. No notification permission was requested.');
         return;
