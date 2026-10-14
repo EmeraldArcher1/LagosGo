@@ -123,3 +123,8 @@ Recruit and verify an initial driver supply and fleet partners in defined Lagos 
 ## Driver earnings estimator
 
 The driver/fleet section includes a client-side weekly earnings estimator. Rides per day, average fare, working days and platform-fee assumption are editable. Results are gross driver share before fuel, maintenance, insurance, downtime and tax. The default 12% fee is explicitly a planning assumption, not an approved public tariff or earnings promise. Validate fee caps and unit economics with real pilot data before publishing marketing claims.
+
+
+## Investor proposal
+
+See [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) for the Lagos-first launch plan, driver recruitment and corporate-sales strategy, quality standards, product/store-readiness gates, state-brand expansion plan, ₦350m capital request, and explicitly illustrative three-year financial scenarios. Projections are assumptions for discussion, not audited forecasts or promised investor returns.
