@@ -71,7 +71,7 @@ test("API handlers reject unsupported methods, invalid input, and missing config
     res = await invoke(route, {
       method: "POST",
       body: {
-        pickup: "Ikeja",
+        pickup: "",
         destination: "Yaba",
         pickupCoordinates: { latitude: 999, longitude: 3 }
       }
