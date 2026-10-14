@@ -187,14 +187,25 @@
         <article class="growth-card growth-driver"><div class="growth-icon">🚕</div><p class="eyebrow">FOR DRIVERS & FLEETS</p><h3>Earn with LagosGo.</h3><p>Join the pilot interest list for transparent fare breakdowns, clear platform fees and reliable ride opportunities.</p><ul><li>Independent drivers and fleet operators</li><li>Cars, eligible vehicles and professional drivers</li><li>Document checks before activation</li></ul><button type="button" class="growth-jump" data-scroll-form="driverLeadForm">Register driver interest <span>→</span></button></article>
         <article class="growth-card growth-company"><div class="growth-icon">🏢</div><p class="eyebrow">FOR ORGANISATIONS</p><h3>Transport that works.</h3><p>Discuss staff mobility, airport pickups, recurring journeys, visitor transport and managed ride programmes.</p><ul><li>Centralised ride requests</li><li>Scheduled journeys and trip reporting</li><li>Corporate billing options to be agreed</li></ul><button type="button" class="growth-jump" data-scroll-form="corporateLeadForm">Request a business discussion <span>→</span></button></article>
       </div>
+
+      <section class="service-standards" aria-labelledby="standardsTitle">
+        <div class="section-intro"><p class="eyebrow">THE LAGOSGO STANDARD</p><h2 id="standardsTitle">A better ride starts before pickup.</h2><p>Every vehicle and driver must meet a clear service standard before activation.</p></div>
+        <div class="standards-grid">
+          <article class="standard-item"><span>❄</span><div><strong>Working air conditioning</strong><p>Required for eligible car categories, with any exceptions disclosed before booking.</p></div></article>
+          <article class="standard-item"><span>✦</span><div><strong>Clean inside and out</strong><p>Neat seats, clean windows, no persistent unpleasant odours, and a tidy exterior.</p></div></article>
+          <article class="standard-item"><span>✓</span><div><strong>Safety and roadworthiness</strong><p>Seat belts, valid vehicle documents, tyres, lights and routine inspections.</p></div></article>
+          <article class="standard-item"><span>☺</span><div><strong>Professional service</strong><p>Respectful conduct, punctual communication, no smoking during trips, and safe driving.</p></div></article>
+        </div>
+        <p class="standards-note">Standards will be verified during onboarding and monitored through rider feedback and periodic checks. Specific legal, insurance and vehicle-age requirements must be confirmed before pilot activation.</p>
+      </section>
       <div class="lead-forms">
         <form class="lead-form" id="driverLeadForm" data-lead-type="driver">
           <div class="lead-form-heading"><span>01 / DRIVER PILOT</span><h3>Driver &amp; fleet interest</h3><p>Submitting interest does not activate a driver account or guarantee rides.</p></div>
           <label>Full name <input name="name" autocomplete="name" required minlength="2" maxlength="120" placeholder="Your full name"></label>
           <div class="lead-form-row"><label>Phone number <input name="phone" type="tel" autocomplete="tel" required minlength="7" maxlength="50" placeholder="+234…"></label><label>Email <input name="email" type="email" autocomplete="email" required maxlength="180" placeholder="you@example.com"></label></div>
-          <div class="lead-form-row"><label>Operating area <input name="area" required maxlength="160" placeholder="e.g. Ikeja, Lekki, Yaba"></label><label>Vehicle / fleet type <input name="organization" maxlength="180" placeholder="e.g. Sedan, SUV, 12-car fleet"></label></div>
+          <div class="lead-form-row"><label>Operating area <input name="area" required maxlength="160" placeholder="e.g. Ikeja, Lekki, Yaba"></label><label>Vehicle / fleet details <input name="organization" maxlength="180" placeholder="Make, model, year or fleet size"></label></div>
           <label>Anything we should know? <textarea name="details" rows="3" maxlength="1800" placeholder="Vehicle count, driving experience, preferred hours…"></textarea></label>
-          <label class="consent-row"><input name="consent" type="checkbox" required> I agree that LagosGo may contact me about the driver pilot and use these details for this enquiry.</label>
+          <label class="standards-consent"><input name="vehicleStandards" type="checkbox" required> I confirm that the vehicle can meet LagosGo’s cleanliness, working-AC (where required), seat-belt, roadworthiness and professional-conduct standards, subject to inspection.</label><label class="consent-row"><input name="consent" type="checkbox" required> I agree that LagosGo may contact me about the driver pilot and use these details for this enquiry.</label>
           <button class="lead-submit" type="submit">Send driver interest <span>→</span></button><p class="lead-status" role="status" aria-live="polite"></p>
         </form>
         <form class="lead-form" id="corporateLeadForm" data-lead-type="corporate">
