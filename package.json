@@ -1,0 +1,9 @@
+{
+  "name": "lagosgo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mobile-first LagosGo ride-hailing prototype",
+  "scripts": {
+    "test": "node --check app.js"
+  }
+}
