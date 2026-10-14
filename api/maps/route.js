@@ -25,7 +25,7 @@ module.exports = async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": key,
-        "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs.steps.navigationInstruction.instructions,routes.legs.steps.distanceMeters,routes.legs.steps.staticDuration,routes.legs.endLocation"
+        "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs.steps.navigationInstruction.instructions,routes.legs.steps.distanceMeters,routes.legs.steps.staticDuration,routes.legs.startLocation,routes.legs.endLocation"
       },
       body: JSON.stringify({
         origin,
@@ -48,6 +48,7 @@ module.exports = async function handler(req, res) {
       distanceMeters: route.distanceMeters,
       durationSeconds: Number.isFinite(durationSeconds) ? durationSeconds : null,
       polyline: route.polyline && route.polyline.encodedPolyline || null,
+      originLocation: leg.startLocation && leg.startLocation.latLng || null,
       destinationLocation: leg.endLocation && leg.endLocation.latLng || null,
       steps: (leg.steps || []).slice(0, 80).map(step => ({
         instruction: step.navigationInstruction && step.navigationInstruction.instructions || "Continue on the route",
