@@ -79,3 +79,21 @@ LagosGo now includes a basic Progressive Web App shell for direct home-screen in
 - iPhone/iPad: open the site in Safari, tap Share, then **Add to Home Screen**.
 - Push notifications require a separate backend endpoint, stored subscription, VAPID keys, and event delivery; they are not enabled merely by registering the service worker.
 - Test installation on target devices before pilot distribution. Add raster PNG icons if required by browser compatibility or store-packaging tools.
+
+## Go Food marketplace concept
+
+The interface now includes an original LagosGo food-discovery section inspired by common food-delivery marketplace patterns: search, cuisine/category filters, restaurant cards, sample delivery windows, and menu entry points. It uses LagosGo's own yellow/black visual identity and does not use Bolt's logo or claim an affiliation. All merchant names, ratings, ETAs, menus and prices shown in the concept are illustrative; merchant onboarding, delivery dispatch, ordering, payment and refunds are not connected.
+
+## Ride-alert push architecture
+
+The client now checks `/api/push/status` before requesting browser notification permission. The current status, VAPID-key and subscription API routes intentionally fail closed because LagosGo does not yet have connected authentication, durable subscription storage, or a push delivery worker. This prevents the prototype from asking users to grant notification permission for a service that cannot save subscriptions or deliver ride events.
+
+The service worker has push-display and notification-click handlers ready for integration. To enable real ride alerts, the next backend work must include:
+- authenticated passenger/driver sessions and server-side account association;
+- VAPID key generation and secure environment-variable storage;
+- durable storage for subscription endpoint, public key and auth secret, with ownership and device management;
+- a delivery worker using a Web Push library, expiry handling (remove subscriptions on 404/410), retries, rate limits and event audit records;
+- ride-event integration for offers, driver acceptance, arrival, trip status and safety alerts;
+- tests for permission denial, duplicate subscriptions, unauthenticated writes, expired endpoints, and notification payload privacy.
+
+Do not send sensitive trip or identity data in notification payloads. Keep the push subscription endpoint and keys private, and do not enable the service status flag until storage, authentication and delivery are tested end to end.
