@@ -32,8 +32,8 @@
       <div class="weather-pill"><span>☀</span> Lagos vibes</div>
     </section>
 
-    <section class="map-card" aria-label="Illustrative map preview">
-      <div class="map-label"><span class="live-dot"></span> LAGOS · RIDE PREVIEW</div>
+    <section class="map-card" aria-label="Route map and trip preview">
+      <div class="map-label" id="routeMapLabel"><span class="live-dot"></span> LAGOS · MAP PREVIEW</div>
       <svg class="map-art" viewBox="0 0 360 230" role="img" aria-label="Illustrative Lagos street map with a highlighted route">
         <rect width="360" height="230" fill="#e9e6d8"/>
         <path d="M-20 42 L80 67 135 20 210 45 272 15 380 44 M-10 104 L78 125 145 90 220 115 370 87 M-20 170 L76 187 142 150 222 173 380 150 M48 -10 L62 240 M119 -10 L135 240 M188 -10 L201 240 M260 -10 L250 240 M321 -10 L309 240" fill="none" stroke="#d1cdbb" stroke-width="10" stroke-linecap="round"/>
@@ -45,7 +45,12 @@
         <g fill="#898675" font-size="8" font-weight="700" letter-spacing="1"><text x="18" y="25">IKEJA</text><text x="146" y="62">MARYLAND</text><text x="231" y="199">VICTORIA ISLAND</text><text x="249" y="24">LEKKI</text><text x="23" y="156">YABA</text></g>
         <g transform="translate(151 154)"><rect x="0" y="0" width="65" height="24" rx="12" fill="#171717"/><text x="32.5" y="15.5" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">18 min</text></g>
       </svg>
-      <div class="map-caption"><span><strong>Smart routes.</strong> Better journeys.</span><span class="map-legend"><i></i> Your route</span></div>
+      <div id="mapCanvas" class="map-canvas" hidden aria-label="Interactive road map"></div>
+      <div class="map-caption"><span id="mapCaptionText"><strong>Smart routes.</strong> Better journeys.</span><span class="map-legend"><i></i> Your route</span></div>
+      <div id="routeSummary" class="route-summary" hidden aria-live="polite"></div>
+      <div id="landmarkPanel" class="landmark-panel" hidden><div class="landmark-heading"><strong>Know the area</strong><span>Nearby landmarks</span></div><div id="landmarkList" class="landmark-list"></div></div>
+      <div id="directionsPanel" class="directions-panel" hidden><div class="landmark-heading"><strong>Along your route</strong><span>Turn-by-turn preview</span></div><ol id="directionsList"></ol></div>
+      <p class="map-attribution" id="mapAttribution">Route and traffic estimates require configured mapping services. They are not live until the provider is connected.</p>
     </section>
 
     <section class="booking-panel">
@@ -55,6 +60,8 @@
         <div class="route-connector"><span></span></div>
         <label class="location-field"><span class="location-icon destination-pin">●</span><span class="field-content"><small>YOUR DESTINATION</small><input id="destination" placeholder="Where are you going?" aria-label="Destination" autocomplete="off"></span><span class="search-icon">⌕</span></label>
       </div>
+      <button type="button" id="routePreviewBtn" class="route-preview-button"><span>⌖</span> Calculate route &amp; nearby landmarks <span class="route-button-arrow">→</span></button>
+      <p id="routeStatus" class="route-status" role="status" aria-live="polite">Enter a pickup and destination to preview the driving route. Pickup ETA requires a real matched driver.</p>
       <div class="ride-heading"><h3>Choose your ride</h3><button id="compareBtn" class="text-button">Compare fares</button></div>
       <div class="ride-options" role="group" aria-label="Ride type">
         <button class="ride-option selected" data-ride="Go Lite" data-price="3200" aria-pressed="true"><span class="car-icon">🚕</span><span class="ride-name">Go Lite</span><span class="ride-detail">Everyday</span><strong>₦3,200</strong><span class="eta">3 min away</span></button>
@@ -166,6 +173,37 @@
 
     <section class="driver-banner">
       <div class="driver-symbol">↗</div><div><strong>Drive with LagosGo</strong><p>More transparency. Fairer earnings.</p></div><button id="driverBtn" aria-label="Learn about driving with LagosGo">→</button>
+    </section>
+
+
+    <section class="growth-hub" id="driver-partners" aria-labelledby="growthTitle">
+      <div class="section-intro"><p class="eyebrow">BUILD THE NETWORK FIRST</p><h2 id="growthTitle">Move Lagos together.</h2><p>We're building a driver-first mobility network and looking for dependable drivers, fleet partners and organisations that need reliable transport.</p></div>
+      <div class="growth-cards">
+        <article class="growth-card growth-driver"><div class="growth-icon">🚕</div><p class="eyebrow">FOR DRIVERS & FLEETS</p><h3>Earn with LagosGo.</h3><p>Join the pilot interest list for transparent fare breakdowns, clear platform fees and reliable ride opportunities.</p><ul><li>Independent drivers and fleet operators</li><li>Cars, eligible vehicles and professional drivers</li><li>Document checks before activation</li></ul><button type="button" class="growth-jump" data-scroll-form="driverLeadForm">Register driver interest <span>→</span></button></article>
+        <article class="growth-card growth-company"><div class="growth-icon">🏢</div><p class="eyebrow">FOR ORGANISATIONS</p><h3>Transport that works.</h3><p>Discuss staff mobility, airport pickups, recurring journeys, visitor transport and managed ride programmes.</p><ul><li>Centralised ride requests</li><li>Scheduled journeys and trip reporting</li><li>Corporate billing options to be agreed</li></ul><button type="button" class="growth-jump" data-scroll-form="corporateLeadForm">Request a business discussion <span>→</span></button></article>
+      </div>
+      <div class="lead-forms">
+        <form class="lead-form" id="driverLeadForm" data-lead-type="driver">
+          <div class="lead-form-heading"><span>01 / DRIVER PILOT</span><h3>Driver &amp; fleet interest</h3><p>Submitting interest does not activate a driver account or guarantee rides.</p></div>
+          <label>Full name <input name="name" autocomplete="name" required minlength="2" maxlength="120" placeholder="Your full name"></label>
+          <div class="lead-form-row"><label>Phone number <input name="phone" type="tel" autocomplete="tel" required minlength="7" maxlength="50" placeholder="+234…"></label><label>Email <input name="email" type="email" autocomplete="email" required maxlength="180" placeholder="you@example.com"></label></div>
+          <div class="lead-form-row"><label>Operating area <input name="area" required maxlength="160" placeholder="e.g. Ikeja, Lekki, Yaba"></label><label>Vehicle / fleet type <input name="organization" maxlength="180" placeholder="e.g. Sedan, SUV, 12-car fleet"></label></div>
+          <label>Anything we should know? <textarea name="details" rows="3" maxlength="1800" placeholder="Vehicle count, driving experience, preferred hours…"></textarea></label>
+          <label class="consent-row"><input name="consent" type="checkbox" required> I agree that LagosGo may contact me about the driver pilot and use these details for this enquiry.</label>
+          <button class="lead-submit" type="submit">Send driver interest <span>→</span></button><p class="lead-status" role="status" aria-live="polite"></p>
+        </form>
+        <form class="lead-form" id="corporateLeadForm" data-lead-type="corporate">
+          <div class="lead-form-heading"><span>02 / BUSINESS PARTNERSHIP</span><h3>Corporate transport enquiry</h3><p>Tell us what your organisation needs; service and pricing will be agreed before launch.</p></div>
+          <label>Contact name <input name="name" autocomplete="name" required minlength="2" maxlength="120" placeholder="Your full name"></label>
+          <label>Organisation <input name="organization" autocomplete="organization" required maxlength="180" placeholder="Company or institution name"></label>
+          <div class="lead-form-row"><label>Work email <input name="email" type="email" autocomplete="email" required maxlength="180" placeholder="you@company.com"></label><label>Phone number <input name="phone" type="tel" autocomplete="tel" required minlength="7" maxlength="50" placeholder="+234…"></label></div>
+          <label>Main operating area <input name="area" required maxlength="160" placeholder="e.g. Lagos Island and Ikeja"></label>
+          <label>Transport requirements <textarea name="details" rows="3" required maxlength="1800" placeholder="Staff trips, daily volume, airport transfers, shift times, recurring routes…"></textarea></label>
+          <label class="consent-row"><input name="consent" type="checkbox" required> I agree that LagosGo may contact me about this business enquiry.</label>
+          <button class="lead-submit" type="submit">Request a business discussion <span>→</span></button><p class="lead-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+      <p class="lead-setup-note">Pilot registrations are only delivered once the secure lead inbox is configured. Do not enter sensitive identity documents in these forms.</p>
     </section>
 
     <nav class="bottom-nav" aria-label="Main navigation">
