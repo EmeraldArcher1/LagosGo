@@ -1,52 +1,71 @@
-# LagosGo — Phase 1 Backlog
+# LagosGo — Product Backlog and Super-App Roadmap
 
-Status legend: **Planned** = not implemented; **Prototype** = interface/demo only; **In progress** = implementation underway; **Verified** = implemented and tested in the target environment.
+**Status legend:** **Planned** = not implemented; **Prototype** = interface/demo only; **In progress** = implementation underway; **Verified** = implemented and tested in the target environment. Roadmap inclusion is not a claim that a feature is live.
 
-## P0 — Close the verification gaps
+## P0 — Verify the existing product before extending it
 
-- [ ] Confirm current production deployment, commit SHA, runtime logs, provider configuration, and real-device behaviour.
+- [ ] Confirm current Vercel deployment, deployed commit SHA, runtime logs, provider configuration, and real-device behaviour.
 - [ ] Test driver/corporate lead submission end to end and confirm email delivery; add abuse controls and an operational response process.
 - [ ] Test Google Maps configuration, route/landmark endpoints, input validation, quotas and API-key restrictions.
 - [ ] Add automated handler tests, failure-path tests and meaningful CI assertions; syntax checks alone are insufficient.
 - [ ] Record security, privacy, accessibility and release blockers with evidence and acceptance criteria.
+- [ ] Confirm Supabase project status and migration application before building ride APIs; never assume a dashboard project means the schema is deployed.
 
 ## P1 — Operational ride MVP (priority over optional features)
 
 | Priority | Capability | Acceptance criteria | Status |
 |---|---|---|---|
 | P1 | Passenger/driver identity | Secure sign-up/sign-in, account recovery, role-based access and server-side authorization. | Planned |
-| P1 | Driver/vehicle eligibility | Secure onboarding, required document checks, vehicle eligibility and an auditable approval/rejection process. | Planned |
-| P1 | Durable ride records | Persistent database; validated ride states; ownership checks; auditable transitions and safe retry handling. | Planned |
-| P1 | Driver availability | Authenticated availability and location updates; stale-location expiry; drivers cannot accept overlapping assignments. | Planned |
-| P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and clear booking/cancellation states. | Prototype UI / backend planned |
+| P1 | Driver/vehicle eligibility | Secure onboarding, required document checks, vehicle eligibility and auditable approval/rejection. | Planned |
+| P1 | Durable ride records | Persistent database; validated ride states; ownership checks; auditable transitions and safe retries. | Planned |
+| P1 | Driver availability | Authenticated availability/location updates; stale-location expiry; no overlapping assignments. | Planned |
+| P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and cancellation states. | Prototype UI / backend planned |
 | P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Planned |
-| P1 | Live trip lifecycle | Driver accepted → en route → arrived → in progress → completed, with cancellation/error recovery and passenger updates. | Planned |
-| P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent commission and payout reporting. | Planned |
-| P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation path, privacy and retention controls. | Planned |
-| P1 | Verification and CI | Unit/integration tests, end-to-end pilot tests, logs, monitoring, security checks and documented release gates. | Planned |
+| P1 | Live trip lifecycle | Accepted → en route → arrived → in progress → completed, with recovery and passenger updates. | Planned |
+| P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent fees and payout reporting. | Planned |
+| P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation, privacy and retention controls. | Planned |
+| P1 | Verification and CI | Unit/integration/E2E tests, logs, monitoring, security checks and release gates. | Planned |
 
-## P2 — Optional customer-facing features after core rides work
+## P2 — First customer trust and loyalty release
 
-| Priority | Feature | Acceptance criteria | Status |
+Implement in this order **after the secure ride lifecycle and ledger foundations are in place**. This is the requested first feature tranche, not a reason to bypass core ride readiness.
+
+| Order | Feature | Acceptance criteria | Status |
 |---|---|---|---|
-| P2 | Wallet gifting | Recipient confirmation, limits/consent, idempotent ledger entries, and safe insufficient-balance/failure handling. | Planned |
-| P2 | Pay for Me | Payer explicitly approves ride context and amount before any charge; cancellation/refunds auditable. | Planned |
-| P2 | Ride streak incentives | Explicit eligibility/expiry, defined funding source, ledger trail, and abuse/duplicate-claim prevention. | Planned |
-| P2 | I Arrived Safely | Voluntary check-in, opt-in trusted contact, minimised location exposure and clear failure handling. | Planned |
-| P2 | Two-tap mutual ratings | One rating per eligible participant after a completed trip, with abuse reporting and release rules. | Planned |
+| 1 | Wallet gifting | Recipient identity confirmation, consent and limits; append-only/idempotent ledger; safe failure and reversal handling; no cash-out unless separately approved. | Planned |
+| 2 | Pay for Me | Payer explicitly approves ride, amount and payment method; payment status verified server-side; driver sees a truthful guarantee state; cancellation/refunds auditable. | Planned |
+| 3 | Ride Streak incentives | Explicit eligibility, expiry, campaign budget/funder, ledger trail and duplicate-claim/abuse prevention. Promotions must not silently reduce driver earnings. | Planned |
+| 4 | I Arrived Safely | Voluntary check-in; optional trusted contact; escalation rules and failure states; minimised location exposure and clear consent. | Planned |
+| 5 | Two-tap mutual ratings | One rating per eligible participant after a completed trip; structured feedback, abuse reporting, appeal and human review; no unexplained automatic deactivation. | Planned |
+
+## P3 — Everyday mobility and services
+
+| Feature | Scope / acceptance criteria | Status |
+|---|---|---|
+| Book for someone else | Booker specifies passenger and trip; passenger receives safe trip details; OTP/name check; payer and consent are clear. | Planned |
+| Airport transfers | MMIA pickup/drop-off zones, luggage-friendly vehicle categories, scheduled and fixed-corridor pricing after cost validation. | Planned |
+| Flight-aware pickup | Flight-number input, trustworthy flight-status provider, delay handling and clear limits; no claim of live flight integration until verified. | Planned |
+| Airport queue and meet-and-greet | Driver queue rules, waiting charges, terminal instructions, name-board option and partner operations. | Planned |
+| LagosGo Move deliveries | Parcel/errand booking, item restrictions, sender/receiver details, pickup evidence, tracking, delivery OTP/photo proof and receipts. | Planned |
+| High-value delivery protection | Explicit coverage terms, item value limits, claims workflow and partner/insurer agreement before selling insurance. | Research required |
+| Explore Lagos | Categorised map discovery for fuel/CNG, hospitals, pharmacies, police/emergency resources, mechanics, markets, ATMs, hotels and landmarks. Verify sources, freshness and emergency details. | Planned |
+| Corporate and fleet accounts | Roles, authorised bookers, spending limits, cost centres, receipts, reporting, invoicing and support SLAs. | Planned |
+| Go Food / merchant marketplace | Verified merchant onboarding, real menus/availability, ordering, payment, courier assignment, refunds and settlements. | Prototype UI; backend planned |
+| Referrals and other campaigns | Partner-funded referral, off-peak, birthday/homecoming and wallet bonus campaigns with budgets and fraud controls. | Planned |
+| GoShare/shared rides | Only after solo dispatch is reliable; initial guardrails: 2–3 riders, same corridor, detour no more than 5–7 minutes and journey extension capped at 10–15%. | Planned |
+| City expansion | Expand beyond Lagos only after zone-level service, driver supply, economics, support and legal requirements are validated. | Planned |
 
 ## Essential platform foundation
 
-- [ ] Responsive yellow-and-black passenger booking experience.
-- [ ] Pickup and destination selection with clear ride categories.
-- [ ] Fare estimate and itemised pricing before confirmation.
-- [ ] Typed ride lifecycle and server-side state transition rules.
-- [ ] Driver onboarding, document verification, and vehicle eligibility.
+- [ ] Responsive yellow-and-black passenger and driver experiences.
+- [ ] Pickup/destination selection, clear ride categories and fare estimate/itemised pricing.
+- [ ] Typed ride lifecycle and server-enforced state transitions.
+- [ ] Driver onboarding, document verification, vehicle eligibility and support.
 - [ ] Driver availability and atomic offer/assignment locking.
-- [ ] Road-ETA matching with a fairness-aware ranking model.
-- [ ] Auditable driver earnings, fees, incentives, and adjustments.
-- [ ] Authentication, authorisation, rate limiting, and privacy controls.
-- [ ] CI checks and tests for ride states, matching, and ledger integrity.
+- [ ] Road-ETA matching with fairness-aware ranking.
+- [ ] Auditable driver earnings, fees, incentives, refunds and adjustments.
+- [ ] Authentication, authorization, rate limiting, consent and privacy controls.
+- [ ] CI checks and tests for ride states, matching, ledger integrity and abuse cases.
 
 ## Matching and reliability
 
@@ -54,61 +73,49 @@ Status legend: **Planned** = not implemented; **Prototype** = interface/demo onl
 - [ ] Start at 2–3 km and expand to 5 km when candidate count is insufficient.
 - [ ] Use road ETA/traffic from a selected routing provider; shortlist top 10–20 before expensive routing calls.
 - [ ] Sequential driver offers with a 20-second acceptance window.
-- [ ] Atomically lock a driver and assign a ride to prevent duplicate dispatch.
+- [ ] Atomically lock driver and ride to prevent duplicate dispatch.
 - [ ] Retry/expand for up to 60 seconds, then offer retry or scheduling.
-- [ ] Monitor request-to-first-offer, request-to-acceptance, pickup ETA, cancellation rates, match radius, failed matches by zone/time, earnings per online hour, and offer concentration.
+- [ ] Monitor request-to-first-offer, request-to-acceptance, pickup ETA, cancellations, match radius, failed matches by zone/time, earnings per online hour and offer concentration.
+- [ ] Keep the planned score explicit: 0.55 × ETA + 0.15 × Quality + 0.15 × Fairness + 0.10 × Reliability + 0.05 × Direction. Normalise components to the same scale; hard eligibility checks come first.
 
-## Later roadmap — not Phase 1
-
-- Airport-first transfer packages.
-- Parcel delivery and errands.
-- Explore Lagos.
-- Wallet bonuses, referrals, off-peak offers, and birthday/homecoming campaigns beyond the initial streak feature.
-- GoShare/shared rides after solo dispatch is reliable; initial guardrails: 2–3 riders maximum, same corridor, detour no more than 5–7 minutes, total journey extension capped at 10–15%.
-- Batch matching with 3–5 second request batching and an optimisation solver, only after reliable operational data exists.
-
-## Release rule
-
-A UI-only interaction is **Prototype**, not **Verified**. Payment, wallet, matching, identity, and safety features require server-side enforcement, automated tests, logging, and an explicit security review before being offered to real users.
 ## Competitive feature adaptations — Bolt and inDrive references
 
-These are original LagosGo implementations of common mobility-product patterns, not copies of third-party branding or proprietary UI. Every row must pass the release rule above before being described as live.
+These are original LagosGo implementations of common mobility patterns, not copies of third-party branding or proprietary UI.
 
-| Priority | Feature | LagosGo adaptation | Status |
+| Priority | Feature | Acceptance criteria | Status |
 |---|---|---|---|
-| P1 | Fare choice | Upfront fare estimate as default, with optional rider-suggested offer and clear driver acceptance/decline states. Add bounds, expiry and no hidden fees. | Prototype UI |
-| P1 | Informed driver choice | Show verified driver identity, vehicle, plate, pickup ETA, completed trips and verified ratings when real candidates exist. Never show fabricated profiles or ratings. | Planned; placeholder UI |
-| P1 | Trip safety centre | Share trip with a trusted contact, arrival check-in, safety help/reporting and documented escalation paths. Location sharing is opt-in and time-limited. | Prototype UI |
-| P1 | Live trip lifecycle | Driver acceptance, approach, arrival, trip started/completed, cancellation and receipt updates, with push alerts after backend integration. | Planned |
-| P2 | In-app communication | Privacy-preserving chat or masked calling between matched rider and driver, with abuse reporting. | Planned |
-| P2 | Multiple payment methods | Cash and supported digital payments with clear pre-trip disclosure, server-verified status, idempotent ledger and refund handling. | Planned |
-| P2 | Delivery expansion | Go Send parcel/errand bookings, courier offers, delivery status and proof of delivery after ride dispatch is reliable. | Planned |
-| P2 | Merchant marketplace | Go Food merchant onboarding, real menus, availability, checkout, courier assignment, order tracking, refunds and settlements. | Prototype UI; backend planned |
-| P3 | Intercity and scheduled trips | Scheduled rides and longer-distance travel after zone coverage, driver availability and pricing are validated. | Planned |
-| P3 | Safety evidence tools | Evaluate any audio/evidence feature only after legal/privacy review, explicit consent, secure storage, retention limits and access controls. | Research required |
+| P1 | Fare choice | Upfront estimate by default; optional rider-suggested offer with bounds, expiry and clear accept/decline states. | Prototype UI |
+| P1 | Informed driver choice | Show verified driver, vehicle, plate, pickup ETA and genuine ratings only when real candidate data exists. | Planned; placeholder UI |
+| P1 | Trip safety centre | Trusted-contact sharing, arrival check-in, reporting and documented escalation; sharing opt-in and time-limited. | Prototype UI |
+| P2 | In-app communication | Privacy-preserving chat/masked calling for matched users, with abuse reporting. | Planned |
+| P2 | Payment methods | Cash and supported digital methods, clear pre-trip disclosure, server-verified settlement, idempotent ledger and refunds. | Planned |
+| P2 | Safety evidence tools | Audio/evidence collection only after legal/privacy review, explicit consent, secure storage, retention limits and access controls. | Research required |
 
 ## Driver-first launch and corporate demand
 
-### Driver acquisition — first priority
-- [ ] Run an invite-only Lagos pilot with verified independent drivers and fleet operators before public rider promotion.
-- [ ] Publish the driver earnings calculator and platform-fee breakdown before acceptance of any commercial terms.
-- [ ] Onboard vehicle details, licence and required documents through a secure verified workflow; do not collect identity-document uploads through the public interest form.
-- [ ] Inspect vehicle condition before activation: clean exterior/interior, working air conditioning for eligible car categories, seat belts, tyres/lights/roadworthiness, and valid documents.
+- [ ] Run an invite-only Lagos pilot with verified independent drivers and fleets before public rider promotion.
+- [ ] Publish fee breakdown and earnings-estimator assumptions before commercial terms; do not promise guaranteed rides, earnings or incentives without funded terms.
+- [ ] Inspect vehicles for cleanliness, working A/C where required, seat belts, tyres/lights, roadworthiness and valid documents.
 - [ ] Create driver support, incident reporting, appeal and payout-reconciliation procedures.
-- [ ] Track driver activation, weekly active drivers, acceptance rate, completed trips, cancellations, net earnings per online hour, and 30/90-day retention.
-- [ ] Do not promise guaranteed rides, earnings or incentives unless funded and contractually defined.
+- [ ] Track driver activation, weekly active drivers, completed trips, cancellations, net earnings per online hour and 30/90-day retention.
+- [ ] Recruit corporate pilots (employers, hotels, clinics, schools, event organisers and travel operators); define service zones, SLAs, cancellation/no-show rules, invoicing, spending limits, support and privacy.
+- [ ] Validate repeat ride volume with 3–5 pilot organisations before scaling consumer acquisition.
 
-### Corporate and fleet sales — second priority
-- [ ] Recruit anchor accounts: employers with shift workers, hotels, clinics, schools/universities, event organisers, property managers and travel operators.
-- [ ] Offer scheduled employee rides, airport transfers, visitor transport, recurring routes and approved fleet bookings.
-- [ ] Corporate pilot terms should define service hours, service zones, response SLAs, cancellation/no-show rules, invoicing cadence, spending limits, authorised bookers, support escalation and privacy responsibilities.
-- [ ] Add business account roles, cost centres, trip approvals, downloadable trip reports, receipts and monthly invoicing only after authentication and ledger controls exist.
-- [ ] Secure at least 3–5 pilot organisations and validate repeat ride volume before scaling consumer acquisition.
+## Mapping, PWA and release gates
 
-### Quality, mapping and store release gates
-- [ ] Keep Google Maps browser/server keys restricted and configure Maps JavaScript, Places and Routes APIs with billing/quotas before live route tests.
-- [ ] Confirm destination/place selection uses exact coordinates when available; do not show a pickup ETA until a real driver is matched and its location is available.
-- [ ] During a live trip, show driver location, route progress, ETA refresh, rerouting, arrival and destination landmarks using real location and map data.
-- [ ] Add a clear "map not configured" fallback; never substitute the sample illustration for a claimed live route.
-- [ ] Add device/browser QA for PWA install, iOS Safari home-screen flow, low bandwidth, permission denial, offline shell, and accessibility.
-- [ ] Before store submission: production authentication, dispatch, payments/receipts, cancellation/refunds, safety escalation, privacy policy/data retention, driver vetting, monitoring, incident response, load/security testing and store-specific disclosures.
+- [ ] Restrict Google Maps browser/server keys and configure required APIs, billing and quotas before live route tests.
+- [ ] Do not show driver pickup ETA until a real eligible driver is matched and current location/road route are available.
+- [ ] Use real route/location data for live-trip progress; never substitute sample illustrations for a claimed live route.
+- [ ] Test PWA install, iOS Safari home-screen flow, low bandwidth, permission denial, offline shell and accessibility.
+- [ ] Push notifications require authenticated subscriptions, durable storage, VAPID secrets, delivery worker, retries and privacy-safe payloads.
+- [ ] Before store submission: production authentication, dispatch, payments/receipts, cancellations/refunds, safety escalation, privacy/retention/deletion, driver vetting, monitoring, incident response, load/security tests and store disclosures.
+
+## Release rule
+
+A UI-only interaction is **Prototype**, not **Verified**. Wallet, payments, matching, identity and safety features require server-side enforcement, automated tests, audit logs, and explicit security/privacy review before being offered to real users. Any promotional reward must identify its funding source and must not be silently deducted from driver earnings.
+
+## Existing setup and reference documents
+
+- [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) — project and migration setup.
+- [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) — Vercel configuration and pilot release gates.
+- [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
