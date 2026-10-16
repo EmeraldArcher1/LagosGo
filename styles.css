@@ -21,3 +21,19 @@
 .service-standards{padding-top:28px}.standards-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:14px}.standard-item{display:flex;align-items:flex-start;gap:11px;padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff}.standard-item>span{flex:0 0 34px;width:34px;height:34px;display:grid;place-items:center;background:var(--yellow);border:1px solid var(--ink);border-radius:10px;font-size:17px;font-weight:900}.standard-item strong{font-size:11px;font-weight:900}.standard-item p{font-size:9px;line-height:1.5;color:#77746b;margin:5px 0 0}.standards-note{font-size:8px;line-height:1.6;color:#817d72;margin:11px 2px 0}.standards-consent{display:flex;align-items:flex-start;gap:8px;padding:11px;background:#fff7cf;border:1px solid #e8d987;border-radius:10px;font-size:9px;line-height:1.5;font-weight:750}.standards-consent input{margin-top:2px;accent-color:#171717;flex:0 0 auto}
 
 .driver-earnings{padding-top:26px}.earnings-calculator{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px;border:1px solid var(--line);border-radius:16px;background:#fff}.earnings-calculator>label{display:flex;flex-direction:column;gap:7px;font-size:9px;font-weight:850;color:#57544b}.earnings-calculator input{width:100%;min-width:0;border:1px solid #d9d5c7;border-radius:9px;padding:11px 9px;font:inherit;font-size:14px;font-weight:850;color:var(--ink);background:#fffdf7}.earnings-result{grid-column:1/-1;display:flex;flex-direction:column;gap:7px;background:#191919;color:#fff;border-radius:12px;padding:15px}.earnings-result>span{font-size:9px;color:#d6d0c3}.earnings-result strong{font-size:27px;letter-spacing:-1px;color:#f5c400}.earnings-result small{font-size:8px;line-height:1.5;color:#d6d0c3}.earnings-caveat{grid-column:1/-1;font-size:8px;line-height:1.55;color:#817d72;margin:0}.earnings-calculator .growth-jump{grid-column:1/-1;width:100%}
+
+
+/* POSH9JA Group of Companies ecosystem partners */
+.ecosystem-hub { padding: 26px 18px; margin: 20px 0; border-radius: 24px; background: #fffdf5; border: 1px solid #e9e1ca; }
+.ecosystem-hub .section-intro { margin-bottom: 18px; }
+.ecosystem-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.ecosystem-card { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 18px; border: 1px solid #e8e2d3; border-radius: 18px; background: #fff; }
+.ecosystem-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #f5c400; font-size: 22px; }
+.ecosystem-card .eyebrow { margin: 0; font-size: 10px; letter-spacing: .09em; font-weight: 800; }
+.ecosystem-card h3 { margin: 0; font-size: 17px; line-height: 1.25; }
+.ecosystem-card p:not(.eyebrow) { margin: 0; color: #555; font-size: 13px; line-height: 1.55; }
+.ecosystem-action { display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding: 11px 13px; border-radius: 12px; background: #171717; color: #fff; font-weight: 750; font-size: 13px; text-decoration: none; }
+.ecosystem-status { display: inline-block; padding: 8px 10px; border-radius: 10px; background: #f5efda; color: #5e4b00; font-size: 12px; font-weight: 750; }
+.ecosystem-card small, .ecosystem-disclaimer { color: #686458; font-size: 11px; line-height: 1.5; }
+.ecosystem-disclaimer { margin: 15px 2px 0; }
+@media (max-width: 520px) { .ecosystem-grid { grid-template-columns: 1fr; } .ecosystem-card { padding: 16px; } }
