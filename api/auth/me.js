@@ -1,4 +1,4 @@
-const { getAuthenticatedUser } = require("../_lib/supabase-auth");
+const { getAuthenticatedUser } = require("../../lib/supabase-auth");
 
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
