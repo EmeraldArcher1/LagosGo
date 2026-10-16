@@ -102,5 +102,7 @@ Recruit and verify an initial driver supply and fleet partners in defined Lagos 
 - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) — database setup and security boundaries.
 - [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) — Vercel configuration and release gates.
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
+- [docs/PILOT_FAIR_FARES_AND_FLEET.md](./docs/PILOT_FAIR_FARES_AND_FLEET.md) — traffic-aware fare experiments, driver economics, vehicle-owner standards, identity markings and public-sector pilot safeguards.
+- [docs/LAGOSGO_LAUNCH_CAMPAIGN.md](./docs/LAGOSGO_LAUNCH_CAMPAIGN.md) — advert scripts, driver recruitment copy, government meeting opener and investor pitch summary.
 
 Financial projections and fee examples in planning documents are assumptions, not audited forecasts or guaranteed returns.
