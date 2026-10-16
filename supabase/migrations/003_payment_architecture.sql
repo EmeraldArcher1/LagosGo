@@ -28,6 +28,7 @@ create table public.payment_webhook_events (
   event_id text not null,
   event_type text not null,
   payload jsonb not null,
+  verified_transaction jsonb,
   signature_verified boolean not null default false check (signature_verified),
   received_at timestamptz not null default now(),
   processed_at timestamptz,
@@ -91,7 +92,6 @@ create index payment_webhook_pending_idx on public.payment_webhook_events(receiv
 create index payout_driver_recent_idx on public.driver_payout_instructions(driver_user_id, created_at desc);
 create index ledger_entries_transaction_idx on public.payment_ledger_entries(transaction_id);
 
--- Finance data is server-owned. No direct client writes; use audited server endpoints/RPC.
 alter table public.payment_collections enable row level security;
 alter table public.payment_webhook_events enable row level security;
 alter table public.payment_ledger_transactions enable row level security;
