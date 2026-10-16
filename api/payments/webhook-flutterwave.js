@@ -2,6 +2,7 @@
 
 const { FlutterwaveAdapter } = require("../../lib/payments/flutterwave-adapter");
 const { parseJsonBuffer, normalizeHeaders, readRawBody } = require("../../lib/payments/webhook-utils");
+const crypto = require("node:crypto");
 
 async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
@@ -23,9 +24,8 @@ async function handler(req, res) {
       }
     }
     const { recordVerifiedWebhook } = require("../../lib/payments/supabase-repository");
-    const eventId = event.data.id == null ? event.data.reference : String(event.data.id);
-    if (eventId == null || String(eventId) === "") return res.status(400).json({ error: "missing_event_id" });
-    await recordVerifiedWebhook({ provider: "flutterwave", eventType: event.event, eventId: String(eventId), payload: event, verified });
+    const eventId = crypto.createHash("sha256").update(rawBody).digest("hex");
+    await recordVerifiedWebhook({ provider: "flutterwave", eventType: event.event, eventId, payload: event, verified });
     return res.status(200).json({ received: true });
   } catch (error) {
     return res.status(error.message === "webhook_body_too_large" ? 413 : 503).json({ error: error.message === "webhook_body_too_large" ? "payload_too_large" : "webhook_processing_unavailable" });
