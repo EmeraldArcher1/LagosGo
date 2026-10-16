@@ -22,7 +22,7 @@
 | P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and cancellation states. | Prototype UI / backend planned |
 | P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Planned |
 | P1 | Live trip lifecycle | Accepted → en route → arrived → in progress → completed, with recovery and passenger updates. | Planned |
-| P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent fees and payout reporting. | Planned |
+| P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent fees and payout reporting. | Architecture in progress; not production-ready |
 | P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation, privacy and retention controls. | Planned |
 | P1 | Verification and CI | Unit/integration/E2E tests, logs, monitoring, security checks and release gates. | Planned |
 
@@ -119,3 +119,17 @@ A UI-only interaction is **Prototype**, not **Verified**. Wallet, payments, matc
 - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) — project and migration setup.
 - [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) — Vercel configuration and pilot release gates.
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
+
+
+## P1 — Cashless payments, driver payouts and traffic-aware pricing
+
+See [PAYMENTS_AND_TRAFFIC.md](./PAYMENTS_AND_TRAFFIC.md) for the full requirements and proposed rollout. These items remain **Planned** until verified in the target environment:
+
+- [ ] Compare Paystack, Flutterwave, Monnify and Paga for LagosGo's approved business model, collection methods, fees, payout APIs, settlement timing, refunds, disputes and marketplace/split-payment permissions.
+- [ ] Implement provider-neutral payment adapters; server-side amount/reference creation; signed webhook verification; idempotency; refund and chargeback paths.
+- [ ] Keep ride, collection, ledger and driver payout states separate; use integer kobo and append-only balanced ledger entries.
+- [ ] Link verified driver identity, vehicle ownership/lease/fleet relationship and approved payout beneficiary; show gross fare, each fee/share and driver net.
+- [ ] Do not promise payout within minutes unless the chosen provider's actual transfer capability, account limits, bank processing and end-to-end tests support that claim. Provider collection settlement and driver payout are distinct.
+- [ ] Integrate traffic-aware road routing from a selected provider; display quote timestamp/freshness, expected duration, traffic conditions and itemised fare before booking; ask for confirmation on material quote changes.
+- [ ] Test webhook replay/out-of-order delivery, duplicate payout prevention, delayed settlement, refunds, failed payouts, stale traffic, provider outages, low connectivity and reconciliation mismatches.
+- [ ] Do not launch cashless-only rides until provider approval, security/legal review, support processes and a reconciled end-to-end sandbox/pilot pass are signed off.

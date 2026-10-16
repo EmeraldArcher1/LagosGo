@@ -65,7 +65,7 @@ Keep service-role keys server-only; never commit secrets or expose them in brows
 
 ## Local development and prototype limitations
 
-**Current release status: front-end prototype; not an operational ride-hailing service.** Open `index.html` to inspect the interface. Booking, sample fares, sample driver information, safety controls and marketplace listings may be illustrative. Live driver dispatch, passenger/driver authentication, persistent ride storage, payment processing and production ride tracking are not implemented unless subsequently verified in the target environment.
+**Current release status: front-end prototype; not an operational ride-hailing service.** Open `index.html` to inspect the interface. Booking, sample fares, sample driver information, safety controls and marketplace listings may be illustrative. Live driver dispatch, passenger/driver authentication, persistent ride storage, end-to-end payment collection/refund, automated ledger posting, driver payout execution, reconciliation jobs and production ride tracking are not implemented unless subsequently verified in the target environment. The payment architecture feature branch contains adapters and webhook/ledger scaffolding only; it is not production payment processing. The payment feature branch now contains provider adapters, signed-webhook ingress, ledger/payout/reconciliation service contracts and a proposed database migration; these are not live payment processing.
 
 ### PWA pilot access
 
@@ -104,3 +104,8 @@ Recruit and verify an initial driver supply and fleet partners in defined Lagos 
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
 
 Financial projections and fee examples in planning documents are assumptions, not audited forecasts or guaranteed returns.
+
+
+## Cashless payments and traffic-aware fares
+
+The proposed payment, driver payout, fare transparency and live-traffic requirements are documented in [PAYMENTS_AND_TRAFFIC.md](./PAYMENTS_AND_TRAFFIC.md). This is a planning document, not a claim that payment collection, driver payouts or live traffic are operational. Do not enable cashless-only public rides until provider approval, verified webhooks, ledger/reconciliation, payout testing, traffic freshness and release gates are complete.
