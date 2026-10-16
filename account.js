@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.76.1";
 
 const status = document.querySelector("#accountStatus");
 const details = document.querySelector("#accountDetails");
