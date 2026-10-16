@@ -85,3 +85,10 @@ We are seeking strategic investment and potential pilot dialogue—not promising
 - Accessibility: captions, high-contrast text, legible mobile-first layouts and a voice-over that makes sense without visuals.
 - Avoid: claims that LagosGo is already live, guarantees the cheapest ride or highest driver pay, has 24/7 emergency response, offers insurance, has a government partnership, or has implemented features that are still planned.
 - Before publishing: confirm pilot status, contact details, official registration URL, eligibility terms, legal review, music/image rights and approvals for any vehicle identifiers.
+
+## Additional government proposal: transport-priority corridors
+
+LagosGo also invites Lagos State to assess a limited public-transport priority corridor pilot. The proposal is to study clearly marked, properly authorised lanes for eligible public transport operators, with road-safety review, transparent access rules and enforcement. Existing BRT lanes remain subject to their current regulations unless the responsible authorities formally approve a change.
+
+We are asking for a feasibility study—not claiming that LagosGo already has special lane access or that yellow road markings alone will solve congestion. The study should protect BRT service, test the effects on adjacent roads, account for capital and maintenance costs, and publish measurable results before any expansion.
+
