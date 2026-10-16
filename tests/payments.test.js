@@ -15,7 +15,7 @@ test("money validation rejects fractional, unsafe and non-positive kobo", () => 
   assert.equal(assertKobo(500), 500);
 });
 
-test("ledger requires balanced, append-only idempotent postings", () => {
+test("ledger requires balanced postings and keeps gateway fees separate", async () => {
   const posting = { idempotencyKey: "ride:abc:collection", entries: [
     { account: "gateway_clearing", direction: "debit", amountKobo: 5000 },
     { account: "driver_payable", direction: "credit", amountKobo: 4500 },
@@ -25,7 +25,11 @@ test("ledger requires balanced, append-only idempotent postings", () => {
   assert.throws(() => validatePosting({ ...posting, entries: posting.entries.slice(0, 2) }), /unbalanced/);
   let saved;
   const ledger = new PaymentLedger({ postLedgerTransaction: async (entry) => { saved = entry; return entry; } });
-  return ledger.post(posting).then(() => assert.equal(saved.currency, "NGN"));
+  await ledger.post(posting);
+  assert.equal(saved.currency, "NGN");
+  await ledger.recordGatewayFee({ reference: "ref-1", feeKobo: 100 });
+  assert.equal(saved.entries[0].direction, "debit");
+  assert.equal(saved.entries[0].account, "gateway_fee_expense");
 });
 
 test("Paystack webhook signature validates exact raw bytes", () => {
