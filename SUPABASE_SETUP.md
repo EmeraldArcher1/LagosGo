@@ -18,7 +18,11 @@ This guide prepares the PostgreSQL/auth foundation. It does not make ride bookin
 
 The migration creates passenger profiles, driver verification records, vehicles, rides, and an append-only ride-event timeline. New accounts are passengers by default. Driver approval and ride writes must be performed by trusted server operations.
 
-## 3. Configure Vercel only after the project exists
+## 3. Configure Vercel after the project exists
+
+The initial core schema has now been applied to the verified LagosGo project. The database migration list includes `lagosgo_core_schema` and `restrict_trigger_function_execution`. See [AUTH_SETUP.md](./AUTH_SETUP.md) for sign-in UI, protected API verification and required environment variables.
+
+## 4. Configure Vercel only after the project exists
 
 In **Vercel → LagosGo → Settings → Environment Variables**, add these to **Preview** first:
 
@@ -28,11 +32,11 @@ In **Vercel → LagosGo → Settings → Environment Variables**, add these to *
 
 Add the same values to Production only after preview verification. Redeploy after changing variables. Do not paste keys into chat.
 
-## 4. Important implementation boundary
+## 5. Important implementation boundary
 
 The current LagosGo app is a static front end with Vercel API handlers. The SQL migration provides the data model and access controls; it does **not** yet provide the ride-request API, driver offer/accept RPC, authentication UI, or live dispatch. Those are the next code changes after the Supabase project is created and the migration is applied.
 
-## 5. Pilot security checklist
+## 6. Pilot security checklist
 
 - Keep the service-role key on the server only.
 - Use a separate restricted Google Maps browser key and server key.

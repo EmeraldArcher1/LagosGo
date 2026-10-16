@@ -57,7 +57,7 @@ create table public.vehicles (
 );
 
 create unique index vehicles_registration_normalized_uq
-  on public.vehicles (upper(regexp_replace(registration_number, '\\s+', '', 'g')));
+  on public.vehicles (upper(regexp_replace(registration_number, '\s+', '', 'g')));
 
 create table public.rides (
   id uuid primary key default gen_random_uuid(),

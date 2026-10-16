@@ -59,7 +59,7 @@ Acceptance rate must not dominate the ranking. Fairness should consider rolling 
 
 ## Backend and Supabase status
 
-The initial schema and setup guide are in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) and [supabase/migrations/001_core_schema.sql](supabase/migrations/001_core_schema.sql). Applying the migration and configuring credentials are separate tasks. The schema alone does not provide a working ride-request API, driver offer/accept workflow, authentication UI or live dispatch.
+The initial schema and setup guide are in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) and [supabase/migrations/001_core_schema.sql](supabase/migrations/001_core_schema.sql). Supabase Auth UI and protected current-user API setup are documented in [AUTH_SETUP.md](./AUTH_SETUP.md). The core schema and trigger-function permission hardening have been applied to the verified Supabase project; Vercel environment variables and Auth URL settings still need to be configured. This does not provide a working ride-request API, driver offer/accept workflow, or live dispatch.
 
 Keep service-role keys server-only; never commit secrets or expose them in browser code. Verify row-level security with passenger, unapproved-driver, approved-driver and admin test accounts before pilot use.
 
