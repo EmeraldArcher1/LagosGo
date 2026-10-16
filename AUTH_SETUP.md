@@ -1,6 +1,6 @@
 # LagosGo — Supabase Auth setup
 
-This adds email/password signup and sign-in, a session-aware account page, and a protected server API route. It does not make ride dispatch or payments operational.
+This adds email/password signup and sign-in, a session-aware account page, and a server API route that validates the caller token. It does not make ride dispatch or payments operational.
 
 ## Verified Supabase project
 
@@ -8,11 +8,11 @@ This adds email/password signup and sign-in, a session-aware account page, and a
 - Project URL: `https://kzbzbkxeuaxyjmenbgaf.supabase.co`
 - Region: `eu-west-2`
 
-The connected Supabase account reports this project as active and healthy. Before setup, its public schema had no tables and its migration list was empty.
+The connected Supabase account reports this project as active and healthy. The connected project currently reports the core LagosGo tables with row-level security enabled and two applied migrations.
 
 ## Apply database schema
 
-Apply `supabase/migrations/001_core_schema.sql` to this project using the Supabase migration workflow. The migration creates profiles, driver verification, vehicles, rides and ride events, enables RLS, and gives new accounts the passenger role. Do not run it against a different project.
+The connected project already reports the core tables and two applied migrations (`lagosgo_core_schema`, `restrict_trigger_function_execution`). Do not rerun the initial schema against this project. Verify any future migration status before applying additional SQL.
 
 ## Configure Vercel
 
@@ -39,7 +39,7 @@ Redeploy after setting variables. Keep Preview separate from Production until ve
 - `/api/auth/config`: returns only the public project URL and publishable key.
 - `/api/auth/me`: verifies the bearer token against Supabase Auth and reads the caller's profile through RLS.
 
-A client-side page redirect is a usability feature, not a security boundary. Any future private data or ride API must call `getAuthenticatedUser` from `api/_lib/supabase-auth.js` and then enforce role/resource authorization on the server. Keep database RLS enabled.
+A client-side page redirect is a usability feature, not a security boundary. Any future private data or ride API must call `getAuthenticatedUser` from `lib/supabase-auth.js` and then enforce role/resource authorization on the server. Keep database RLS enabled.
 
 ## Smoke tests
 
