@@ -104,3 +104,8 @@ Recruit and verify an initial driver supply and fleet partners in defined Lagos 
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
 
 Financial projections and fee examples in planning documents are assumptions, not audited forecasts or guaranteed returns.
+
+
+## Cashless payments and traffic-aware fares
+
+The proposed payment, driver payout, fare transparency and live-traffic requirements are documented in [PAYMENTS_AND_TRAFFIC.md](./PAYMENTS_AND_TRAFFIC.md). This is a planning document, not a claim that payment collection, driver payouts or live traffic are operational. Do not enable cashless-only public rides until provider approval, verified webhooks, ledger/reconciliation, payout testing, traffic freshness and release gates are complete.
