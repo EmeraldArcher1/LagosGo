@@ -166,3 +166,49 @@ Set baselines before public pilot and review weekly:
 - Fraud/refund loss, incentive efficiency and privacy/security incidents.
 
 Expand only if safety, driver economics, passenger fairness, operational reliability and unit economics meet pre-agreed thresholds. Pause a zone or feature when safety controls or financial sustainability fail.
+
+## 9. Government policy request: public-transport priority corridors
+
+**Proposal for consultation; not an existing entitlement, approved scheme or confirmed government partnership.**
+
+LagosGo proposes that Lagos State assess a controlled public-transport priority corridor pilot to improve journey reliability for passengers and drivers during congestion. The policy should be designed for the wider public transport network, not solely for LagosGo.
+
+### Existing BRT rules and the request
+
+The proposal must recognise the existing BRT Lite corridor regulations, which restrict use of BRT lanes to franchised operators for whose services the lanes were built, with specified emergency-service exceptions. LagosGo, private taxis and other e-hailing vehicles must not enter a restricted BRT lane unless expressly authorised under the applicable rules.
+
+We request that the relevant authorities—including the Ministry of Transportation, LAMATA, LASTMA and other responsible road/traffic agencies—consider whether a separate or adapted corridor-access framework could lawfully admit additional categories of registered, inspected and accountable public-transport operators.
+
+### Options to evaluate
+
+1. **Yellow-designated priority lanes:** assess a distinct yellow marking system for new or formally redesignated priority corridors, subject to road-marking standards, signage, visibility and consistency with existing traffic rules. Do not simply repaint current BRT lanes or use yellow markings that could be confused with existing road rules without technical approval.
+2. **Operator accreditation:** establish transparent eligibility and audit criteria, potentially including current operating licences, driver identity checks, roadworthiness, insurance, vehicle inspections, service standards, passenger complaint handling and auditable trip data.
+3. **Vehicle access rules:** specify which services may use which corridor, during what hours, on what stretches, and under what conditions. Consider scheduled buses and franchised operators first; assess taxis and e-hailing vehicles only if the network's capacity, safety and public transport objectives support inclusion.
+4. **Physical separation:** commission a road-safety and traffic-engineering assessment before installing barriers. Trial removable delineators or other approved devices only at suitable stretches. Preserve emergency access, pedestrian crossings, drainage, bus stops, junction turning movements, safe merging and access for authorised road works. Continuous concrete barriers may be costly and may create new risks if poorly designed.
+5. **Enforcement and public education:** pair signage and public awareness with consistent, lawful enforcement, fair appeal procedures and anti-corruption safeguards. Technology-based enforcement should follow applicable privacy and evidence rules.
+6. **BRT protection:** do not reduce existing BRT service reliability or passenger capacity. Establish a minimum performance threshold for existing BRT users before widening access to additional vehicles.
+
+### Pilot design and evaluation
+
+Select a small number of technically suitable corridors after a baseline study. Compare peak and off-peak performance before and during the trial, with a suitable comparison corridor where feasible. Collect aggregated data wherever possible and minimise personal trip data.
+
+Measure:
+- Bus and authorised vehicle travel time, variability and passenger throughput.
+- BRT on-time performance, dwell time and crowding.
+- General traffic flow, junction queues and delay displaced onto adjacent roads.
+- Road-safety incidents, conflicts at merging points and emergency access.
+- Enforcement costs, maintenance costs and cost per passenger-minute saved.
+- Accessibility, pedestrian safety, effects on local businesses and feedback from operators and communities.
+
+Publish results and independent evaluation criteria. Continue, modify or stop the pilot based on evidence; do not promise that painting a lane or installing barriers will automatically reduce congestion. Dedicated lanes can improve reliability where they are appropriately designed and enforced, but effects depend on corridor capacity, intersection design, access rules and network-wide traffic behaviour.
+
+### Funding and public value
+
+Request a joint feasibility study before asking the State to commit to major capital works. Compare lower-cost options—markings, signs, enforcement, signal priority and limited removable delineators—with more capital-intensive segregation. Identify capital and maintenance responsibility, procurement requirements, operating budgets and the distribution of benefits across BRT, other approved operators and the travelling public.
+
+The public case is improved person-throughput and reliability, not a private shortcut for one company. LagosGo should not receive exclusive access unless an openly justified, lawful public procurement or concession process establishes it. Any participating service should meet the same published conditions for its class.
+
+### Suggested wording for the government meeting
+
+“We respectfully ask Lagos State to consider a technical feasibility study for designated public-transport priority corridors. We recognise that existing BRT lanes are governed by specific access rules; we are not asking operators to disregard them. Our proposal is to work with the responsible transport and traffic agencies to assess whether a limited, properly authorised pilot—using clear markings, transparent operator accreditation, appropriate physical separation and measurable performance targets—could improve journey reliability while protecting existing BRT users and other road users. We would welcome a costed options study and public evaluation before any permanent infrastructure or access expansion is approved.”
+
