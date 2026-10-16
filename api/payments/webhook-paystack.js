@@ -2,6 +2,7 @@
 
 const { PaystackAdapter } = require("../../lib/payments/paystack-adapter");
 const { parseJsonBuffer, normalizeHeaders, readRawBody } = require("../../lib/payments/webhook-utils");
+const crypto = require("node:crypto");
 
 async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
@@ -24,7 +25,7 @@ async function handler(req, res) {
       }
     }
     const { recordVerifiedWebhook } = require("../../lib/payments/supabase-repository");
-    await recordVerifiedWebhook({ provider: "paystack", eventType: event.event, eventId: event.data.id == null ? event.data.reference : String(event.data.id), payload: event, verified });
+    await recordVerifiedWebhook({ provider: "paystack", eventType: event.event, eventId: crypto.createHash("sha256").update(rawBody).digest("hex"), payload: event, verified });
     return res.status(200).json({ received: true });
   } catch (error) {
     return res.status(error.message === "webhook_body_too_large" ? 413 : 503).json({ error: error.message === "webhook_body_too_large" ? "payload_too_large" : "webhook_processing_unavailable" });
