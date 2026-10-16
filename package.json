@@ -4,6 +4,6 @@
   "private": true,
   "description": "Mobile-first LagosGo ride-hailing prototype",
   "scripts": {
-    "test": "node --check app.js && node --check api/maps/config.js && node --check api/maps/route.js && node --check api/maps/landmarks.js && node --check api/leads.js && node --test tests/*.test.js"
+    "test": "node --check app.js && node --check api/maps/config.js && node --check api/maps/route.js && node --check api/maps/landmarks.js && node --check api/leads.js && node --check lib/payments/provider.js && node --check lib/payments/factory.js && node --check lib/payments/paystack-adapter.js && node --check lib/payments/flutterwave-adapter.js && node --check lib/payments/ledger.js && node --check lib/payments/payout-service.js && node --check lib/payments/reconciliation-service.js && node --check lib/payments/webhook-utils.js && node --check lib/payments/supabase-repository.js && node --check api/payments/webhook-paystack.js && node --check api/payments/webhook-flutterwave.js && node --test tests/*.test.js"
   }
 }
