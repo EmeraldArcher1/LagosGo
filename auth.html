@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5c400">
+  <meta name="description" content="Sign in or create your LagosGo account.">
+  <title>Sign in · LagosGo</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .auth-shell{max-width:480px;margin:0 auto;padding:24px 18px 48px;min-height:100dvh;display:flex;flex-direction:column}
+    .auth-brand{display:flex;align-items:center;gap:12px;font-weight:900;text-decoration:none;color:#171717}
+    .auth-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#f5c400;font-size:24px}
+    .auth-card{margin:auto 0;padding:26px 22px;background:#fff;border:1px solid #e8e5da;border-radius:24px;box-shadow:0 16px 45px #1717170d}
+    .auth-card h1{font-size:30px;line-height:1.1;margin:8px 0}
+    .auth-card p{color:#69675f;line-height:1.5}
+    .auth-tabs{display:flex;gap:8px;margin:20px 0}
+    .auth-tabs button{flex:1;padding:12px;border:1px solid #ddd8c9;border-radius:12px;background:#fff;font-weight:800}
+    .auth-tabs button[aria-pressed="true"]{background:#171717;color:#fff;border-color:#171717}
+    .auth-field{display:block;margin:14px 0;font-size:13px;font-weight:800}
+    .auth-field input{display:block;width:100%;box-sizing:border-box;margin-top:7px;padding:14px;border:1px solid #d8d4c7;border-radius:12px;font:inherit;font-weight:500}
+    .auth-submit{width:100%;border:0;border-radius:13px;background:#f5c400;color:#171717;padding:15px;font-weight:900;font-size:15px}
+    .auth-message{min-height:24px;font-size:13px;margin:12px 0}
+    .auth-back{display:inline-block;margin-top:18px;color:#171717;font-weight:800}
+    .auth-foot{font-size:12px;text-align:center;color:#777;margin-top:20px}
+  </style>
+</head>
+<body>
+  <main class="auth-shell">
+    <a class="auth-brand" href="/" aria-label="LagosGo home"><span class="auth-mark">L</span><span>LagosGo<small style="display:block;font-size:10px;letter-spacing:1.4px">MOVE YOUR WAY</small></span></a>
+    <section class="auth-card" aria-labelledby="authTitle">
+      <p class="eyebrow">YOUR CITY. YOUR RIDE.</p>
+      <h1 id="authTitle">Welcome to LagosGo</h1>
+      <p id="authIntro">Sign in to manage your LagosGo account.</p>
+      <div class="auth-tabs" role="group" aria-label="Account action">
+        <button type="button" id="signInTab" aria-pressed="true">Sign in</button>
+        <button type="button" id="signUpTab" aria-pressed="false">Create account</button>
+      </div>
+      <form id="authForm">
+        <label class="auth-field" id="nameField" hidden>Full name
+          <input id="displayName" name="displayName" autocomplete="name" maxlength="80">
+        </label>
+        <label class="auth-field">Email address
+          <input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
+        </label>
+        <label class="auth-field">Password
+          <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" required>
+        </label>
+        <button class="auth-submit" id="submitBtn" type="submit">Sign in securely</button>
+      </form>
+      <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+      <a class="auth-back" href="/">← Back to LagosGo</a>
+      <p class="auth-foot">Your account is protected by Supabase Auth. Never share your password or sign-in code.</p>
+    </section>
+  </main>
+  <script type="module" src="/auth.js"></script>
+</body>
+</html>
