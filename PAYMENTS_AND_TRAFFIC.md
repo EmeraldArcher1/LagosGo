@@ -1,6 +1,6 @@
 # LagosGo cashless payments, driver payouts and traffic-aware fares
 
-**Status: payment architecture foundation in feature branch; not a live payment or traffic integration.** The branch includes a provider interface, Paystack and Flutterwave adapters, signed-webhook ingress, integer-kobo ledger validation, payout eligibility service, reconciliation service contract and migration proposal. Collection creation/authorization, transactional webhook-to-ledger posting, refunds operations, production payout execution and scheduled reconciliation are not yet end-to-end wired or verified. Do not claim money is being collected, held, split, or paid out until provider account approval, transactional persistence, webhook processing, reconciliation and sandbox end-to-end tests pass.
+**Status: payment architecture foundation in feature branch; not a live payment or traffic integration.** The branch includes a provider interface and factory, Paystack and Flutterwave adapters, signed-webhook ingress, server-side collection verification, an idempotent webhook inbox, an atomic SQL routine for verified collection-to-ledger posting, integer-kobo ledger validation, payout eligibility gates and a reconciliation service contract. The migration is not applied; payment creation persistence, refund workflows, verified beneficiary onboarding, payout/reconciliation repository wiring and sandbox end-to-end tests remain incomplete. Do not claim money is being collected, held, split, or paid out.
 
 ## Product requirements
 
