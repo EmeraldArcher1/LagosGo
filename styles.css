@@ -37,3 +37,20 @@
 .ecosystem-card small, .ecosystem-disclaimer { color: #686458; font-size: 11px; line-height: 1.5; }
 .ecosystem-disclaimer { margin: 15px 2px 0; }
 @media (max-width: 520px) { .ecosystem-grid { grid-template-columns: 1fr; } .ecosystem-card { padding: 16px; } }
+
+
+/* POSH9JA Group ecosystem partners — optional, non-blocking discovery */
+.ecosystem-partners{padding:26px 0 8px}
+.ecosystem-partners .section-intro{margin-bottom:15px}
+.ecosystem-grid{display:grid;grid-template-columns:1fr;gap:11px}
+.ecosystem-card{display:flex;align-items:flex-start;gap:12px;padding:15px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.ecosystem-icon{display:grid;place-items:center;flex:0 0 43px;height:43px;border-radius:13px;background:#f5f1df;font-size:23px}
+.ecosystem-copy{min-width:0;flex:1}
+.ecosystem-kicker{display:block;font-size:7px;font-weight:900;letter-spacing:1px;color:#77746a;margin:1px 0 7px}
+.ecosystem-copy h3{font-size:14px;line-height:1.25;margin:0;font-weight:900;letter-spacing:-.25px}
+.ecosystem-copy p{font-size:11px;line-height:1.5;color:#68665e;margin:7px 0 10px}
+.ecosystem-link{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 12px;border:1.5px solid var(--ink);border-radius:9px;background:var(--yellow);color:var(--ink);font-size:10px;font-weight:900;text-decoration:none;cursor:pointer}
+.ecosystem-status{display:block;color:#69665c;font-size:9px;line-height:1.4;font-weight:750;margin:9px 0}
+.ecosystem-button{font-family:inherit}
+.ecosystem-disclaimer{font-size:9px;line-height:1.5;color:#77746a;margin:11px 2px 0}
+@media(min-width:390px){.ecosystem-grid{grid-template-columns:1fr 1fr}.ecosystem-card{padding:12px;gap:9px}.ecosystem-icon{flex-basis:36px;height:36px;font-size:20px}.ecosystem-copy h3{font-size:12px}.ecosystem-copy p{font-size:10px}.ecosystem-link{font-size:9px;padding:0 9px}}
