@@ -57,7 +57,7 @@
     delete event.currentTarget.dataset.usesCurrentLocation;
   });
   document.getElementById('destination').addEventListener('input', () => { destinationCoordinates = null; });
-  document.getElementById('profileBtn').addEventListener('click', () => notify('Passenger profile and sign-in are planned; accounts are not connected yet.'));
+  document.getElementById('profileBtn').addEventListener('click', () => { window.location.href = '/auth.html'; });
 
   // Adapted fare-choice concept: all offers remain illustrative until dispatch is connected.
   document.querySelectorAll('.price-mode-btn').forEach(button => {
