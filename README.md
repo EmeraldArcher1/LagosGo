@@ -104,3 +104,8 @@ Recruit and verify an initial driver supply and fleet partners in defined Lagos 
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
 
 Financial projections and fee examples in planning documents are assumptions, not audited forecasts or guaranteed returns.
+
+
+## Research and product benchmark
+
+- [RIDE_HAILING_RESEARCH_AND_PRODUCT_SPEC.md](./RIDE_HAILING_RESEARCH_AND_PRODUCT_SPEC.md) — representative global/Nigerian ride-hailing benchmark, customer journey requirements, security baseline, architecture, metrics and phased release gates.
