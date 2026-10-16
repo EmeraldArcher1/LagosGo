@@ -136,6 +136,14 @@
   }));
 
 
+  document.querySelectorAll('[data-ecosystem-partner]').forEach(button => {
+    button.addEventListener('click', () => {
+      if (button.dataset.ecosystemPartner === 'oja') {
+        notify('OJA is an approved POSH9JA Group ecosystem partner. The marketplace is still in pilot development; merchant verification, payments, ordering and delivery are not live.');
+      }
+    });
+  });
+
   document.querySelectorAll('.service-tile').forEach(button => {
     button.addEventListener('click', () => {
       const service = button.dataset.service;

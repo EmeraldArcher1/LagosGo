@@ -119,3 +119,13 @@ A UI-only interaction is **Prototype**, not **Verified**. Wallet, payments, matc
 - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) — project and migration setup.
 - [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) — Vercel configuration and pilot release gates.
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
+
+
+## POSH9JA Group ecosystem partners
+
+- [x] Add a non-blocking partner discovery section for POSH9JA EXPORT & LOGISTICS and OJA, with clear pilot-status language.
+- [x] Use the POSH9JA website already published in its repository; verify OJA's public launch destination before adding an external marketplace link.
+- [ ] Define and review separate API contracts before any transactional integration; do not share passenger, driver, precise location, trip or payment data by default.
+- [ ] Add end-to-end tests proving partner links and UI failures cannot interrupt booking, trip tracking, safety controls or payment.
+- [ ] Keep OJA merchant verification, ordering, payment, delivery and settlement labelled unavailable until implemented and independently tested.
+- [ ] Confirm accessibility, mobile layout, privacy notice and analytics treatment before production rollout.
