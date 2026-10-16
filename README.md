@@ -99,6 +99,7 @@ The Go Food interface is a marketplace concept; merchant names, ratings, menus, 
 Recruit and verify an initial driver supply and fleet partners in defined Lagos operating zones, then win corporate transport pilots. Open passenger bookings only after the app can match a real driver, show pickup ETA, update both devices during a trip, complete the trip and reconcile payments and driver earnings.
 
 - [BACKLOG.md](./BACKLOG.md) — feature roadmap and acceptance criteria.
+- [Ride-hailing research and product principles](./docs/RIDE_HAILING_RESEARCH_AND_PRODUCT_PRINCIPLES.md) — competitor lessons, Lagos-specific UX, safety, security, architecture, pilot gates and expansion criteria.
 - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) — database setup and security boundaries.
 - [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) — Vercel configuration and release gates.
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
