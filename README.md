@@ -65,7 +65,7 @@ Keep service-role keys server-only; never commit secrets or expose them in brows
 
 ## Local development and prototype limitations
 
-**Current release status: front-end prototype; not an operational ride-hailing service.** Open `index.html` to inspect the interface. Booking, sample fares, sample driver information, safety controls and marketplace listings may be illustrative. Live driver dispatch, passenger/driver authentication, persistent ride storage, payment processing and production ride tracking are not implemented unless subsequently verified in the target environment.
+**Current release status: front-end prototype; not an operational ride-hailing service.** Open `index.html` to inspect the interface. Booking, sample fares, sample driver information, safety controls and marketplace listings may be illustrative. Live driver dispatch, passenger/driver authentication, persistent ride storage, end-to-end payment collection/refund, automated ledger posting, driver payout execution, reconciliation jobs and production ride tracking are not implemented unless subsequently verified in the target environment. The payment feature branch now contains provider adapters, signed-webhook ingress, ledger/payout/reconciliation service contracts and a proposed database migration; these are not live payment processing.
 
 ### PWA pilot access
 
