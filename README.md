@@ -19,6 +19,14 @@ LagosGo is a mobile-first ride-hailing product for Lagos State, designed to expa
 - **Respect Code and fair dispute resolution:** clear conduct expectations, evidence-aware complaints, and human review for serious payment or safety disputes.
 - **Beyond rides:** a roadmap for airport transfers, parcel delivery, errands, Explore Lagos, corporate transport and later shared rides.
 
+## POSH9JA Group ecosystem
+
+LagosGo is the group's mobility product. **POSH9JA EXPORT & LOGISTICS** and **OJA** are approved ecosystem partners for coordinated planning and cross-promotion. The app now includes a non-blocking partner discovery section: POSH9JA links to its official website; OJA is explicitly marked as a marketplace pilot, not a live ordering service.
+
+This is a brand and discovery integration only. OJA merchant verification, marketplace orders, payment, fulfilment and delivery are not connected to LagosGo. Partner links must never interrupt booking, acceptance, active-trip tracking, emergency access or payment. No customer or trip data is shared automatically between group businesses.
+
+See [ECOSYSTEM_PARTNERSHIP.md](./ECOSYSTEM_PARTNERSHIP.md) for partner boundaries, privacy rules and production integration gates.
+
 ## Product roadmap and implementation backlog
 
 See [BACKLOG.md](./BACKLOG.md) for priorities, acceptance criteria and status. The delivery order is:
