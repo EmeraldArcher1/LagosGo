@@ -7,15 +7,15 @@
 - [ ] Confirm current Vercel deployment, deployed commit SHA, runtime logs, provider configuration, and real-device behaviour.
 - [ ] Test driver/corporate lead submission end to end and confirm email delivery; add abuse controls and an operational response process.
 - [ ] Test Google Maps configuration, route/landmark endpoints, input validation, quotas and API-key restrictions.
-- [ ] Add automated handler tests, failure-path tests and meaningful CI assertions; syntax checks alone are insufficient.
+- [x] Add Node syntax/regression tests and a GitHub Actions workflow; confirm the first workflow run and add handler/integration tests.
 - [ ] Record security, privacy, accessibility and release blockers with evidence and acceptance criteria.
-- [ ] Confirm Supabase project status and migration application before building ride APIs; never assume a dashboard project means the schema is deployed.
+- [x] Confirm Supabase project status and applied migrations; keep migration source under version control.\n- [ ] Verify the complete authenticated ride flow and runtime logs in the target deployment.
 
 ## P1 — Operational ride MVP (priority over optional features)
 
 | Priority | Capability | Acceptance criteria | Status |
 |---|---|---|---|
-| P1 | Passenger/driver identity | Secure sign-up/sign-in, account recovery, role-based access and server-side authorization. | Database profile/role boundaries present; frontend auth not connected |
+| P1 | Passenger/driver identity | Secure sign-up/sign-in, account recovery, role-based access and server-side authorization. | Supabase sign-up/sign-in UI connected; account recovery and end-to-end auth verification pending |
 | P1 | Driver/vehicle eligibility | Secure onboarding, required document checks, vehicle eligibility and auditable approval/rejection. | Planned |
 | P1 | Durable ride records | Persistent database; validated ride states; ownership checks; auditable transitions and safe retries. | Secure request/lifecycle RPCs applied; end-to-end tests pending |
 | P1 | Driver availability | Authenticated availability/location updates; stale-location expiry; no overlapping assignments. | Presence RPC requires approved driver and vehicle; driver UI and matching remain pending |
@@ -121,17 +121,7 @@ A UI-only interaction is **Prototype**, not **Verified**. Wallet, payments, matc
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
 
 
-## POSH9JA Group ecosystem partners
-
-- [x] Add a non-blocking partner discovery section for POSH9JA EXPORT & LOGISTICS and OJA, with clear pilot-status language.
-- [x] Use the POSH9JA website already published in its repository; verify OJA's public launch destination before adding an external marketplace link.
-- [ ] Define and review separate API contracts before any transactional integration; do not share passenger, driver, precise location, trip or payment data by default.
-- [ ] Add end-to-end tests proving partner links and UI failures cannot interrupt booking, trip tracking, safety controls or payment.
-- [ ] Keep OJA merchant verification, ordering, payment, delivery and settlement labelled unavailable until implemented and independently tested.
-- [ ] Confirm accessibility, mobile layout, privacy notice and analytics treatment before production rollout.
-
-
-## Competitive adaptation tranche — schema foundation added
+## Standalone product boundary\n\n- [x] Keep customer-facing branding, navigation, source integrations and service operations exclusively LagosGo.\n- [x] Keep the application database and deployment scoped to LagosGo; no cross-business customer or trip data sharing.\n- [ ] Add automated release checks for cross-business promotional names, URLs, logos and calls to action.\n\n## Competitive adaptation tranche — schema foundation added
 
 - [x] Add database structures for rider/driver fare offers and counter-offers, with expiry and participant-only reads.
 - [x] Add service-type and payment-method fields to ride records (cash, bank transfer, card, wallet are schema options, not proof of configured payment processing).
