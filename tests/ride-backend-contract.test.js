@@ -58,3 +58,14 @@ test('database triggers enforce driver approval and proximity at assignment time
   assert.match(guard, /driver_already_assigned/);
   assert.match(guard, /before update of driver_user_id on public\.rides/i);
 });
+
+test('account access is connected to the LagosGo Supabase project without enabling fake rides', () => {
+  const auth = fs.readFileSync(path.join(root, 'ride-backend.js'), 'utf8');
+  assert.match(html, /id="authDialog"/);
+  assert.match(html, /id="authSignOut"/);
+  assert.match(html, /supabase-js@2\/dist\/umd\/supabase\.js/);
+  assert.match(auth, /signInWithPassword/);
+  assert.match(auth, /auth\.signUp/);
+  assert.match(auth, /lagosgo\.supabase\.co/);
+  assert.match(auth, /Live ride booking is not enabled yet/);
+});
