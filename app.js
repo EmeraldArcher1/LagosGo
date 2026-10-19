@@ -20,14 +20,42 @@
       document.querySelector('.book-button > span:first-child').textContent = 'Confirm ' + selectedRide.name;
     });
   });
-  document.getElementById('bookBtn').addEventListener('click', () => {
+  document.getElementById('bookBtn').addEventListener('click', async () => {
     const destination = document.getElementById('destination').value.trim();
-    if (!destination) {
-      document.getElementById('destination').focus();
-      notify('Add your destination to preview this booking. No ride will be dispatched in demo mode.');
+    const pickup = document.getElementById('pickup').value.trim();
+    if (!pickup || !destination) {
+      const missing = !pickup ? document.getElementById('pickup') : document.getElementById('destination');
+      missing.focus();
+      notify('Enter pickup and destination, then calculate the route before requesting a ride.');
       return;
     }
-    notify('Demo only: ' + selectedRide.name + ' to ' + destination + ' · illustrative fare ₦' + selectedRide.price.toLocaleString('en-NG') + '. Live booking is not connected yet.');
+    if (!pickupCoordinates || !destinationCoordinates) {
+      notify('Select both pickup and destination from LagosGo map suggestions. Free-text addresses cannot be submitted as a real ride.');
+      return;
+    }
+    if (typeof window.lagosGoCreateRideRequest !== 'function') {
+      notify('Ride service is loading. Please try again.');
+      return;
+    }
+    const priceMode = document.querySelector('.price-mode-btn.active')?.dataset.priceMode || 'suggested';
+    const amountNgn = priceMode === 'offer' ? Number(document.getElementById('offerFare').value) : selectedRide.price;
+    const button = document.getElementById('bookBtn');
+    button.disabled = true;
+    try {
+      const result = await window.lagosGoCreateRideRequest({
+        pickup, pickupCoordinates, destination, destinationCoordinates, amountNgn
+      });
+      notify('Ride request saved: ' + result.ride_id + '. Fare offer is pending; no driver has accepted yet.');
+    } catch (error) {
+      if (String(error.message).includes('Sign in')) {
+        if (typeof window.lagosGoOpenAuth === 'function') window.lagosGoOpenAuth();
+        notify('Sign in first to submit a ride request.');
+      } else {
+        notify(error.message || 'Ride request could not be submitted.');
+      }
+    } finally {
+      button.disabled = false;
+    }
   });
   document.getElementById('compareBtn').addEventListener('click', () => notify('Choose a ride card to compare illustrative fares and pickup estimates.'));
   document.getElementById('fareInfo').addEventListener('click', () => notify('LagosGo is designed for upfront fare estimates and transparent platform fees. These sample prices are not live quotes.'));
