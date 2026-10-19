@@ -68,3 +68,9 @@ test('passenger booking requires a signed-in user and real coordinates', () => {
   assert.match(html, /supabase-js@2\/dist\/umd\/supabase\.js/);
   assert.match(app, /Select both pickup and destination from LagosGo map suggestions/);
 });
+
+test('sample ride-card fares cannot be submitted as real fare offers', () => {
+  assert.match(app, /Live route-based fares are not available yet/);
+  assert.match(app, /priceMode !== 'offer'/);
+  assert.match(app, /sample ride prices are not live quotes/);
+});
