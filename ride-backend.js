@@ -132,8 +132,40 @@
     client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });
-    client.auth.getSession().then(({ data }) => updateSession(data.session));
+    window.lagosGoSupabase = client;\n    client.auth.getSession().then(({ data }) => updateSession(data.session));
     client.auth.onAuthStateChange((_event, session) => updateSession(session));
   }
   initialise();
 })();
+
+
+/* Authenticated ride-request helper. Booking remains blocked unless real coordinates and a signed-in passenger exist. */
+window.lagosGoCreateRideRequest = async function ({ pickup, pickupCoordinates, destination, destinationCoordinates, amountNgn }) {
+  const client = window.lagosGoSupabase;
+  if (!client) throw new Error('Account service is still loading. Please retry.');
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+  if (sessionError || !sessionData.session) throw new Error('Sign in to submit a ride request.');
+  if (!pickupCoordinates || !destinationCoordinates) throw new Error('Choose pickup and destination from the LagosGo map suggestions so we can validate both coordinates.');
+  const amount = Number(amountNgn);
+  if (!Number.isFinite(amount) || amount < 1000 || amount > 100000) throw new Error('Enter a proposed fare between ₦1,000 and ₦100,000.');
+  const idempotencyKey = (window.crypto && typeof window.crypto.randomUUID === 'function')
+    ? window.crypto.randomUUID()
+    : 'lg-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 18);
+  const { data, error } = await client.rpc('lagosgo_request_ride', {
+    p_pickup_label: pickup,
+    p_pickup_latitude: pickupCoordinates.latitude,
+    p_pickup_longitude: pickupCoordinates.longitude,
+    p_destination_label: destination,
+    p_destination_latitude: destinationCoordinates.latitude,
+    p_destination_longitude: destinationCoordinates.longitude,
+    p_initial_offer_kobo: Math.round(amount * 100),
+    p_idempotency_key: idempotencyKey
+  });
+  if (error) {
+    const message = String(error.message || '');
+    if (message.includes('passenger_account_required')) throw new Error('This account is not enabled as a passenger. Please contact LagosGo pilot support.');
+    if (message.includes('offer_outside_guardrails')) throw new Error('The proposed fare is outside the permitted range.');
+    throw new Error('LagosGo could not submit this ride request. Please retry; no driver has been notified unless the request is confirmed.');
+  }
+  return data;
+};
