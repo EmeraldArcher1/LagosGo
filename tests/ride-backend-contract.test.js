@@ -39,3 +39,13 @@ test('the live interface remains honest while ride APIs are not wired to the UI'
   assert.doesNotMatch(app, /POSH9JA|OJA|posh9jaexport\\.co\\.uk|data-ecosystem-partner/i);
   assert.match(app, /Live booking is not connected yet/i);
 });
+
+test('driver discovery requires an approved online driver and returns nearby offers only', () => {
+  const discovery = fs.readFileSync(path.join(root, 'supabase/migrations/20261019131000_driver_offer_discovery.sql'), 'utf8');
+  assert.match(discovery, /lagosgo_list_driver_offers/);
+  assert.match(discovery, /review_status='approved'/);
+  assert.match(discovery, /is_online=true/);
+  assert.match(discovery, /location_updated_at>now\(\)-interval '3 minutes'/);
+  assert.match(discovery, /candidate\.distance_km<=p_radius_km/);
+  assert.match(discovery, /grant execute on function public\.lagosgo_list_driver_offers[\s\S]*?to authenticated/i);
+});
