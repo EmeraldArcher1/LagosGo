@@ -246,7 +246,29 @@
       <button class="nav-item" data-tab="Wallet"><span>▣</span><small>Wallet</small></button>
     </nav>
   </main>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js" defer></script>
+
+  <dialog class="auth-dialog" id="authDialog" aria-labelledby="authTitle">
+    <form id="authForm" class="auth-form">
+      <button type="button" class="auth-close" id="authClose" aria-label="Close sign-in">×</button>
+      <p class="eyebrow">LAGOSGO ACCOUNT</p>
+      <h2 id="authTitle">Welcome to LagosGo</h2>
+      <p class="auth-intro" id="authIntro">Sign in to manage your LagosGo account.</p>
+      <label id="authNameWrap" hidden>Full name
+        <input id="authDisplayName" name="displayName" autocomplete="name" maxlength="120" placeholder="Your name">
+      </label>
+      <label>Email address
+        <input id="authEmail" name="email" type="email" autocomplete="email" required maxlength="180" placeholder="you@example.com">
+      </label>
+      <label>Password
+        <input id="authPassword" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="At least 8 characters">
+      </label>
+      <button class="lead-submit" type="submit" id="authSubmit">Sign in <span>→</span></button>
+      <button class="auth-mode-toggle" type="button" id="authModeToggle">New to LagosGo? Create an account</button>
+      <p class="auth-status" id="authStatus" role="status" aria-live="polite"></p>
+      <p class="auth-footnote">Account access is enabled for the LagosGo pilot. Ride booking and driver dispatch are not yet enabled for real trips.</p>
+    </form>
+  </dialog>
+\n  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>\n  <script src="./app.js" defer></script>\n  <script src="./ride-backend.js" defer></script>
 </body>
 </html>
