@@ -46,6 +46,12 @@ See [BACKLOG.md](./BACKLOG.md) for priorities, acceptance criteria and status. T
 5. Auditable payments, rewards and dispute handling.
 6. Lagos-specific usability first, with responsible expansion.
 
+## Current backend implementation status
+
+Supabase contains the core ride, driver, vehicle, fare-offer, fleet and safety tables. The migration `supabase/migrations/20261019130000_secure_ride_request_and_fare_negotiation_rpc.sql` defines authenticated database RPCs for idempotent ride-request creation, bounded fare offers/counter-offers, approved-driver presence updates, and participant-only ride lifecycle transitions. Direct writes to protected ride, fare-offer, event and safety tables are revoked from authenticated clients.
+
+The initial fare range (NGN 1,000–100,000) is an absolute abuse guardrail only, **not** a route-based price quote. Driver approval and vehicle approval must be completed by an authorised operations process. The passenger UI, authenticated session integration, dispatch discovery/notifications, live updates, payment reconciliation and safety response operations remain unverified and must not be represented as live.
+
 ## Technical direction
 
 - **Frontend:** responsive, mobile-first web experience and PWA.
