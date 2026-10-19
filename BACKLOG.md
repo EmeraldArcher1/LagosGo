@@ -19,11 +19,11 @@
 | P1 | Driver/vehicle eligibility | Secure onboarding, required document checks, vehicle eligibility and auditable approval/rejection. | Planned |
 | P1 | Durable ride records | Persistent database; validated ride states; ownership checks; auditable transitions and safe retries. | Planned |
 | P1 | Driver availability | Authenticated availability/location updates; stale-location expiry; no overlapping assignments. | Planned |
-| P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and cancellation states. | Prototype UI / backend planned |
-| P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Planned |
+| P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and cancellation states. | Prototype UI; service/payment fields added to Supabase, API still planned |
+| P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Planned; fare-offer schema added, dispatch API not implemented |
 | P1 | Live trip lifecycle | Accepted → en route → arrived → in progress → completed, with recovery and passenger updates. | Planned |
 | P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent fees and payout reporting. | Planned |
-| P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation, privacy and retention controls. | Planned |
+| P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation, privacy and retention controls. | Safety incident schema added; secure API and staffed response still planned |
 | P1 | Verification and CI | Unit/integration/E2E tests, logs, monitoring, security checks and release gates. | Planned |
 
 ## P2 — First customer trust and loyalty release
@@ -129,3 +129,17 @@ A UI-only interaction is **Prototype**, not **Verified**. Wallet, payments, matc
 - [ ] Add end-to-end tests proving partner links and UI failures cannot interrupt booking, trip tracking, safety controls or payment.
 - [ ] Keep OJA merchant verification, ordering, payment, delivery and settlement labelled unavailable until implemented and independently tested.
 - [ ] Confirm accessibility, mobile layout, privacy notice and analytics treatment before production rollout.
+
+
+## Competitive adaptation tranche — schema foundation added
+
+- [x] Add database structures for rider/driver fare offers and counter-offers, with expiry and participant-only reads.
+- [x] Add service-type and payment-method fields to ride records (cash, bank transfer, card, wallet are schema options, not proof of configured payment processing).
+- [x] Add fleet account, membership/roles and vehicle-assignment tables with row-level security and server-only write boundary.
+- [x] Add private safety incident records with reporter-only read policy.
+- [ ] Implement authenticated, rate-limited server endpoints/RPCs for offers, counters, atomic acceptance, fleet membership, safety reports and audit events.
+- [ ] Build rider/driver offer screens showing verified vehicle/driver information and genuine road ETA/rating data only when available.
+- [ ] Validate suggested-fare guardrails against Lagos operating costs; configure payment providers and reconciliation before showing digital methods as enabled.
+- [ ] Complete security tests for passenger, driver, fleet member and support/admin roles; verify Vercel deployment and end-to-end flows before pilot use.
+
+Detailed design and release gates: [NEGOTIATED_FARES_AND_FLEETS.md](./NEGOTIATED_FARES_AND_FLEETS.md).
