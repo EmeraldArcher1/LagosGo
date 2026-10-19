@@ -50,3 +50,17 @@
 .ecosystem-status{display:inline-block;padding:8px 10px;border-radius:10px;background:#f5efda;color:#5e4b00;font-size:10px;line-height:1.4;font-weight:800}
 .ecosystem-button{appearance:none}
 @media(max-width:520px){.ecosystem-copy h3{font-size:14px}.ecosystem-copy p{font-size:11px}.ecosystem-link{font-size:10px}}
+
+
+/* LagosGo account access */
+.auth-dialog{width:min(92vw,430px);max-height:90dvh;padding:0;border:1px solid #e8e3d4;border-radius:24px;background:#fff;color:#171717;box-shadow:0 24px 80px #0003}
+.auth-dialog::backdrop{background:#101010a8;backdrop-filter:blur(3px)}
+.auth-form{position:relative;display:flex;flex-direction:column;gap:14px;padding:28px}
+.auth-form h2{margin:0;font-size:27px;line-height:1.15}
+.auth-intro{margin:0;color:#646464;font-size:14px;line-height:1.5}
+.auth-form label{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:800}
+.auth-form input{width:100%;min-height:46px;padding:12px;border:1px solid #dedbd1;border-radius:12px;background:#fff;font:inherit;font-size:15px;color:#171717}
+.auth-close{position:absolute;right:18px;top:15px;border:0;background:#f4f1e7;border-radius:50%;width:34px;height:34px;font-size:22px;cursor:pointer}
+.auth-mode-toggle{border:0;background:transparent;padding:9px;color:#171717;font:inherit;font-size:13px;font-weight:800;text-decoration:underline;cursor:pointer}
+.auth-status{min-height:20px;margin:0;font-size:13px;line-height:1.45}
+.auth-footnote{margin:0;color:#6b675d;font-size:11px;line-height:1.5}
