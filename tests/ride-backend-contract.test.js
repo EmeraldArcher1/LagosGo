@@ -49,3 +49,12 @@ test('driver discovery requires an approved online driver and returns nearby off
   assert.match(discovery, /candidate\.distance_km<=p_radius_km/);
   assert.match(discovery, /grant execute on function public\.lagosgo_list_driver_offers[\s\S]*?to authenticated/i);
 });
+
+test('database triggers enforce driver approval and proximity at assignment time', () => {
+  const guard = fs.readFileSync(path.join(root, 'supabase/migrations/20261019132500_guard_driver_eligibility_and_radius.sql'), 'utf8');
+  assert.match(guard, /lagosgo_guard_driver_fare_offer/);
+  assert.match(guard, /lagosgo_guard_ride_driver_assignment/);
+  assert.match(guard, /v_distance>5/);
+  assert.match(guard, /driver_already_assigned/);
+  assert.match(guard, /before update of driver_user_id on public\.rides/i);
+});
