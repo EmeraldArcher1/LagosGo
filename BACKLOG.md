@@ -15,13 +15,13 @@
 
 | Priority | Capability | Acceptance criteria | Status |
 |---|---|---|---|
-| P1 | Passenger/driver identity | Secure sign-up/sign-in, account recovery, role-based access and server-side authorization. | Planned |
+| P1 | Passenger/driver identity | Secure sign-up/sign-in, account recovery, role-based access and server-side authorization. | Database profile/role boundaries present; frontend auth not connected |
 | P1 | Driver/vehicle eligibility | Secure onboarding, required document checks, vehicle eligibility and auditable approval/rejection. | Planned |
-| P1 | Durable ride records | Persistent database; validated ride states; ownership checks; auditable transitions and safe retries. | Planned |
-| P1 | Driver availability | Authenticated availability/location updates; stale-location expiry; no overlapping assignments. | Planned |
-| P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and cancellation states. | Prototype UI; service/payment fields added to Supabase, API still planned |
-| P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Planned; fare-offer schema added, dispatch API not implemented |
-| P1 | Live trip lifecycle | Accepted → en route → arrived → in progress → completed, with recovery and passenger updates. | Planned |
+| P1 | Durable ride records | Persistent database; validated ride states; ownership checks; auditable transitions and safe retries. | Secure request/lifecycle RPCs applied; end-to-end tests pending |
+| P1 | Driver availability | Authenticated availability/location updates; stale-location expiry; no overlapping assignments. | Presence RPC requires approved driver and vehicle; driver UI and matching remain pending |
+| P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and cancellation states. | Authenticated ride-request and bounded offer RPCs applied; UI not connected; route-based pricing pending |
+| P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Fare acceptance is atomic in RPC; available-ride discovery, notification and road-ETA matching not implemented |
+| P1 | Live trip lifecycle | Accepted → en route → arrived → in progress → completed, with recovery and passenger updates. | Server transition RPC applied; passenger/driver UI, realtime updates and recovery tests pending |
 | P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent fees and payout reporting. | Planned |
 | P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation, privacy and retention controls. | Safety incident schema added; secure API and staffed response still planned |
 | P1 | Verification and CI | Unit/integration/E2E tests, logs, monitoring, security checks and release gates. | Planned |
