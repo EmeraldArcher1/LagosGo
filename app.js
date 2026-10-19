@@ -38,7 +38,18 @@
       return;
     }
     const priceMode = document.querySelector('.price-mode-btn.active')?.dataset.priceMode || 'suggested';
-    const amountNgn = priceMode === 'offer' ? Number(document.getElementById('offerFare').value) : selectedRide.price;
+    if (priceMode !== 'offer') {
+      notify('Live route-based fares are not available yet. Switch to Suggest a fare and enter your own offer; sample ride prices are not live quotes.');
+      document.getElementById('offerPanel').hidden = false;
+      document.querySelectorAll('.price-mode-btn').forEach(item => {
+        const active = item.dataset.priceMode === 'offer';
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+      document.getElementById('offerFare').focus();
+      return;
+    }
+    const amountNgn = Number(document.getElementById('offerFare').value);
     const button = document.getElementById('bookBtn');
     button.disabled = true;
     try {
