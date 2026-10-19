@@ -19,13 +19,13 @@ LagosGo is a mobile-first ride-hailing product for Lagos State, designed to expa
 - **Respect Code and fair dispute resolution:** clear conduct expectations, evidence-aware complaints, and human review for serious payment or safety disputes.
 - **Beyond rides:** a roadmap for airport transfers, parcel delivery, errands, Explore Lagos, corporate transport and later shared rides.
 
-## POSH9JA Group ecosystem
+## LagosGo only — independent product boundary
 
-LagosGo is the group's mobility product. **POSH9JA EXPORT & LOGISTICS** and **OJA** are approved ecosystem partners for coordinated planning and cross-promotion. The app now includes a non-blocking partner discovery section: POSH9JA links to its official website; OJA is explicitly marked as a marketplace pilot, not a live ordering service.
+LagosGo is a standalone ride-hailing and mobility product. Its customer experience, branding, repositories, deployment, database, credentials, support operations and release decisions are for LagosGo only. Do not display or promote POSH9JA EXPORT & LOGISTICS, OJA, or any other separate business inside LagosGo. Remove cross-business discovery cards, links, logos, copy, navigation and calls to action.
 
-This is a brand and discovery integration only. OJA merchant verification, marketplace orders, payment, fulfilment and delivery are not connected to LagosGo. Partner links must never interrupt booking, acceptance, active-trip tracking, emergency access or payment. No customer or trip data is shared automatically between group businesses.
+There is no automatic sharing of customer, driver, trip, precise-location, payment, identity or support data with any other business. Do not add cross-business integrations or shared sign-in without a separately approved, documented privacy and security review. LagosGo may build its own future delivery and business-mobility services under the LagosGo brand; these must not imply that another business is part of the app.
 
-See [ECOSYSTEM_PARTNERSHIP.md](./ECOSYSTEM_PARTNERSHIP.md) for partner boundaries, privacy rules and production integration gates.
+See [PRODUCT_BOUNDARIES.md](./PRODUCT_BOUNDARIES.md) for the mandatory separation rules.
 
 ## Product roadmap and implementation backlog
 
@@ -89,9 +89,9 @@ The route-preview and nearby-landmark handlers require correctly restricted Goog
 
 A route duration is the estimated drive time from pickup to destination. It is not the time a driver will take to reach the passenger. Driver pickup ETA requires a real matched driver's current location and road route.
 
-### Go Food and competitive references
+### Future LagosGo services and competitive references
 
-The Go Food interface is a marketplace concept; merchant names, ratings, menus, ETAs and prices may be illustrative. Merchant onboarding, ordering, delivery dispatch, payment and refunds are not connected. Bolt and inDrive are product references only: LagosGo should use its own brand and original interface, not copy third-party branding or proprietary UI.
+Future LagosGo-branded services such as parcel delivery or merchant services are roadmap concepts until their complete workflows are implemented and verified. Do not surface third-party businesses as part of LagosGo. Bolt and inDrive are product references only: LagosGo should use its own brand and original interface, not copy third-party branding or proprietary UI.
 
 ## Security and release gates
 
