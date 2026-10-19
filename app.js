@@ -57,7 +57,7 @@
     delete event.currentTarget.dataset.usesCurrentLocation;
   });
   document.getElementById('destination').addEventListener('input', () => { destinationCoordinates = null; });
-  document.getElementById('profileBtn').addEventListener('click', () => notify('Passenger profile and sign-in are planned; accounts are not connected yet.'));
+  document.getElementById('profileBtn').addEventListener('click', () => { if (typeof window.lagosGoOpenAuth === 'function') { window.lagosGoOpenAuth(); return; } notify('Account access is loading. Please try again in a moment.'); });
 
   // Adapted fare-choice concept: all offers remain illustrative until dispatch is connected.
   document.querySelectorAll('.price-mode-btn').forEach(button => {
