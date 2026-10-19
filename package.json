@@ -4,6 +4,6 @@
   "private": true,
   "description": "Mobile-first LagosGo ride-hailing prototype",
   "scripts": {
-    "test": "node --check app.js && node --check api/maps/config.js && node --check api/maps/route.js && node --check api/maps/landmarks.js && node --check api/leads.js && node --test tests/*.test.js"
+    "test": "node --check app.js && node --check ride-backend.js && node --check api/maps/config.js && node --check api/maps/route.js && node --check api/maps/landmarks.js && node --check api/leads.js && node --test tests/*.test.js"
   }
 }
