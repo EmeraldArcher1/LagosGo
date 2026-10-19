@@ -69,3 +69,16 @@ test('account access is connected to the LagosGo Supabase project without enabli
   assert.match(auth, /lagosgo\.supabase\.co/);
   assert.match(auth, /Live ride booking is not enabled yet/);
 });
+
+
+test('passenger booking submits only authenticated, coordinate-validated requests to Supabase', () => {
+  const auth = fs.readFileSync(path.join(root, 'ride-backend.js'), 'utf8');
+  assert.match(auth, /lagosGoCreateRideRequest/);
+  assert.match(auth, /client\.rpc\('lagosgo_request_ride'/);
+  assert.match(auth, /getSession\(\)/);
+  assert.match(auth, /pickupCoordinates/);
+  assert.match(auth, /destinationCoordinates/);
+  assert.match(app, /window\.lagosGoCreateRideRequest/);
+  assert.match(app, /Select both pickup and destination from LagosGo map suggestions/);
+  assert.match(app, /no driver has accepted yet/);
+});
