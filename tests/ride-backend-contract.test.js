@@ -38,7 +38,7 @@ test('the product remains LagosGo-only and does not misrepresent live rides', ()
   assert.doesNotMatch(html, /POSH9JA|OJA|posh9jaexport\.co\.uk|ecosystemPartners/i);
   assert.doesNotMatch(app, /POSH9JA|OJA|posh9jaexport\.co\.uk|data-ecosystem-partner/i);
   assert.match(app, /window\.lagosGoCreateRideRequest/);
-  assert.match(app, /a driver has not accepted yet/i);
+  assert.match(app, /no driver has accepted yet/i);
 });
 
 test('driver discovery requires approved online driver, fresh location and proximity', () => {
