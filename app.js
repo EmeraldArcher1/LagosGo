@@ -183,15 +183,48 @@
       } else if (service === 'Go Food') {
         document.getElementById('goFood').scrollIntoView({behavior:'smooth', block:'start'});
         document.getElementById('foodSearch').focus({preventScroll:true});
+      } else if (service === 'Go Send') {
+        document.getElementById('marketDelivery').scrollIntoView({behavior:'smooth', block:'start'});
+        document.getElementById('marketKm').focus({preventScroll:true});
       } else {
-        const states = {
-          'Go Send': 'Go Send is planned for parcels and errands. Dispatch and tracking are not connected yet.',
-          'GoShare': 'GoShare is on the future roadmap and will follow reliable solo-ride dispatch.'
-        };
-        notify(states[service] || (service + ' is planned for a future LagosGo release.'));
+        notify(service + ' is planned for a future LagosGo release.');
       }
     });
   });
+
+
+  // Market delivery fare planner: transparent assumptions, not a live quote.
+  const marketMoney = amount => '₦' + Math.round(amount).toLocaleString('en-NG');
+  function updateMarketEstimate() {
+    const km=Number(document.getElementById('marketKm').value), packageFee=Number(document.getElementById('marketPackage').value);
+    const wait=Number(document.getElementById('marketWait').value), batch=Number(document.getElementById('marketBatch').value);
+    const peak=document.getElementById('marketPeak').checked;
+    if(!Number.isFinite(km)||km<0.5||km>100||!Number.isFinite(wait)||wait<0||wait>180){document.getElementById('marketTotal').textContent='Check inputs';return;}
+    const base=600, distance=km*162.5, traffic=peak?700:0, extras=packageFee+Math.max(0,wait-10)*50, gross=base+distance+traffic+extras;
+    const discount=batch===4?300:batch>=8?Math.round(gross*.35):batch===2?Math.round(gross*.10):0;
+    document.getElementById('marketBaseLine').textContent=marketMoney(base);
+    document.getElementById('marketDistanceLine').textContent=marketMoney(distance);
+    document.getElementById('marketTrafficLine').textContent=marketMoney(traffic);
+    document.getElementById('marketExtraLine').textContent=marketMoney(extras);
+    document.getElementById('marketDiscountLine').textContent='−'+marketMoney(discount);
+    document.getElementById('marketTotal').textContent=marketMoney(Math.max(0,gross-discount));
+  }
+  ['marketKm','marketPackage','marketWait','marketBatch','marketPeak'].forEach(id=>document.getElementById(id).addEventListener('input',updateMarketEstimate));
+  updateMarketEstimate();
+  document.querySelectorAll('.market-mode-card').forEach(button=>button.addEventListener('click',()=>{
+    document.querySelectorAll('.market-mode-card').forEach(item=>{item.classList.toggle('active',item===button);item.setAttribute('aria-pressed',String(item===button));});
+    document.querySelector('#marketLeadForm [name="deliveryMode"]').value=button.dataset.deliveryMode;
+    if(button.dataset.deliveryMode==='Smart batch')document.getElementById('marketBatch').value='4';
+    if(button.dataset.deliveryMode==='Economy / pickup point')document.getElementById('marketPeak').checked=false;
+    updateMarketEstimate();
+  }));
+  document.querySelectorAll('.market-zone-card').forEach(button=>button.addEventListener('click',()=>{
+    const zone=button.dataset.zone;
+    document.querySelectorAll('.market-zone-card').forEach(item=>item.classList.toggle('selected',item===button));
+    document.getElementById('marketLeadZone').value=[...document.getElementById('marketLeadZone').options].some(o=>o.value===zone)?zone:'Other Lagos location';
+    document.getElementById('marketLeadForm').scrollIntoView({behavior:'smooth',block:'start'});
+    document.getElementById('marketLeadZone').focus({preventScroll:true});
+  }));
 
   // Go Food marketplace preview: search and category filters operate on sample listings only.
   let selectedFoodCategory = 'All';

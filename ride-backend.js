@@ -132,7 +132,8 @@
     client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });
-    window.lagosGoSupabase = client;\n    client.auth.getSession().then(({ data }) => updateSession(data.session));
+    window.lagosGoSupabase = client;
+    client.auth.getSession().then(({ data }) => updateSession(data.session));
     client.auth.onAuthStateChange((_event, session) => updateSession(session));
   }
   initialise();

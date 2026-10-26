@@ -46,7 +46,7 @@ Implement in this order **after the secure ride lifecycle and ledger foundations
 | Airport transfers | MMIA pickup/drop-off zones, luggage-friendly vehicle categories, scheduled and fixed-corridor pricing after cost validation. | Planned |
 | Flight-aware pickup | Flight-number input, trustworthy flight-status provider, delay handling and clear limits; no claim of live flight integration until verified. | Planned |
 | Airport queue and meet-and-greet | Driver queue rules, waiting charges, terminal instructions, name-board option and partner operations. | Planned |
-| LagosGo Move deliveries | Parcel/errand booking, item restrictions, sender/receiver details, pickup evidence, tracking, delivery OTP/photo proof and receipts. | Planned |
+| LagosGo Move deliveries | Parcel/errand booking, item restrictions, sender/receiver details, pickup evidence, tracking, delivery OTP/photo proof and receipts. | Market-zone UI, planning-only fare calculator and email-based pilot enquiry prototype added; dispatch and tracking still planned |
 | High-value delivery protection | Explicit coverage terms, item value limits, claims workflow and partner/insurer agreement before selling insurance. | Research required |
 | Explore Lagos | Categorised map discovery for fuel/CNG, hospitals, pharmacies, police/emergency resources, mechanics, markets, ATMs, hotels and landmarks. Verify sources, freshness and emergency details. | Planned |
 | Corporate and fleet accounts | Roles, authorised bookers, spending limits, cost centres, receipts, reporting, invoicing and support SLAs. | Planned |
@@ -133,3 +133,16 @@ A UI-only interaction is **Prototype**, not **Verified**. Wallet, payments, matc
 - [ ] Complete security tests for passenger, driver, fleet member and support/admin roles; verify Vercel deployment and end-to-end flows before pilot use.
 
 Detailed design and release gates: [NEGOTIATED_FARES_AND_FLEETS.md](./NEGOTIATED_FARES_AND_FLEETS.md).
+
+
+## Market-to-door delivery pilot — implementation tranche
+
+- [x] Add ten proposed Lagos market zones and landmark-aware pickup/destination enquiry fields.
+- [x] Add Express, Smart batch and Economy/pickup-point service modes.
+- [x] Add transparent fare-planning calculator with editable distance, package size, wait, traffic and batch inputs.
+- [x] Route market-pilot enquiries through the existing server-side email intake when configured.
+- [ ] Validate actual market entrances, loading bays, pickup points, route costs and package limits in the field.
+- [ ] Build durable order records, customer/trader/rider roles, dispatch, batch assignment, tracking and delivery proof.
+- [ ] Add rate limiting/abuse protection, operations dashboard, support escalation, payment reconciliation and end-to-end delivery tests before live booking.
+
+**Release boundary:** the calculator is illustrative, and the form is an interest/enquiry submission only. No delivery is booked and no rider is assigned.
