@@ -6,6 +6,10 @@ LagosGo is a mobile-first ride-hailing product for Lagos State, designed to expa
 
 > **Release status:** LagosGo remains a front-end prototype with backend scaffolding. Roadmap items below are proposed or in prototype unless explicitly verified. Do not accept real ride bookings or describe sample drivers, prices, routes, payments, safety workflows or marketplace listings as live services.
 
+## LagosGo Move — market-to-door delivery pilot
+
+The product includes a market-delivery pilot interface with ten proposed market zones, landmark/stall-based pickup details, Express / Smart batch / Economy modes, and an editable fare-planning calculator with visible assumptions. The pilot enquiry form uses the existing `/api/leads` email intake when Resend environment variables are configured. It does not book a rider or store an order. Live dispatch, package tracking, payment, proof-of-delivery and actual zone verification remain future work.
+
 ## What Makes LagosGo Different
 
 - **Driver-first earnings:** transparent fare breakdowns, visible platform fees, and a focus on sustainable earnings per online hour.
