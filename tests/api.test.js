@@ -58,6 +58,10 @@ test("API handlers reject unsupported methods, invalid input, and missing config
     assert.equal(res.statusCode, 400);
     assert.equal(res.body.error, "invalid_form");
 
+    res = await invoke(leads, { method: "POST", body: { type: "market", name: "Test Trader", phone: "+2348000000000", email: "trader@example.test", consent: true } });
+    assert.equal(res.statusCode, 400);
+    assert.equal(res.body.error, "invalid_form");
+
     res = await invoke(route, { method: "GET" });
     assert.equal(res.statusCode, 405);
     assert.equal(res.headers.allow, "POST");
