@@ -27,7 +27,7 @@ test('dispatch worker rejects requests without the cron bearer secret',async()=>
 });
 
 test('dispatch worker reports missing server configuration without calling providers',async()=>{
-  const keys=['SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY','GOOGLE_MAPS_SERVER_KEY','LAGOSGO_DISPATCH_CRON_SECRET'];
+  const keys=['SUPABASE_URL','POSTGRES_HOST_SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY','POSTGRES_HOST_SUPABASE_SERVICE_ROLE_KEY','GOOGLE_MAPS_SERVER_KEY','LAGOSGO_DISPATCH_CRON_SECRET'];
   const old=Object.fromEntries(keys.map(key=>[key,process.env[key]]));
   keys.forEach(key=>delete process.env[key]);
   try {
