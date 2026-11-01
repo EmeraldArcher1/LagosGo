@@ -14,7 +14,7 @@ grant all on public.ride_pickup_pin_challenges to service_role;
 create or replace function public.lagosgo_issue_pickup_pin(p_ride_id uuid)
 returns jsonb language plpgsql security definer set search_path = ''
 as $$
-declare v_uid uuid:=auth.uid(); v_ride public.rides%rowtype; v_pin text; v_salt uuid:=gen_random_uuid();
+declare v_uid uuid:=auth.uid(); v_ride public.rides%rowtype; v_pin text; v_salt uuid:=gen_random_uuid(); v_random bytea;
 begin
   if v_uid is null then raise exception 'authentication_required' using errcode='28000'; end if;
   select r.* into v_ride from public.rides r where r.id=p_ride_id for update;
@@ -26,7 +26,8 @@ begin
   if exists(select 1 from public.ride_pickup_pin_challenges c where c.ride_id=p_ride_id and c.verified_at is not null) then
     raise exception 'pickup_pin_already_verified' using errcode='55000';
   end if;
-  v_pin:=lpad(((get_byte(public.gen_random_bytes(2),0)*256+get_byte(public.gen_random_bytes(2),1)) % 10000)::text,4,'0');
+  v_random:=public.gen_random_bytes(2);
+  v_pin:=lpad(((get_byte(v_random,0)*256+get_byte(v_random,1)) % 10000)::text,4,'0');
   insert into public.ride_pickup_pin_challenges(ride_id,pin_hash,pin_salt,attempts,expires_at,verified_at,created_at,updated_at)
   values(p_ride_id,encode(public.digest(v_pin || v_salt::text,'sha256'),'hex'),v_salt,0,now()+interval '30 minutes',null,now(),now())
   on conflict(ride_id) do update set pin_hash=excluded.pin_hash,pin_salt=excluded.pin_salt,
