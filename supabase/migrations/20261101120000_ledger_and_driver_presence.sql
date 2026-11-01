@@ -308,6 +308,7 @@ grant all on private.ledger_accounts,private.ledger_transactions,
   private.ledger_entries,private.payment_provider_events,
   private.driver_presence,private.driver_location_samples
   to service_role;
+grant usage,select on all sequences in schema private to service_role;
 grant execute on function private.lagosgo_prune_expired_presence() to service_role;
 
 revoke all on function private.lagosgo_guard_posted_ledger_entry() from public,anon,authenticated;
