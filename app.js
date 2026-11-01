@@ -304,7 +304,7 @@
   document.querySelectorAll('[data-map-type]').forEach(button => {
     button.addEventListener('click', () => {
       if (!googleMapsReady || !googleMap) return;
-      googleMap.setMapTypeId(button.dataset.mapType.toUpperCase());
+      googleMap.setMapTypeId(button.dataset.mapType);
       document.querySelectorAll('[data-map-type]').forEach(item => {
         const active = item === button;
         item.classList.toggle('active', active);
