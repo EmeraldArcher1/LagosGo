@@ -118,6 +118,7 @@ Recruit and verify an initial driver supply and fleet partners in defined Lagos 
 
 - [BACKLOG.md](./BACKLOG.md) — feature roadmap and acceptance criteria.
 - [P1_FAIR_FARES_AND_OPERATIONS_SPEC.md](./P1_FAIR_FARES_AND_OPERATIONS_SPEC.md) — formal P1 requirements for fair fares, driver earnings, ledger, dispatch fairness, support/disputes and pilot release gates.
+- [FARE_ESTIMATION_SERVICE_DESIGN.md](./FARE_ESTIMATION_SERVICE_DESIGN.md) — proposed server-authoritative route-based fare estimates, quote-linked bounded offers, dispatch integration, degraded mode, cost controls and acceptance tests.
 - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) — database setup and security boundaries.
 - [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) — Vercel configuration and release gates.
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
