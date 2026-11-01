@@ -170,3 +170,45 @@ window.lagosGoCreateRideRequest = async function ({ pickup, pickupCoordinates, d
   }
   return data;
 };
+
+
+/* Authenticated client wrappers for the pickup and safety RPCs.
+   These helpers do not imply that a staffed emergency response service is connected. */
+window.lagosGoIssuePickupPin = async function (rideId) {
+  const client = window.lagosGoSupabase;
+  if (!client) throw new Error('Account service is still loading.');
+  if (typeof rideId !== 'string' || !rideId.trim()) throw new Error('A valid ride ID is required.');
+  const { data, error } = await client.rpc('lagosgo_issue_pickup_pin', { p_ride_id: rideId });
+  if (error) throw new Error('Pickup PIN could not be issued. Confirm that the ride is accepted and belongs to your account.');
+  return data;
+};
+
+window.lagosGoVerifyPickupPin = async function (rideId, pin) {
+  const client = window.lagosGoSupabase;
+  if (!client) throw new Error('Account service is still loading.');
+  if (typeof rideId !== 'string' || !rideId.trim() || !/^\\d{4}$/.test(String(pin || ''))) {
+    throw new Error('Enter the four-digit pickup PIN and a valid ride ID.');
+  }
+  const { data, error } = await client.rpc('lagosgo_verify_pickup_pin', { p_ride_id: rideId, p_pin: String(pin) });
+  if (error) throw new Error('Pickup PIN verification failed. Check the PIN and confirm that you have marked arrival.');
+  if (data && data.ok === false) throw new Error(data.error === 'pickup_pin_incorrect'
+    ? 'That pickup PIN is incorrect. Attempts remaining: ' + data.attempts_remaining
+    : 'Pickup PIN verification failed.');
+  return data;
+};
+
+window.lagosGoReportSafetyIncident = async function ({ rideId = null, incidentType = 'other', description } = {}) {
+  const client = window.lagosGoSupabase;
+  if (!client) throw new Error('Account service is still loading.');
+  const allowed = ['emergency', 'unsafe_driving', 'harassment', 'payment_dispute', 'route_concern', 'other'];
+  if (!allowed.includes(incidentType)) throw new Error('Choose a valid incident category.');
+  const detail = String(description || '').trim();
+  if (!detail || detail.length > 4000) throw new Error('Describe the incident in 1–4,000 characters.');
+  const { data, error } = await client.rpc('lagosgo_report_safety_incident', {
+    p_ride_id: rideId,
+    p_incident_type: incidentType,
+    p_description: detail
+  });
+  if (error) throw new Error('The safety report could not be submitted. If you are in immediate danger, contact local emergency services directly.');
+  return data;
+};
