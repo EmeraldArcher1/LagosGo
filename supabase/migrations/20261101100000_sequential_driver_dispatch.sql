@@ -47,7 +47,7 @@ alter table public.ride_dispatch_offers enable row level security;
 revoke all on public.ride_dispatch_offers from anon,authenticated;
 grant all on public.ride_dispatch_offers to service_role;
 
-create or replace function public.lagosgo_dispatch_create_offer(
+create or replace function private.lagosgo_dispatch_create_offer_impl(
   p_ride_id uuid,
   p_driver_user_id uuid,
   p_road_eta_seconds integer,
@@ -132,7 +132,7 @@ begin
 end;
 $$;
 
-create or replace function public.lagosgo_list_my_dispatch_offers()
+create or replace function private.lagosgo_list_my_dispatch_offers_impl()
 returns jsonb language plpgsql security definer set search_path=''
 as $$
 declare v_uid uuid:=auth.uid(); v_result jsonb;
@@ -160,7 +160,7 @@ begin
 end;
 $$;
 
-create or replace function public.lagosgo_respond_to_dispatch_offer(p_offer_id uuid,p_action text)
+create or replace function private.lagosgo_respond_to_dispatch_offer_impl(p_offer_id uuid,p_action text)
 returns jsonb language plpgsql security definer set search_path=''
 as $$
 declare
@@ -215,6 +215,27 @@ begin
     'confirmed_fare_kobo',v_fare.amount_kobo,'status','accepted');
 end;
 $$;
+
+grant usage on schema private to authenticated,service_role;
+
+create or replace function public.lagosgo_dispatch_create_offer(
+  p_ride_id uuid,p_driver_user_id uuid,p_road_eta_seconds integer,
+  p_route_distance_meters integer,p_dispatch_score numeric
+) returns jsonb language sql security invoker set search_path=''
+as $ select private.lagosgo_dispatch_create_offer_impl($1,$2,$3,$4,$5); $;
+create or replace function public.lagosgo_list_my_dispatch_offers()
+returns jsonb language sql security invoker set search_path=''
+as $ select private.lagosgo_list_my_dispatch_offers_impl(); $;
+create or replace function public.lagosgo_respond_to_dispatch_offer(p_offer_id uuid,p_action text)
+returns jsonb language sql security invoker set search_path=''
+as $ select private.lagosgo_respond_to_dispatch_offer_impl($1,$2); $;
+
+revoke all on function private.lagosgo_dispatch_create_offer_impl(uuid,uuid,integer,integer,numeric) from public,anon,authenticated;
+grant execute on function private.lagosgo_dispatch_create_offer_impl(uuid,uuid,integer,integer,numeric) to service_role;
+revoke all on function private.lagosgo_list_my_dispatch_offers_impl() from public,anon;
+grant execute on function private.lagosgo_list_my_dispatch_offers_impl() to authenticated;
+revoke all on function private.lagosgo_respond_to_dispatch_offer_impl(uuid,text) from public,anon;
+grant execute on function private.lagosgo_respond_to_dispatch_offer_impl(uuid,text) to authenticated;
 
 revoke all on function public.lagosgo_dispatch_create_offer(uuid,uuid,integer,integer,numeric) from public,anon,authenticated;
 grant execute on function public.lagosgo_dispatch_create_offer(uuid,uuid,integer,integer,numeric) to service_role;
