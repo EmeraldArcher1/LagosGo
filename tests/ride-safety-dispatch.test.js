@@ -25,3 +25,13 @@ test('safety intake is participant-authorised and does not claim dispatch',()=>{
   assert.match(sql,/submitted_not_emergency_dispatch/);
   assert.match(sql,/grant execute on function public\.lagosgo_report_safety_incident/);
 });
+
+test('browser exposes authenticated wrappers for pickup and incident RPCs',()=>{
+  const auth=fs.readFileSync(path.join(__dirname,'../ride-backend.js'),'utf8');
+  assert.match(auth,/window\.lagosGoIssuePickupPin/);
+  assert.match(auth,/window\.lagosGoVerifyPickupPin/);
+  assert.match(auth,/window\.lagosGoReportSafetyIncident/);
+  assert.match(auth,/client\.rpc\('lagosgo_issue_pickup_pin'/);
+  assert.match(auth,/client\.rpc\('lagosgo_verify_pickup_pin'/);
+  assert.match(auth,/client\.rpc\('lagosgo_report_safety_incident'/);
+});
