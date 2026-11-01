@@ -3,7 +3,7 @@
 
 create or replace function private.lagosgo_extend_passenger_offer_expiry()
 returns trigger language plpgsql set search_path=''
-as $
+as $$
 declare v_passenger uuid; v_ride_status public.ride_status;
 begin
   select r.passenger_user_id,r.status into v_passenger,v_ride_status
@@ -13,7 +13,7 @@ begin
   end if;
   return new;
 end;
-$;
+$$;
 drop trigger if exists ride_fare_offer_dispatch_expiry on public.ride_fare_offers;
 create trigger ride_fare_offer_dispatch_expiry
 before insert on public.ride_fare_offers
