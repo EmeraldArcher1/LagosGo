@@ -16,8 +16,8 @@ Privileged database implementations live in the non-exposed `private` schema; th
 - The current route candidate cap is 25 per ride and 3 rides per worker invocation. Candidate origins are pre-sorted by straight-line distance before the route-matrix call; final ranking always uses traffic-aware road ETA.
 
 ## Required Vercel environment variables
-- `SUPABASE_SERVICE_ROLE_KEY` (server-only; never expose to browser)
-- `GOOGLE_MAPS_SERVER_KEY` (server-only, Routes API enabled)
+- `SUPABASE_SERVICE_ROLE_KEY` or the existing Vercel Supabase integration variable `POSTGRES_HOST_SUPABASE_SERVICE_ROLE_KEY` (server-only; never expose to browser)
+- `GOOGLE_MAPS_SERVER_KEY` (server-only, Routes API enabled; this key is not currently present in the Vercel project environment)
 - `LAGOSGO_DISPATCH_CRON_SECRET` (long random secret)
 
 Apply both new migrations in order to the confirmed LagosGo Supabase project: `20261101090000_dispatch_and_pickup_safety.sql` first (creates the private schema used by the next migration), then `20261101100000_sequential_driver_dispatch.sql`. Configure the server-only environment variables in Vercel. The Vercel project is on a Hobby account, which rejects sub-daily Vercel Cron schedules; use the GitHub Actions 5-minute schedule in `.github/workflows/dispatch-worker.yml` after adding its two repository secrets, or upgrade Vercel to a plan supporting minute-level cron.
