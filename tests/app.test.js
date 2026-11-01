@@ -30,3 +30,14 @@ test('LagosGo-native future services are not represented as live', () => {
   assert.match(app, /planned/i);
   assert.match(html, /No merchants, menus, payments or deliveries are connected yet/i);
 });
+
+test('Google Maps supports map, satellite, hybrid and terrain layers with external directions', () => {
+  assert.match(html, /data-map-type="roadmap"/);
+  assert.match(html, /data-map-type="satellite"/);
+  assert.match(html, /data-map-type="hybrid"/);
+  assert.match(html, /data-map-type="terrain"/);
+  assert.match(html, /id="openGoogleMaps"/);
+  assert.match(app, /googleMap\.setMapTypeId/);
+  assert.match(app, /https:\/\/www\.google\.com\/maps\/dir\//);
+  assert.match(app, /travelmode:'driving'/);
+});
