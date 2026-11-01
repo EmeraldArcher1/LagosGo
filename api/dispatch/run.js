@@ -76,7 +76,6 @@ async function restRequest(base, serviceKey, path, options = {}) {
 }
 
 function createHandler(deps = {}) {
-  const fetchImpl = deps.fetch || fetch;
   return async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
