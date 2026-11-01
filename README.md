@@ -117,6 +117,7 @@ Future LagosGo-branded services such as parcel delivery or merchant services are
 Recruit and verify an initial driver supply and fleet partners in defined Lagos operating zones, then win corporate transport pilots. Open passenger bookings only after the app can match a real driver, show pickup ETA, update both devices during a trip, complete the trip and reconcile payments and driver earnings.
 
 - [BACKLOG.md](./BACKLOG.md) — feature roadmap and acceptance criteria.
+- [P1_FAIR_FARES_AND_OPERATIONS_SPEC.md](./P1_FAIR_FARES_AND_OPERATIONS_SPEC.md) — formal P1 requirements for fair fares, driver earnings, ledger, dispatch fairness, support/disputes and pilot release gates.
 - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) — database setup and security boundaries.
 - [LAUNCH_READINESS.md](./LAUNCH_READINESS.md) — Vercel configuration and release gates.
 - [INVESTOR_PROPOSAL.md](./INVESTOR_PROPOSAL.md) — launch strategy and illustrative financial scenarios.
