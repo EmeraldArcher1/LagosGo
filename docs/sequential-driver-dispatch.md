@@ -6,7 +6,7 @@
 3. The worker selects requested rides with a live passenger fare offer, filters approved online drivers with approved vehicles, fresh GPS (under three minutes), no active ride and a pickup radius no greater than 5 km.
 4. Google Routes API `computeRouteMatrix` supplies traffic-aware road ETAs. Candidates above 25 minutes or without a route are excluded.
 5. The existing 55/15/15/10/5 scorer ranks candidates. One driver receives a 90-second offer at a time; a driver already tried for that ride is not offered it again.
-6. The driver polls `lagosgo_list_my_dispatch_offers`, then accepts or declines using `lagosgo_respond_to_dispatch_offer`.
+6. The signed-in driver opens Account → Driver offers. The inbox polls `lagosgo_list_my_dispatch_offers` every 10 seconds while open, then accepts or declines using `lagosgo_respond_to_dispatch_offer`.
 7. Acceptance locks the ride row, verifies the driver and passenger fare, assigns the driver, confirms the fare and closes competing offers in one transaction.
 
 ## Score inputs and current limitations
@@ -21,7 +21,7 @@
 - `GOOGLE_MAPS_SERVER_KEY` (server-only, Routes API enabled)
 - `LAGOSGO_DISPATCH_CRON_SECRET` (long random secret)
 
-The Supabase migration must be applied to the confirmed LagosGo project before this worker can operate. Add the cron secret and verify the other server-only environment variables in the Vercel project before enabling production cron execution.
+The Supabase migration must be applied to the confirmed LagosGo project before this worker can operate. Configure the server-only environment variables in Vercel. The Vercel project is on a Hobby account, which rejects sub-daily Vercel Cron schedules; use the GitHub Actions 5-minute schedule in `.github/workflows/dispatch-worker.yml` after adding its two repository secrets, or upgrade Vercel to a plan supporting minute-level cron.
 
 ## Safety boundaries
 - The worker only creates a time-limited offer; it does not auto-accept or auto-charge.
