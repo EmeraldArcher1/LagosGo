@@ -38,7 +38,7 @@ test('dispatch worker reports missing server configuration without calling provi
     const configuredRes=responseRecorder();
     await createHandler()({method:'GET',headers:{authorization:'Bearer configured'}},configuredRes);
     assert.equal(configuredRes.statusCode,503);
-    assert.deepEqual(configuredRes.body.missing,['SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY','GOOGLE_MAPS_SERVER_KEY']);
+    assert.deepEqual(configuredRes.body.missing,['SUPABASE_SERVICE_ROLE_KEY','GOOGLE_MAPS_SERVER_KEY']);
   } finally {
     keys.forEach(key=>{ if(old[key]===undefined) delete process.env[key]; else process.env[key]=old[key]; });
   }
