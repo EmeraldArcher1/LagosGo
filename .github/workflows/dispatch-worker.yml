@@ -1,0 +1,36 @@
+name: LagosGo dispatch scheduler
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lagosgo-dispatch-worker
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Invoke secured dispatch worker
+        env:
+          DISPATCH_URL: ${{ secrets.LAGOSGO_DISPATCH_URL }}
+          DISPATCH_SECRET: ${{ secrets.LAGOSGO_DISPATCH_CRON_SECRET }}
+        shell: bash
+        run: |
+          if [[ -z "$DISPATCH_URL" || -z "$DISPATCH_SECRET" ]]; then
+            echo "::notice::Dispatch scheduler is installed but inactive. Add LAGOSGO_DISPATCH_URL and LAGOSGO_DISPATCH_CRON_SECRET repository secrets."
+            exit 0
+          fi
+          case "$DISPATCH_URL" in
+            https://*) ;;
+            *) echo "::error::LAGOSGO_DISPATCH_URL must be an HTTPS URL"; exit 1 ;;
+          esac
+          curl --fail --silent --show-error --max-time 90 \
+            -H "Authorization: Bearer $DISPATCH_SECRET" \
+            "$DISPATCH_URL"
