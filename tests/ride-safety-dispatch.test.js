@@ -35,3 +35,11 @@ test('browser exposes authenticated wrappers for pickup and incident RPCs',()=>{
   assert.match(auth,/client\.rpc\('lagosgo_verify_pickup_pin'/);
   assert.match(auth,/client\.rpc\('lagosgo_report_safety_incident'/);
 });
+
+test('privileged SQL implementations stay in private schema behind invoker wrappers',()=>{
+  assert.match(sql,/create schema if not exists private/i);
+  assert.match(sql,/function private\.lagosgo_issue_pickup_pin_impl[\s\S]*?security definer/i);
+  assert.match(sql,/function public\.lagosgo_issue_pickup_pin[\s\S]*?security invoker/i);
+  assert.match(sql,/function public\.lagosgo_verify_pickup_pin[\s\S]*?security invoker/i);
+  assert.match(sql,/function public\.lagosgo_report_safety_incident[\s\S]*?security invoker/i);
+});
