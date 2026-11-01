@@ -291,6 +291,13 @@
       <button class="lead-submit" type="submit" id="authSubmit">Sign in <span>→</span></button>
       <button class="auth-mode-toggle" type="button" id="authModeToggle">New to LagosGo? Create an account</button>\n      <button class="auth-mode-toggle" type="button" id="authSignOut" hidden>Sign out</button>
       <p class="auth-status" id="authStatus" role="status" aria-live="polite"></p>
+      <button class="auth-mode-toggle" type="button" id="driverInboxToggle" hidden>Driver offers</button>
+      <section id="driverInbox" hidden aria-label="Driver dispatch offers">
+        <h3>Available ride offers</h3>
+        <p id="driverInboxStatus" role="status" aria-live="polite">Refresh to check for a dispatch offer.</p>
+        <button class="auth-mode-toggle" type="button" id="driverInboxRefresh">Refresh offers</button>
+        <div id="driverOfferList"></div>
+      </section>
       <p class="auth-footnote">Account access is enabled for the LagosGo pilot. Ride booking and driver dispatch are not yet enabled for real trips.</p>
     </form>
   </dialog>
