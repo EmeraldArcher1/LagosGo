@@ -23,7 +23,10 @@ begin
   if v_ride.status not in ('accepted','driver_en_route','arrived') or v_ride.driver_user_id is null then
     raise exception 'ride_not_ready_for_pickup_pin' using errcode='55000';
   end if;
-  v_pin:=lpad((floor(random()*10000))::integer::text,4,'0');
+  if exists(select 1 from public.ride_pickup_pin_challenges c where c.ride_id=p_ride_id and c.verified_at is not null) then
+    raise exception 'pickup_pin_already_verified' using errcode='55000';
+  end if;
+  v_pin:=lpad(((get_byte(public.gen_random_bytes(2),0)*256+get_byte(public.gen_random_bytes(2),1)) % 10000)::text,4,'0');
   insert into public.ride_pickup_pin_challenges(ride_id,pin_hash,pin_salt,attempts,expires_at,verified_at,created_at,updated_at)
   values(p_ride_id,encode(public.digest(v_pin || v_salt::text,'sha256'),'hex'),v_salt,0,now()+interval '30 minutes',null,now(),now())
   on conflict(ride_id) do update set pin_hash=excluded.pin_hash,pin_salt=excluded.pin_salt,
@@ -51,7 +54,7 @@ begin
   if v_challenge.attempts>=5 then raise exception 'pickup_pin_attempt_limit' using errcode='55000'; end if;
   if encode(public.digest(p_pin || v_challenge.pin_salt::text,'sha256'),'hex')<>v_challenge.pin_hash then
     update public.ride_pickup_pin_challenges set attempts=attempts+1,updated_at=now() where ride_id=p_ride_id;
-    raise exception 'pickup_pin_incorrect' using errcode='22023';
+    return jsonb_build_object('ok',false,'error','pickup_pin_incorrect','attempts_remaining',greatest(0,4-v_challenge.attempts));
   end if;
   update public.ride_pickup_pin_challenges set verified_at=now(),updated_at=now() where ride_id=p_ride_id;
   insert into public.ride_events(ride_id,actor_user_id,event_type,details)
