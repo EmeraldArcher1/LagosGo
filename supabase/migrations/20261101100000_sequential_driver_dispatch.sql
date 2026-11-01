@@ -1,6 +1,25 @@
 -- LagosGo sequential driver dispatch foundation.
 -- The cron worker uses service-role credentials; drivers interact only through authenticated RPCs.
 
+create or replace function private.lagosgo_extend_passenger_offer_expiry()
+returns trigger language plpgsql set search_path=''
+as $
+declare v_passenger uuid; v_ride_status public.ride_status;
+begin
+  select r.passenger_user_id,r.status into v_passenger,v_ride_status
+    from public.rides r where r.id=new.ride_id;
+  if v_ride_status='requested' and new.offered_by=v_passenger and new.status='pending' then
+    new.expires_at:=greatest(coalesce(new.expires_at,now()),now()+interval '20 minutes');
+  end if;
+  return new;
+end;
+$;
+drop trigger if exists ride_fare_offer_dispatch_expiry on public.ride_fare_offers;
+create trigger ride_fare_offer_dispatch_expiry
+before insert on public.ride_fare_offers
+for each row execute function private.lagosgo_extend_passenger_offer_expiry();
+revoke all on function private.lagosgo_extend_passenger_offer_expiry() from public,anon,authenticated;
+
 create table if not exists public.ride_dispatch_offers (
   id uuid primary key default gen_random_uuid(),
   ride_id uuid not null references public.rides(id) on delete cascade,
