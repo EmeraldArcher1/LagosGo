@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4c400">
+  <title>LagosGo Driver Console</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .driver-shell{max-width:860px;margin:0 auto;padding:24px 18px 64px}
+    .driver-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .driver-panel{background:#fff;border:1px solid #e7e7e7;border-radius:18px;padding:20px;margin:18px 0;box-shadow:0 8px 30px rgba(0,0,0,.05)}
+    .driver-panel h2{margin-top:0}
+    .driver-form{display:grid;gap:12px;max-width:440px}
+    .driver-form label{display:grid;gap:6px;font-weight:600}
+    .driver-form input,.offer-counter input{width:100%;padding:12px;border:1px solid #c9c9c9;border-radius:10px;font:inherit}
+    .driver-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .driver-button{border:0;border-radius:999px;padding:12px 18px;background:#171717;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+    .driver-button.primary{background:#f4c400;color:#171717}
+    .driver-button:disabled{opacity:.5;cursor:not-allowed}
+    .driver-status{padding:12px 14px;border-radius:12px;background:#f4f4f4;margin:14px 0}
+    .driver-status.error{background:#fff0f0;color:#8c1d1d}
+    .driver-status.success{background:#eef8ef;color:#205b2a}
+    .offer-card{border:1px solid #dedede;border-radius:14px;padding:16px;margin:12px 0}
+    .offer-card h3{margin:0 0 8px}
+    .offer-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+    .offer-meta div{background:#f7f7f7;border-radius:10px;padding:10px;overflow-wrap:anywhere}
+    .offer-meta small{display:block;color:#555;margin-bottom:4px}
+    .offer-counter{display:flex;gap:8px;align-items:center;max-width:360px;margin-top:12px}
+    .muted{color:#555}.hidden{display:none!important}
+    @media(max-width:520px){.offer-meta{grid-template-columns:1fr}.driver-panel{padding:16px}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="/driver.js"></script>
+</head>
+<body>
+  <main class="driver-shell">
+    <header class="driver-top">
+      <div><strong>LAGOSGO</strong><div class="muted">Driver console · Lagos pilot</div></div>
+      <a href="/" aria-label="Return to LagosGo home">Passenger site ↗</a>
+    </header>
+
+    <section class="driver-panel" id="authPanel">
+      <h1>Driver sign in</h1>
+      <p class="muted">Use the email and password attached to your approved LagosGo driver account.</p>
+      <form id="driverAuthForm" class="driver-form">
+        <label>Email address<input id="driverEmail" type="email" autocomplete="username" required></label>
+        <label>Password<input id="driverPassword" type="password" autocomplete="current-password" required></label>
+        <button class="driver-button primary" id="driverSignIn" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <section id="consolePanel" class="hidden">
+      <div class="driver-panel">
+        <div class="driver-top"><div><h1>Welcome, <span id="driverName">Driver</span></h1><p id="driverVehicle" class="muted"></p></div><button id="driverSignOut" class="driver-button" type="button">Sign out</button></div>
+        <div id="driverStatus" class="driver-status" role="status" aria-live="polite">Checking driver approval…</div>
+        <p><strong>Driver availability:</strong> <span id="availabilityLabel">Offline</span></p>
+        <div class="driver-actions">
+          <button id="availabilityButton" class="driver-button primary" type="button" disabled>Go online</button>
+          <button id="refreshOffers" class="driver-button" type="button" disabled>Refresh requests</button>
+        </div>
+        <p class="muted">Your live location is used only to update your driver availability and find nearby ride requests. Keep this page open while online.</p>
+      </div>
+      <div class="driver-panel">
+        <div class="driver-top"><h2>Nearby ride requests</h2><span id="offerCount" class="muted">0 requests</span></div>
+        <div id="offersList"><p class="muted">Go online to check for nearby requests.</p></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
