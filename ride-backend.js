@@ -212,3 +212,28 @@ window.lagosGoReportSafetyIncident = async function ({ rideId = null, incidentTy
   if (error) throw new Error('The safety report could not be submitted. If you are in immediate danger, contact local emergency services directly.');
   return data;
 };
+
+/* Driver dispatch inbox: authenticated RPCs; callers should refresh while the driver is online. */
+window.lagosGoListDispatchOffers = async function () {
+  const client = window.lagosGoSupabase;
+  if (!client) throw new Error('Account service is still loading.');
+  const { data, error } = await client.rpc('lagosgo_list_my_dispatch_offers');
+  if (error) throw new Error('Could not load driver offers. Confirm that this is an approved driver account.');
+  return data && Array.isArray(data.offers) ? data.offers : [];
+};
+
+window.lagosGoRespondToDispatchOffer = async function (offerId, action) {
+  const client = window.lagosGoSupabase;
+  if (!client) throw new Error('Account service is still loading.');
+  if (typeof offerId !== 'string' || !offerId.trim() || !['accept','decline'].includes(action)) {
+    throw new Error('A valid dispatch offer and accept/decline action are required.');
+  }
+  const { data, error } = await client.rpc('lagosgo_respond_to_dispatch_offer', {
+    p_offer_id: offerId,
+    p_action: action
+  });
+  if (error) throw new Error(error.message && error.message.includes('dispatch_offer_expired_or_closed')
+    ? 'This offer has expired or another driver has already accepted the ride.'
+    : 'LagosGo could not process this driver response. Please refresh your offers.');
+  return data;
+};
