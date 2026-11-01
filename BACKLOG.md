@@ -22,8 +22,10 @@
 | P1 | Fare and booking | Validated pickup/destination, transparent estimate, confirmed price rules and cancellation states. | Authenticated ride-request and bounded offer RPCs applied; UI not connected; route-based pricing pending |
 | P1 | Dispatch | Eligible-driver filtering, road ETA, time-bounded offers and atomic assignment; no fabricated driver or ETA. | Fare acceptance is atomic in RPC; available-ride discovery, notification and road-ETA matching not implemented |
 | P1 | Live trip lifecycle | Accepted → en route → arrived → in progress → completed, with recovery and passenger updates. | Server transition RPC applied; passenger/driver UI, realtime updates and recovery tests pending |
-| P1 | Payment and earnings ledger | Server-authoritative records, idempotency, refunds/reconciliation, transparent fees and payout reporting. | Planned |
-| P1 | Safety and support | Consent-based trip sharing, incident reporting, staffed escalation, privacy and retention controls. | Safety incident schema added; secure API and staffed response still planned |
+| P1 | Payment and earnings ledger | Append-only balanced ledger, idempotent settlement/refunds, versioned fare rules, driver statements, funded incentives and payout reconciliation. | Planned; see P1 specification |
+| P1 | Fair fare and earnings policy | Itemised passenger/driver fare breakdown, validated public fee ceiling, route/traffic-aware pricing, disclosed demand pricing and no silent cross-driver subsidy. | Policy/specification proposed; commercial parameters require validation |
+| P1 | Marketplace fairness instrumentation | Earnings per online hour, offer concentration, access distribution, ETA accuracy and cancellation metrics with defined data windows. | Planned; baseline required before thresholds |
+| P1 | Safety, support and disputes | Consent-based trip sharing, incident reporting, staffed escalation, case ownership, response targets, evidence handling, payment disputes and human appeals. | Safety incident schema added; secure APIs and staffed operations still planned |
 | P1 | Verification and CI | Unit/integration/E2E tests, logs, monitoring, security checks and release gates. | Planned |
 
 ## P2 — First customer trust and loyalty release
