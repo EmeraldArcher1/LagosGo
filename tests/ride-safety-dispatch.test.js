@@ -5,8 +5,8 @@ const path = require('node:path');
 const sql = fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261101090000_dispatch_and_pickup_safety.sql'),'utf8');
 
 test('pickup PIN is random, salted, hashed, short-lived and attempt-limited',()=>{
-  assert.match(sql,/public\.gen_random_bytes\(2\)/);
-  assert.match(sql,/public\.digest\(v_pin \|\| v_salt::text,'sha256'\)/);
+  assert.match(sql,/extensions\.gen_random_bytes\(2\)/);
+  assert.match(sql,/extensions\.digest\(v_pin \|\| v_salt::text,'sha256'\)/);
   assert.match(sql,/interval '30 minutes'/);
   assert.match(sql,/attempts between 0 and 5/);
   assert.match(sql,/attempts>=5/);
