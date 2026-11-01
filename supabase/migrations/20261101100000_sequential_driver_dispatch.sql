@@ -38,6 +38,8 @@ create index if not exists ride_dispatch_offers_ride_recent_idx
 create index if not exists ride_dispatch_offers_driver_open_idx
   on public.ride_dispatch_offers(driver_user_id,expires_at)
   where status='offered';
+create unique index if not exists ride_dispatch_one_open_offer_per_driver
+  on public.ride_dispatch_offers(driver_user_id) where status='offered';
 create unique index if not exists ride_dispatch_one_open_offer_per_ride
   on public.ride_dispatch_offers(ride_id) where status='offered';
 
@@ -94,6 +96,11 @@ begin
     for update;
   if not found or v_driver.last_location_latitude is null or v_driver.last_location_longitude is null then
     return jsonb_build_object('created',false,'reason','driver_not_eligible');
+  end if;
+  update public.ride_dispatch_offers set status='expired',responded_at=coalesce(responded_at,now())
+    where driver_user_id=p_driver_user_id and status='offered' and expires_at<=now();
+  if exists(select 1 from public.ride_dispatch_offers o where o.driver_user_id=p_driver_user_id and o.status='offered' and o.expires_at>now()) then
+    return jsonb_build_object('created',false,'reason','driver_has_open_offer');
   end if;
   if not exists(select 1 from public.profiles p where p.id=p_driver_user_id and p.role='driver')
     or not exists(select 1 from public.vehicles v where v.driver_user_id=p_driver_user_id and v.review_status='approved') then
