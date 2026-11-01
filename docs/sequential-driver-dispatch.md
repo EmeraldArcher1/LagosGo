@@ -6,7 +6,7 @@
 3. The worker selects requested rides with a live passenger fare offer, filters approved online drivers with approved vehicles, fresh GPS (under three minutes), no active ride and a pickup radius no greater than 5 km.
 4. Google Routes API `computeRouteMatrix` supplies traffic-aware road ETAs. Candidates above 25 minutes or without a route are excluded.
 5. The existing 55/15/15/10/5 scorer ranks candidates. One driver receives a 90-second offer at a time; a driver already tried for that ride is not offered it again.
-6. The signed-in driver opens Account → Driver offers. The inbox polls `lagosgo_list_my_dispatch_offers` every 10 seconds while open, then accepts or declines using `lagosgo_respond_to_dispatch_offer`.
+Privileged database implementations live in the non-exposed `private` schema; the public RPC entry points use invoker security and delegate to narrowly granted private functions.\n\n6. The signed-in driver opens Account → Driver offers. The inbox polls `lagosgo_list_my_dispatch_offers` every 10 seconds while open, then accepts or declines using `lagosgo_respond_to_dispatch_offer`.
 7. Acceptance locks the ride row, verifies the driver and passenger fare, assigns the driver, confirms the fare and closes competing offers in one transaction.
 
 ## Score inputs and current limitations
