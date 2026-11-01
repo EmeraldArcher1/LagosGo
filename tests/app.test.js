@@ -21,7 +21,7 @@ test('primary ride booking remains visible and prototype limitations are honest'
   assert.match(html, /id="bookBtn"/);
   assert.match(html, /id="routePreviewBtn"/);
   assert.match(html, /illustrative/i);
-  assert.match(app, /Live booking is not connected yet/i);
+  assert.match(app, /Live route-based fares are not available yet/i);
 });
 
 test('LagosGo-native future services are not represented as live', () => {
