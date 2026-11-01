@@ -298,6 +298,14 @@
         <button class="auth-mode-toggle" type="button" id="driverInboxRefresh">Refresh offers</button>
         <div id="driverOfferList"></div>
       </section>
+      <button class="auth-mode-toggle" type="button" id="activeRideToggle" hidden>My active ride</button>
+      <section id="activeRidePanel" hidden aria-label="Your active LagosGo rides">
+        <h3>Your active ride</h3>
+        <p id="activeRideStatus" role="status" aria-live="polite">Refresh to check your current trip.</p>
+        <button class="auth-mode-toggle" type="button" id="activeRideRefresh">Refresh trip</button>
+        <div id="passengerActiveRideList"></div>
+        <div id="driverActiveRideList"></div>
+      </section>
       <p class="auth-footnote">Account access is enabled for the LagosGo pilot. Ride booking and driver dispatch are not yet enabled for real trips.</p>
     </form>
   </dialog>
