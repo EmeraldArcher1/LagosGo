@@ -34,3 +34,14 @@ test('acceptance is driver-authenticated, time-limited and atomically assigns ri
 test('passenger fare offer is extended to allow five-minute scheduler cadence',()=>{
   assert.match(sql,/new\.expires_at:=greatest\(coalesce\(new\.expires_at,now\(\)\),now\(\)\+interval '20 minutes'\)/);
 });
+
+test('public dispatch RPCs are invoker wrappers over private definer implementations',()=>{
+  assert.ok(sql.includes('function private.lagosgo_dispatch_create_offer_impl'));
+  assert.ok(sql.includes('function public.lagosgo_dispatch_create_offer'));
+  assert.ok(sql.includes('function private.lagosgo_list_my_dispatch_offers_impl'));
+  assert.ok(sql.includes('function public.lagosgo_list_my_dispatch_offers'));
+  assert.ok(sql.includes('function private.lagosgo_respond_to_dispatch_offer_impl'));
+  assert.ok(sql.includes('function public.lagosgo_respond_to_dispatch_offer'));
+  assert.ok(sql.includes('security invoker'));
+  assert.ok(sql.includes('grant usage on schema private to authenticated,service_role'));
+});
