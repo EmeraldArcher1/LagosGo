@@ -46,6 +46,6 @@ test('privileged SQL implementations stay in private schema behind invoker wrapp
 
 test('pickup PIN enforcement is rollout-safe for rides without an issued challenge',()=>{
   const rollout=fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261101110000_pickup_pin_graceful_rollout.sql'),'utf8');
-  assert.match(rollout,/exists\s*\(\s*select 1 from public\.ride_pickup_pin_challenges c\\s+where c\\.ride_id\\s*=\\s*new\\.id/s);
+  assert.match(rollout,/exists\s*\(\s*select 1 from public\.ride_pickup_pin_challenges c\s+where c\.ride_id\s*=\s*new\.id/s);
   assert.match(rollout,/pickup_pin_verification_required/);
 });
