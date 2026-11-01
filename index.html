@@ -52,6 +52,15 @@
         <g transform="translate(151 154)"><rect x="0" y="0" width="65" height="24" rx="12" fill="#171717"/><text x="32.5" y="15.5" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">18 min</text></g>
       </svg>
       <div id="mapCanvas" class="map-canvas" hidden aria-label="Interactive road map"></div>
+      <div class="map-tools" id="mapTools" hidden aria-label="Map display options">
+        <div class="map-layer-switch" role="group" aria-label="Map layer">
+          <button type="button" class="map-layer-btn active" data-map-type="roadmap" aria-pressed="true">Map</button>
+          <button type="button" class="map-layer-btn" data-map-type="satellite" aria-pressed="false">Satellite</button>
+          <button type="button" class="map-layer-btn" data-map-type="hybrid" aria-pressed="false">Hybrid</button>
+          <button type="button" class="map-layer-btn" data-map-type="terrain" aria-pressed="false">Terrain</button>
+        </div>
+        <a id="openGoogleMaps" class="map-external-link" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
+      </div>
       <div class="map-caption"><span id="mapCaptionText"><strong>Smart routes.</strong> Better journeys.</span><span class="map-legend"><i></i> Your route</span></div>
       <div id="routeSummary" class="route-summary" hidden aria-live="polite"></div>
       <div id="landmarkPanel" class="landmark-panel" hidden><div class="landmark-heading"><strong>Know the area</strong><span>Nearby landmarks</span></div><div id="landmarkList" class="landmark-list"></div></div>
