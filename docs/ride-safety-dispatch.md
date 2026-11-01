@@ -10,7 +10,7 @@
 ## Integration contract
 The ranking module is a primitive, not a live dispatcher. A trusted server worker must fetch eligible candidates, calculate road ETAs with the configured routing provider, provide normalised quality/fairness/reliability/direction values, rank candidates, then send sequential offers with a 20-second response window and atomic assignment. Never substitute straight-line distance for road ETA.
 
-## New Supabase RPCs
+Privileged implementation functions live in a non-exposed private schema; the public RPC entry points use invoker security and delegate only after validating the authenticated user inside the private function.\n\n## New Supabase RPCs
 - lagosgo_issue_pickup_pin(p_ride_id): passenger only; returns PIN and rotates any previous challenge.
 - lagosgo_verify_pickup_pin(p_ride_id, p_pin): assigned driver only; ride must be in arrived.
 - lagosgo_report_safety_incident(p_ride_id, p_incident_type, p_description): authenticated participant intake.
