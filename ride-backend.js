@@ -22,6 +22,12 @@
   const driverInboxStatus = document.getElementById('driverInboxStatus');
   const driverInboxRefresh = document.getElementById('driverInboxRefresh');
   const driverOfferList = document.getElementById('driverOfferList');
+  const activeRideToggle = document.getElementById('activeRideToggle');
+  const activeRidePanel = document.getElementById('activeRidePanel');
+  const activeRideStatus = document.getElementById('activeRideStatus');
+  const activeRideRefresh = document.getElementById('activeRideRefresh');
+  const passengerActiveRideList = document.getElementById('passengerActiveRideList');
+  const driverActiveRideList = document.getElementById('driverActiveRideList');
   let driverOfferPoll = null;
   let isSignUp = false;
   let client = null;
@@ -52,12 +58,15 @@
       signOut.hidden = false;
       setStatus('You are signed in.');
       if (driverInboxToggle) driverInboxToggle.hidden = false;
+      if (activeRideToggle) activeRideToggle.hidden = false;
     } else {
       setMode(false);
       modeToggle.hidden = false;
       submit.hidden = false;
       signOut.hidden = true;
       if (driverInboxToggle) driverInboxToggle.hidden = true;
+      if (activeRideToggle) activeRideToggle.hidden = true;
+      if (activeRidePanel) activeRidePanel.hidden = true;
       if (driverInbox) driverInbox.hidden = true;
       stopDriverOfferPolling();
     }
@@ -147,6 +156,11 @@
   }
   if (driverInboxToggle) driverInboxToggle.addEventListener('click',toggleDriverInbox);
   if (driverInboxRefresh) driverInboxRefresh.addEventListener('click',refreshDriverOffers);
+  if (activeRideToggle) activeRideToggle.addEventListener('click',() => {
+    activeRidePanel.hidden = !activeRidePanel.hidden;
+    if (!activeRidePanel.hidden) refreshActiveRides();
+  });
+  if (activeRideRefresh) activeRideRefresh.addEventListener('click',refreshActiveRides);
   dialog.addEventListener('close',stopDriverOfferPolling);
   document.getElementById('authClose').addEventListener('click', () => dialog.close());
   modeToggle.addEventListener('click', () => setMode(!isSignUp));
@@ -166,7 +180,9 @@
   function updateSession(session) {
     currentSession = session;
     if (driverInboxToggle) driverInboxToggle.hidden = !session;
+    if (activeRideToggle) activeRideToggle.hidden = !session;
     if (!session && driverInbox) driverInbox.hidden = true;
+    if (!session && activeRidePanel) activeRidePanel.hidden = true;
     if (!session) stopDriverOfferPolling();
     if (profileButton) {
       const label = session && session.user && session.user.email ? session.user.email.trim().charAt(0).toUpperCase() : 'U';
@@ -234,6 +250,100 @@
     client.auth.getSession().then(({ data }) => updateSession(data.session));
     client.auth.onAuthStateChange((_event, session) => updateSession(session));
   }
+
+  function moneyFromKobo(value) {
+    return new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',maximumFractionDigits:0}).format(Number(value || 0)/100);
+  }
+  function statusLabel(value) {
+    return ({accepted:'Driver accepted',driver_en_route:'Driver on the way',arrived:'Driver arrived',in_progress:'Trip in progress'})[value] || value;
+  }
+  function makeTripCard(ride, role) {
+    const card = document.createElement('article');
+    card.style.cssText = 'border:1px solid #ddd;border-radius:12px;padding:12px;margin:10px 0;background:#fff;color:#171717';
+    const heading = document.createElement('strong');
+    heading.textContent = (role === 'driver' ? 'Assigned trip · ' : 'Your booking · ') + statusLabel(ride.status);
+    const route = document.createElement('p');
+    route.textContent = ride.pickup_label + ' → ' + ride.destination_label;
+    const fare = document.createElement('p');
+    fare.textContent = 'Agreed fare: ' + moneyFromKobo(ride.confirmed_fare_kobo);
+    card.append(heading,route,fare);
+
+    if (role === 'passenger' && ['accepted','driver_en_route','arrived'].includes(ride.status)) {
+      const pinStatus = document.createElement('p');
+      pinStatus.className = 'pickup-pin-status';
+      pinStatus.setAttribute('role','status');
+      const issue = document.createElement('button');
+      issue.type = 'button'; issue.className = 'auth-mode-toggle'; issue.textContent = 'Generate pickup PIN';
+      issue.addEventListener('click',async () => {
+        issue.disabled = true; pinStatus.textContent = 'Generating a private pickup PIN…';
+        try {
+          const result = await window.lagosGoIssuePickupPin(ride.id);
+          pinStatus.textContent = 'Give this four-digit PIN to your assigned driver at pickup: ' + result.pickup_pin + '. It expires in 30 minutes.';
+          issue.textContent = 'Generate a new PIN';
+        } catch (error) { pinStatus.textContent = error.message || 'Could not generate the pickup PIN.'; }
+        finally { issue.disabled = false; }
+      });
+      card.append(issue,pinStatus);
+    }
+
+    if (role === 'driver') {
+      const actionStatus = document.createElement('p'); actionStatus.setAttribute('role','status');
+      const advance = async (nextStatus,button) => {
+        button.disabled = true; actionStatus.textContent = 'Updating trip…';
+        try { await window.lagosGoAdvanceRide(ride.id,nextStatus); actionStatus.textContent = 'Trip updated.'; await refreshActiveRides(); }
+        catch (error) { actionStatus.textContent = error.message || 'Could not update this trip.'; button.disabled = false; }
+      };
+      if (ride.status === 'accepted' || ride.status === 'driver_en_route') {
+        const next = ride.status === 'accepted' ? 'driver_en_route' : 'arrived';
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'auth-mode-toggle';
+        button.textContent = ride.status === 'accepted' ? 'Start driving to pickup' : 'I have arrived';
+        button.addEventListener('click',() => advance(next,button)); card.append(button);
+      } else if (ride.status === 'arrived') {
+        const label = document.createElement('label'); label.textContent = 'Passenger pickup PIN';
+        const input = document.createElement('input'); input.type = 'text'; input.inputMode = 'numeric';
+        input.autocomplete = 'one-time-code'; input.pattern = '[0-9]{4}'; input.maxLength = 4; input.placeholder = '4-digit PIN';
+        input.setAttribute('aria-label','Passenger four-digit pickup PIN'); label.append(input);
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'auth-mode-toggle'; button.textContent = 'Verify PIN & start trip';
+        button.addEventListener('click',async () => {
+          if (!/^[0-9]{4}$/.test(input.value)) { actionStatus.textContent = 'Enter the passenger’s four-digit PIN.'; return; }
+          button.disabled = true; actionStatus.textContent = 'Verifying passenger PIN…';
+          try {
+            const result = await window.lagosGoVerifyPickupPin(ride.id,input.value);
+            if (!result || result.ok === false) throw new Error('Pickup PIN was not verified. The trip has not started.');
+            await window.lagosGoAdvanceRide(ride.id,'in_progress');
+            actionStatus.textContent = 'PIN verified. Trip started.'; await refreshActiveRides();
+          } catch (error) { actionStatus.textContent = error.message || 'PIN verification failed.'; button.disabled = false; }
+        });
+        card.append(label,button);
+      } else if (ride.status === 'in_progress') {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'auth-mode-toggle';
+        button.textContent = 'Complete trip'; button.addEventListener('click',() => advance('completed',button)); card.append(button);
+      }
+      card.append(actionStatus);
+    }
+    return card;
+  }
+
+  async function refreshActiveRides() {
+    if (!currentSession || !activeRidePanel || activeRidePanel.hidden || !window.lagosGoListMyActiveRides) return;
+    activeRideStatus.textContent = 'Loading your active rides…';
+    passengerActiveRideList.replaceChildren(); driverActiveRideList.replaceChildren();
+    try {
+      const rides = await window.lagosGoListMyActiveRides();
+      const uid = currentSession.user.id;
+      const passengerRides = rides.filter(ride => ride.passenger_user_id === uid);
+      const driverRides = rides.filter(ride => ride.driver_user_id === uid);
+      passengerRides.forEach(ride => passengerActiveRideList.append(makeTripCard(ride,'passenger')));
+      driverRides.forEach(ride => driverActiveRideList.append(makeTripCard(ride,'driver')));
+      if (!passengerRides.length && !driverRides.length) activeRideStatus.textContent = 'No active rides are linked to this account.';
+      else {
+        activeRideStatus.textContent = 'Your active trip details are shown below. Refresh to check the latest status.';
+        if (passengerRides.length) { const h=document.createElement('h4'); h.textContent='Passenger'; passengerActiveRideList.prepend(h); }
+        if (driverRides.length) { const h=document.createElement('h4'); h.textContent='Driver'; driverActiveRideList.prepend(h); }
+      }
+    } catch (error) { activeRideStatus.textContent = error.message || 'Could not load active rides.'; }
+  }
+
   initialise();
 })();
 
@@ -284,7 +394,7 @@ window.lagosGoIssuePickupPin = async function (rideId) {
 window.lagosGoVerifyPickupPin = async function (rideId, pin) {
   const client = window.lagosGoSupabase;
   if (!client) throw new Error('Account service is still loading.');
-  if (typeof rideId !== 'string' || !rideId.trim() || !/^\\d{4}$/.test(String(pin || ''))) {
+  if (typeof rideId !== 'string' || !rideId.trim() || !/^\d{4}$/.test(String(pin || ''))) {
     throw new Error('Enter the four-digit pickup PIN and a valid ride ID.');
   }
   const { data, error } = await client.rpc('lagosgo_verify_pickup_pin', { p_ride_id: rideId, p_pin: String(pin) });
@@ -292,6 +402,28 @@ window.lagosGoVerifyPickupPin = async function (rideId, pin) {
   if (data && data.ok === false) throw new Error(data.error === 'pickup_pin_incorrect'
     ? 'That pickup PIN is incorrect. Attempts remaining: ' + data.attempts_remaining
     : 'Pickup PIN verification failed.');
+  return data;
+};
+
+window.lagosGoListMyActiveRides = async function () {
+  const client = window.lagosGoSupabase;
+  if (!client) throw new Error('Account service is still loading.');
+  const { data, error } = await client.from('rides')
+    .select('id,passenger_user_id,driver_user_id,status,pickup_label,destination_label,confirmed_fare_kobo,updated_at')
+    .in('status',['accepted','driver_en_route','arrived','in_progress'])
+    .order('updated_at',{ascending:false})
+    .limit(10);
+  if (error) throw new Error('Could not load your active trips. Please refresh and try again.');
+  return Array.isArray(data) ? data : [];
+};
+
+window.lagosGoAdvanceRide = async function (rideId, nextStatus, reason = null) {
+  const client = window.lagosGoSupabase;
+  const allowed = ['driver_en_route','arrived','in_progress','completed'];
+  if (!client) throw new Error('Account service is still loading.');
+  if (typeof rideId !== 'string' || !rideId.trim() || !allowed.includes(nextStatus)) throw new Error('A valid ride and trip status are required.');
+  const { data, error } = await client.rpc('lagosgo_advance_ride', { p_ride_id: rideId, p_next_status: nextStatus, p_reason: reason });
+  if (error) throw new Error('Trip status could not be updated. Confirm you are the assigned driver and retry.');
   return data;
 };
 
