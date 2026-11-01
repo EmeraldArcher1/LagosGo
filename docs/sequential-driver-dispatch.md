@@ -13,10 +13,9 @@
 - ETA is traffic-aware road ETA from Google Routes.
 - Fairness currently uses recent dispatch exposure (fewer recent offers scores higher).
 - No driver rating or completion-reliability dataset is currently present in the schema. Until those datasets exist, quality and reliability use neutral midpoint priors (3/5 and 0.5). Direction uses a neutral 0.5 because driver heading is not collected. These are explicit neutral priors, not claimed measured ratings.
-- The current route candidate cap is 25 per ride and 20 rides per worker invocation.
+- The current route candidate cap is 25 per ride and 3 rides per worker invocation. Candidate origins are pre-sorted by straight-line distance before the route-matrix call; final ranking always uses traffic-aware road ETA.
 
 ## Required Vercel environment variables
-- `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY` (server-only; never expose to browser)
 - `GOOGLE_MAPS_SERVER_KEY` (server-only, Routes API enabled)
 - `LAGOSGO_DISPATCH_CRON_SECRET` (long random secret)
