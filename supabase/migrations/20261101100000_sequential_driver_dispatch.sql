@@ -222,13 +222,13 @@ create or replace function public.lagosgo_dispatch_create_offer(
   p_ride_id uuid,p_driver_user_id uuid,p_road_eta_seconds integer,
   p_route_distance_meters integer,p_dispatch_score numeric
 ) returns jsonb language sql security invoker set search_path=''
-as $ select private.lagosgo_dispatch_create_offer_impl($1,$2,$3,$4,$5); $;
+as $$ select private.lagosgo_dispatch_create_offer_impl($1,$2,$3,$4,$5); $$;
 create or replace function public.lagosgo_list_my_dispatch_offers()
 returns jsonb language sql security invoker set search_path=''
-as $ select private.lagosgo_list_my_dispatch_offers_impl(); $;
+as $$ select private.lagosgo_list_my_dispatch_offers_impl(); $$;
 create or replace function public.lagosgo_respond_to_dispatch_offer(p_offer_id uuid,p_action text)
 returns jsonb language sql security invoker set search_path=''
-as $ select private.lagosgo_respond_to_dispatch_offer_impl($1,$2); $;
+as $$ select private.lagosgo_respond_to_dispatch_offer_impl($1,$2); $$;
 
 revoke all on function private.lagosgo_dispatch_create_offer_impl(uuid,uuid,integer,integer,numeric) from public,anon,authenticated;
 grant execute on function private.lagosgo_dispatch_create_offer_impl(uuid,uuid,integer,integer,numeric) to service_role;
