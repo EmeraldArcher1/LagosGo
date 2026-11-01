@@ -1,5 +1,8 @@
 -- LagosGo dispatch ranking and trip-start safety controls.
 -- Additive migration; does not enable public bookings or claim emergency response is staffed.
+create schema if not exists private;
+revoke all on schema private from public, anon;
+grant usage on schema private to authenticated;
 create table if not exists public.ride_pickup_pin_challenges (
   ride_id uuid primary key references public.rides(id) on delete cascade,
   pin_hash text not null, pin_salt uuid not null default gen_random_uuid(),
@@ -11,7 +14,7 @@ alter table public.ride_pickup_pin_challenges enable row level security;
 revoke all on public.ride_pickup_pin_challenges from anon, authenticated;
 grant all on public.ride_pickup_pin_challenges to service_role;
 
-create or replace function public.lagosgo_issue_pickup_pin(p_ride_id uuid)
+create or replace function private.lagosgo_issue_pickup_pin_impl(p_ride_id uuid)
 returns jsonb language plpgsql security definer set search_path = ''
 as $$
 declare v_uid uuid:=auth.uid(); v_ride public.rides%rowtype; v_pin text; v_salt uuid:=gen_random_uuid(); v_random bytea;
@@ -38,7 +41,7 @@ begin
 end;
 $$;
 
-create or replace function public.lagosgo_verify_pickup_pin(p_ride_id uuid,p_pin text)
+create or replace function private.lagosgo_verify_pickup_pin_impl(p_ride_id uuid,p_pin text)
 returns jsonb language plpgsql security definer set search_path = ''
 as $$
 declare v_uid uuid:=auth.uid(); v_ride public.rides%rowtype; v_challenge public.ride_pickup_pin_challenges%rowtype;
@@ -64,7 +67,7 @@ begin
 end;
 $$;
 
-create or replace function public.lagosgo_require_verified_pickup_pin()
+create or replace function private.lagosgo_require_verified_pickup_pin()
 returns trigger language plpgsql security definer set search_path = ''
 as $$
 begin
@@ -77,9 +80,9 @@ end;
 $$;
 drop trigger if exists rides_require_verified_pickup_pin on public.rides;
 create trigger rides_require_verified_pickup_pin before update of status on public.rides
-for each row execute function public.lagosgo_require_verified_pickup_pin();
+for each row execute function private.lagosgo_require_verified_pickup_pin();
 
-create or replace function public.lagosgo_report_safety_incident(p_ride_id uuid,p_incident_type text,p_description text)
+create or replace function private.lagosgo_report_safety_incident_impl(p_ride_id uuid,p_incident_type text,p_description text)
 returns jsonb language plpgsql security definer set search_path = ''
 as $$
 declare v_uid uuid:=auth.uid(); v_incident_id uuid; v_severity text;
@@ -103,12 +106,29 @@ begin
 end;
 $$;
 
+create or replace function public.lagosgo_issue_pickup_pin(p_ride_id uuid)
+returns jsonb language sql security invoker set search_path = ''
+as $ select private.lagosgo_issue_pickup_pin_impl(p_ride_id); $;
+create or replace function public.lagosgo_verify_pickup_pin(p_ride_id uuid,p_pin text)
+returns jsonb language sql security invoker set search_path = ''
+as $ select private.lagosgo_verify_pickup_pin_impl(p_ride_id,p_pin); $;
+create or replace function public.lagosgo_report_safety_incident(p_ride_id uuid,p_incident_type text,p_description text)
+returns jsonb language sql security invoker set search_path = ''
+as $ select private.lagosgo_report_safety_incident_impl(p_ride_id,p_incident_type,p_description); $;
+
+revoke all on function private.lagosgo_issue_pickup_pin_impl(uuid) from public,anon;
+grant execute on function private.lagosgo_issue_pickup_pin_impl(uuid) to authenticated;
+revoke all on function private.lagosgo_verify_pickup_pin_impl(uuid,text) from public,anon;
+grant execute on function private.lagosgo_verify_pickup_pin_impl(uuid,text) to authenticated;
+revoke all on function private.lagosgo_report_safety_incident_impl(uuid,text,text) from public,anon;
+grant execute on function private.lagosgo_report_safety_incident_impl(uuid,text,text) to authenticated;
+revoke all on function private.lagosgo_require_verified_pickup_pin() from public,anon,authenticated;
+
 revoke all on function public.lagosgo_issue_pickup_pin(uuid) from public,anon;
 grant execute on function public.lagosgo_issue_pickup_pin(uuid) to authenticated;
 revoke all on function public.lagosgo_verify_pickup_pin(uuid,text) from public,anon;
 grant execute on function public.lagosgo_verify_pickup_pin(uuid,text) to authenticated;
 revoke all on function public.lagosgo_report_safety_incident(uuid,text,text) from public,anon;
 grant execute on function public.lagosgo_report_safety_incident(uuid,text,text) to authenticated;
-revoke all on function public.lagosgo_require_verified_pickup_pin() from public,anon,authenticated;
 comment on table public.ride_pickup_pin_challenges is 'Short-lived hashed pickup PIN challenges. Raw PIN is returned only to the passenger when issued.';
 comment on function public.lagosgo_report_safety_incident(uuid,text,text) is 'Authenticated participant incident intake; not a live emergency dispatch guarantee.';
