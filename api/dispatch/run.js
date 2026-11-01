@@ -1,6 +1,6 @@
 const { rankDrivers } = require('../../lib/dispatch');
 
-const MAX_RIDES_PER_RUN = 20;
+const MAX_RIDES_PER_RUN = 3;
 const MAX_CANDIDATES_PER_RIDE = 25;
 const MAX_DRIVER_AGE_MS = 3 * 60 * 1000;
 const MAX_PICKUP_RADIUS_KM = 5;
@@ -136,11 +136,13 @@ function createHandler(deps = {}) {
         if (!passengerOffer) continue;
 
         const attempted = attemptsByRide.get(ride.id) || new Set();
-        const nearby = drivers.filter(driver =>
-          !attempted.has(driver.user_id) &&
-          haversineKm(driver.last_location_latitude, driver.last_location_longitude,
-            ride.pickup_latitude, ride.pickup_longitude) <= MAX_PICKUP_RADIUS_KM
-        ).slice(0, MAX_CANDIDATES_PER_RIDE);
+        const nearby = drivers.map(driver => ({
+          ...driver,
+          pickupDistanceKm: haversineKm(driver.last_location_latitude, driver.last_location_longitude,
+            ride.pickup_latitude, ride.pickup_longitude)
+        })).filter(driver => !attempted.has(driver.user_id) && driver.pickupDistanceKm <= MAX_PICKUP_RADIUS_KM)
+          .sort((a,b) => a.pickupDistanceKm-b.pickupDistanceKm)
+          .slice(0, MAX_CANDIDATES_PER_RIDE);
         if (!nearby.length) {
           results.push({ ride_id: ride.id, result: 'no_eligible_driver_in_radius' });
           continue;
