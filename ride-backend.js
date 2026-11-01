@@ -17,6 +17,12 @@
   const modeToggle = document.getElementById('authModeToggle');
   const signOut = document.getElementById('authSignOut');
   const profileButton = document.getElementById('profileBtn');
+  const driverInboxToggle = document.getElementById('driverInboxToggle');
+  const driverInbox = document.getElementById('driverInbox');
+  const driverInboxStatus = document.getElementById('driverInboxStatus');
+  const driverInboxRefresh = document.getElementById('driverInboxRefresh');
+  const driverOfferList = document.getElementById('driverOfferList');
+  let driverOfferPoll = null;
   let isSignUp = false;
   let client = null;
   let currentSession = null;
@@ -44,18 +50,104 @@
       modeToggle.hidden = true;
       submit.hidden = true;
       signOut.hidden = false;
-      setStatus('You are signed in. Live ride booking is not enabled yet.');
+      setStatus('You are signed in.');
+      if (driverInboxToggle) driverInboxToggle.hidden = false;
     } else {
       setMode(false);
       modeToggle.hidden = false;
       submit.hidden = false;
       signOut.hidden = true;
+      if (driverInboxToggle) driverInboxToggle.hidden = true;
+      if (driverInbox) driverInbox.hidden = true;
+      stopDriverOfferPolling();
     }
     if (typeof dialog.showModal === 'function' && !dialog.open) dialog.showModal();
     else dialog.setAttribute('open', '');
   }
   window.lagosGoOpenAuth = openAuth;
 
+  function stopDriverOfferPolling() {
+    if (driverOfferPoll) clearInterval(driverOfferPoll);
+    driverOfferPoll = null;
+  }
+  function renderDriverOffers(offers) {
+    driverOfferList.replaceChildren();
+    if (!offers.length) {
+      driverInboxStatus.textContent = 'No active dispatch offers right now. Keep your driver availability and location up to date.';
+      return;
+    }
+    driverInboxStatus.textContent = offers.length + ' active offer' + (offers.length === 1 ? '' : 's');
+    offers.forEach(offer => {
+      const card = document.createElement('article');
+      card.style.cssText = 'border:1px solid #ddd;border-radius:12px;padding:12px;margin:10px 0;background:#fff;color:#171717';
+      const title = document.createElement('strong');
+      title.textContent = 'Pickup: ' + offer.pickup_label;
+      const destination = document.createElement('p');
+      destination.textContent = 'Destination: ' + offer.destination_label;
+      const details = document.createElement('p');
+      const fare = new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',maximumFractionDigits:0}).format(Number(offer.passenger_offer_kobo)/100);
+      details.textContent = fare + ' · about ' + Math.max(1,Math.round(Number(offer.road_eta_seconds)/60)) + ' min to pickup · expires ' + new Date(offer.expires_at).toLocaleTimeString();
+      const actions = document.createElement('div');
+      actions.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+      const accept = document.createElement('button');
+      accept.type = 'button';
+      accept.textContent = 'Accept ride';
+      accept.className = 'lead-submit';
+      const decline = document.createElement('button');
+      decline.type = 'button';
+      decline.textContent = 'Decline';
+      decline.className = 'auth-mode-toggle';
+      accept.addEventListener('click', async () => {
+        accept.disabled = decline.disabled = true;
+        driverInboxStatus.textContent = 'Confirming your acceptance…';
+        try {
+          await window.lagosGoRespondToDispatchOffer(offer.offer_id,'accept');
+          driverInboxStatus.textContent = 'Ride accepted. Open your active trip to continue.';
+          await refreshDriverOffers();
+        } catch (error) {
+          driverInboxStatus.textContent = error.message || 'Could not accept this offer.';
+          accept.disabled = decline.disabled = false;
+        }
+      });
+      decline.addEventListener('click', async () => {
+        accept.disabled = decline.disabled = true;
+        try {
+          await window.lagosGoRespondToDispatchOffer(offer.offer_id,'decline');
+          await refreshDriverOffers();
+        } catch (error) {
+          driverInboxStatus.textContent = error.message || 'Could not decline this offer.';
+          accept.disabled = decline.disabled = false;
+        }
+      });
+      actions.append(accept,decline);
+      card.append(title,destination,details,actions);
+      driverOfferList.append(card);
+    });
+  }
+  async function refreshDriverOffers() {
+    if (!currentSession || !driverInbox || driverInbox.hidden) return;
+    try {
+      const offers = await window.lagosGoListDispatchOffers();
+      renderDriverOffers(offers);
+    } catch (_error) {
+      driverInboxStatus.textContent = 'Driver offers are available only to approved LagosGo driver accounts. If your driver profile is pending, contact the pilot team.';
+      driverOfferList.replaceChildren();
+      stopDriverOfferPolling();
+    }
+  }
+  function toggleDriverInbox() {
+    driverInbox.hidden = !driverInbox.hidden;
+    if (driverInbox.hidden) {
+      stopDriverOfferPolling();
+      return;
+    }
+    refreshDriverOffers();
+    stopDriverOfferPolling();
+    driverOfferPoll = setInterval(refreshDriverOffers,10000);
+  }
+  if (driverInboxToggle) driverInboxToggle.addEventListener('click',toggleDriverInbox);
+  if (driverInboxRefresh) driverInboxRefresh.addEventListener('click',refreshDriverOffers);
+  dialog.addEventListener('close',stopDriverOfferPolling);
   document.getElementById('authClose').addEventListener('click', () => dialog.close());
   modeToggle.addEventListener('click', () => setMode(!isSignUp));
   signOut.addEventListener('click', async () => {
@@ -65,11 +157,17 @@
     signOut.disabled = false;
     if (error) return setStatus('Could not sign out. Please try again.', true);
     setStatus('You have signed out.');
+    if (driverInboxToggle) driverInboxToggle.hidden = true;
+    if (driverInbox) driverInbox.hidden = true;
+    stopDriverOfferPolling();
     dialog.close();
   });
 
   function updateSession(session) {
     currentSession = session;
+    if (driverInboxToggle) driverInboxToggle.hidden = !session;
+    if (!session && driverInbox) driverInbox.hidden = true;
+    if (!session) stopDriverOfferPolling();
     if (profileButton) {
       const label = session && session.user && session.user.email ? session.user.email.trim().charAt(0).toUpperCase() : 'U';
       profileButton.textContent = label || 'U';
