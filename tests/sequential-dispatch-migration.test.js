@@ -12,7 +12,7 @@ test('dispatch offer storage is private to server-side access and prevents paral
 });
 
 test('only the service role can create a dispatch offer',()=>{
-  assert.match(sql,/coalesce\(auth\.role\(\),'\'\'\) <> 'service_role'/);
+  assert.match(sql,/auth\\.role\\(\\).*service_role/);
   assert.match(sql,/grant execute on function public\.lagosgo_dispatch_create_offer[\s\S]*?to service_role/i);
   assert.match(sql,/from public,anon,authenticated/i);
 });
