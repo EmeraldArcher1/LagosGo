@@ -108,13 +108,13 @@ $$;
 
 create or replace function public.lagosgo_issue_pickup_pin(p_ride_id uuid)
 returns jsonb language sql security invoker set search_path = ''
-as $ select private.lagosgo_issue_pickup_pin_impl(p_ride_id); $;
+as $$ select private.lagosgo_issue_pickup_pin_impl(p_ride_id); $$;
 create or replace function public.lagosgo_verify_pickup_pin(p_ride_id uuid,p_pin text)
 returns jsonb language sql security invoker set search_path = ''
-as $ select private.lagosgo_verify_pickup_pin_impl(p_ride_id,p_pin); $;
+as $$ select private.lagosgo_verify_pickup_pin_impl(p_ride_id,p_pin); $$;
 create or replace function public.lagosgo_report_safety_incident(p_ride_id uuid,p_incident_type text,p_description text)
 returns jsonb language sql security invoker set search_path = ''
-as $ select private.lagosgo_report_safety_incident_impl(p_ride_id,p_incident_type,p_description); $;
+as $$ select private.lagosgo_report_safety_incident_impl(p_ride_id,p_incident_type,p_description); $$;
 
 revoke all on function private.lagosgo_issue_pickup_pin_impl(uuid) from public,anon;
 grant execute on function private.lagosgo_issue_pickup_pin_impl(uuid) to authenticated;
