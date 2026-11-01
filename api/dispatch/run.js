@@ -87,7 +87,7 @@ function createHandler(deps = {}) {
     const supplied = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     if (!secret || supplied !== secret) return res.status(401).json({ error: 'unauthorized' });
 
-    const base = String(process.env.SUPABASE_URL || '').replace(/\/$/, '');
+    const base = String(process.env.SUPABASE_URL || 'https://kzbzbkxeuaxyjmenbgaf.supabase.co').replace(/\/$/, '');
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const mapsKey = process.env.GOOGLE_MAPS_SERVER_KEY;
     if (!base || !serviceKey || !mapsKey) {
