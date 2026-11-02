@@ -1,4 +1,5 @@
 (() => {
+  window.LAGOSGO_RIDE_MUTATIONS_ENABLED = false;
   const toast = document.getElementById('toast');
   let toastTimer;
   function notify(message) {
@@ -17,10 +18,14 @@
       button.classList.add('selected');
       button.setAttribute('aria-pressed', 'true');
       selectedRide = {name:button.dataset.ride, price:Number(button.dataset.price)};
-      document.querySelector('.book-button > span:first-child').textContent = 'Confirm ' + selectedRide.name;
+      document.querySelector('.book-button > span:first-child').textContent = window.LAGOSGO_RIDE_MUTATIONS_ENABLED === true ? 'Confirm ' + selectedRide.name : 'Booking disabled';
     });
   });
   document.getElementById('bookBtn').addEventListener('click', async () => {
+    if (window.LAGOSGO_RIDE_MUTATIONS_ENABLED !== true) {
+      notify('Ride booking is disabled in this environment. No ride request has been submitted.');
+      return;
+    }
     const destination = document.getElementById('destination').value.trim();
     const pickup = document.getElementById('pickup').value.trim();
     if (!pickup || !destination) {
@@ -280,6 +285,39 @@
   const landmarkPanel = document.getElementById('landmarkPanel');
   const directionsPanel = document.getElementById('directionsPanel');
   const mapAttribution = document.getElementById('mapAttribution');
+  const mapTools = document.getElementById('mapTools');
+  const googleMapsLink = document.getElementById('openGoogleMaps');
+  const mapLayerSwitch = document.querySelector('.map-layer-switch');
+
+  function updateGoogleMapsLink() {
+    const pickupText = document.getElementById('pickup').value.trim();
+    const destinationText = document.getElementById('destination').value.trim();
+    const origin = pickupCoordinates
+      ? pickupCoordinates.latitude + ',' + pickupCoordinates.longitude
+      : pickupText;
+    const destination = destinationCoordinates
+      ? destinationCoordinates.latitude + ',' + destinationCoordinates.longitude
+      : destinationText;
+    if (!origin || !destination) {
+      googleMapsLink.href = 'https://www.google.com/maps';
+      return;
+    }
+    const params = new URLSearchParams({api:'1', origin, destination, travelmode:'driving'});
+    googleMapsLink.href = 'https://www.google.com/maps/dir/?' + params.toString();
+  }
+
+  document.querySelectorAll('[data-map-type]').forEach(button => {
+    button.addEventListener('click', () => {
+      if (!googleMapsReady || !googleMap) return;
+      googleMap.setMapTypeId(button.dataset.mapType);
+      document.querySelectorAll('[data-map-type]').forEach(item => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+    });
+  });
+  googleMapsLink.addEventListener('click', updateGoogleMapsLink);
 
   function formatDuration(seconds) {
     if (!Number.isFinite(seconds) || seconds < 0) return '—';
@@ -359,6 +397,15 @@
     try {
       const response = await fetch('/api/maps/config', {cache:'no-store'});
       const config = await response.json();
+      window.LAGOSGO_RIDE_MUTATIONS_ENABLED = config.rideMutationsEnabled === true;
+      const bookingButton = document.getElementById('bookBtn');
+      if (bookingButton) {
+        bookingButton.disabled = !window.LAGOSGO_RIDE_MUTATIONS_ENABLED;
+        bookingButton.querySelector('.button-arrow').textContent = window.LAGOSGO_RIDE_MUTATIONS_ENABLED ? '→' : 'Preview';
+        bookingButton.querySelector('span:first-child').textContent = window.LAGOSGO_RIDE_MUTATIONS_ENABLED
+          ? 'Confirm ' + selectedRide.name
+          : 'Booking disabled';
+      }
       if (!config.browserKey) {
         mapAttribution.textContent = 'Interactive map needs GOOGLE_MAPS_BROWSER_KEY in Vercel. Route calculations also need GOOGLE_MAPS_SERVER_KEY. The sample map is illustrative.';
         return;
@@ -369,11 +416,13 @@
       script.onload = () => {
         try {
           googleMap = new google.maps.Map(mapCanvas, {
-            center: {lat:6.5244,lng:3.3792}, zoom:11, mapTypeControl:false,
+            center: {lat:6.5244,lng:3.3792}, zoom:11, mapTypeId:google.maps.MapTypeId.ROADMAP, mapTypeControl:false,
             streetViewControl:false, fullscreenControl:false, clickableIcons:true,
             gestureHandling:'cooperative'
           });
           googleMapsReady = true;
+          mapTools.hidden = false;
+          mapLayerSwitch.hidden = false;
           try {
             if (google.maps.places && google.maps.places.Autocomplete) {
               const lagosBounds = new google.maps.LatLngBounds(
@@ -445,6 +494,9 @@
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Route service unavailable');
       showRouteStats(data);
+      mapTools.hidden = false;
+      mapLayerSwitch.hidden = !googleMapsReady;
+      updateGoogleMapsLink();
       renderDirections(data.steps || []);
       document.getElementById('mapCaptionText').textContent = 'Calculated road route · ' + formatDistance(data.distanceMeters);
       routeStatus.textContent = 'Route calculated. This is the trip estimate between pickup and destination—not the driver’s arrival time.';

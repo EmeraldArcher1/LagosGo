@@ -1,0 +1,52 @@
+name: LagosGo dispatch scheduler
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lagosgo-dispatch-worker
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    # Three bounded calls with 95-second gaps fit within this job budget.
+    # This lets the worker expire a 90-second offer before selecting the next driver.
+    timeout-minutes: 5
+    steps:
+      - name: Invoke secured dispatch worker with bounded sequential retries
+        env:
+          DISPATCH_URL: ${{ secrets.LAGOSGO_DISPATCH_URL }}
+          DISPATCH_SECRET: ${{ secrets.LAGOSGO_DISPATCH_CRON_SECRET }}
+          MAX_SEQUENTIAL_ATTEMPTS: "3"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$DISPATCH_URL" || -z "$DISPATCH_SECRET" ]]; then
+            echo "::notice::Dispatch scheduler is installed but inactive. Add LAGOSGO_DISPATCH_URL and LAGOSGO_DISPATCH_CRON_SECRET repository secrets."
+            exit 0
+          fi
+
+          case "$DISPATCH_URL" in
+            https://*) ;;
+            *) echo "::error::LAGOSGO_DISPATCH_URL must be an HTTPS URL"; exit 1 ;;
+          esac
+
+          # Never print the URL or bearer secret. A failed HTTP response stops the
+          # loop immediately; a successful worker pass is followed by the offer TTL.
+          for attempt in $(seq 1 "$MAX_SEQUENTIAL_ATTEMPTS"); do
+            echo "Dispatch pass $attempt of $MAX_SEQUENTIAL_ATTEMPTS"
+            curl --fail --silent --show-error --max-time 30 \
+              -H "Authorization: Bearer $DISPATCH_SECRET" \
+              "$DISPATCH_URL"
+
+            if [[ "$attempt" -lt "$MAX_SEQUENTIAL_ATTEMPTS" ]]; then
+              sleep 95
+            fi
+          done

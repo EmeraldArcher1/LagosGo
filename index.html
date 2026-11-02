@@ -52,6 +52,15 @@
         <g transform="translate(151 154)"><rect x="0" y="0" width="65" height="24" rx="12" fill="#171717"/><text x="32.5" y="15.5" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">18 min</text></g>
       </svg>
       <div id="mapCanvas" class="map-canvas" hidden aria-label="Interactive road map"></div>
+      <div class="map-tools" id="mapTools" hidden aria-label="Map display options">
+        <div class="map-layer-switch" role="group" aria-label="Map layer">
+          <button type="button" class="map-layer-btn active" data-map-type="roadmap" aria-pressed="true">Map</button>
+          <button type="button" class="map-layer-btn" data-map-type="satellite" aria-pressed="false">Satellite</button>
+          <button type="button" class="map-layer-btn" data-map-type="hybrid" aria-pressed="false">Hybrid</button>
+          <button type="button" class="map-layer-btn" data-map-type="terrain" aria-pressed="false">Terrain</button>
+        </div>
+        <a id="openGoogleMaps" class="map-external-link" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
+      </div>
       <div class="map-caption"><span id="mapCaptionText"><strong>Smart routes.</strong> Better journeys.</span><span class="map-legend"><i></i> Your route</span></div>
       <div id="routeSummary" class="route-summary" hidden aria-live="polite"></div>
       <div id="landmarkPanel" class="landmark-panel" hidden><div class="landmark-heading"><strong>Know the area</strong><span>Nearby landmarks</span></div><div id="landmarkList" class="landmark-list"></div></div>
@@ -75,7 +84,7 @@
         <button class="ride-option" data-ride="Go XL" data-price="6100" aria-pressed="false"><span class="car-icon">🚐</span><span class="ride-name">Go XL</span><span class="ride-detail">More space</span><strong>₦6,100</strong><span class="eta">ETA after match</span></button>
       </div>
       <div class="fare-note"><span class="shield">✓</span><span><strong>Price shown upfront.</strong> No surprise platform fees.</span><button id="fareInfo" aria-label="About fair fares">i</button></div>
-      <button class="book-button" id="bookBtn"><span>Confirm pickup</span><span class="button-arrow">→</span></button>
+      <button class="book-button" id="bookBtn" disabled><span>Booking disabled</span><span class="button-arrow">Preview</span></button>
       <p class="demo-note">Preview mode · fares and routes are illustrative, not live quotes.</p>
     </section>
 
@@ -271,7 +280,7 @@
     </nav>
   </main>
 
-  <footer style="background:#101010;color:#f2f2f2;padding:24px 20px 100px;line-height:1.8;font-size:14px"><strong>LagosGo</strong><br>Move people. Move parcels. Move Lagos.<br>Lagos, Nigeria<br>Email: <a style="color:#f5c400" href="mailto:posh9jaexport@gmail.com">posh9jaexport@gmail.com</a><br>Phone/WhatsApp: <a style="color:#f5c400" href="https://wa.me/2348113657972">+234 811 365 7972</a></footer>
+  <footer style="background:#101010;color:#f2f2f2;padding:24px 20px 100px;line-height:1.8;font-size:14px"><strong>LagosGo</strong><br>Move people. Move parcels. Move Lagos.<br>Lagos, Nigeria<br>Support contact details will be published before pilot ride bookings open.</footer>
 
   <dialog class="auth-dialog" id="authDialog" aria-labelledby="authTitle">
     <form id="authForm" class="auth-form">
@@ -291,6 +300,21 @@
       <button class="lead-submit" type="submit" id="authSubmit">Sign in <span>→</span></button>
       <button class="auth-mode-toggle" type="button" id="authModeToggle">New to LagosGo? Create an account</button>\n      <button class="auth-mode-toggle" type="button" id="authSignOut" hidden>Sign out</button>
       <p class="auth-status" id="authStatus" role="status" aria-live="polite"></p>
+      <button class="auth-mode-toggle" type="button" id="driverInboxToggle" hidden>Driver offers</button>
+      <section id="driverInbox" hidden aria-label="Driver dispatch offers">
+        <h3>Available ride offers</h3>
+        <p id="driverInboxStatus" role="status" aria-live="polite">Refresh to check for a dispatch offer.</p>
+        <button class="auth-mode-toggle" type="button" id="driverInboxRefresh">Refresh offers</button>
+        <div id="driverOfferList"></div>
+      </section>
+      <button class="auth-mode-toggle" type="button" id="activeRideToggle" hidden>My active ride</button>
+      <section id="activeRidePanel" hidden aria-label="Your active LagosGo rides">
+        <h3>Your active ride</h3>
+        <p id="activeRideStatus" role="status" aria-live="polite">Refresh to check your current trip.</p>
+        <button class="auth-mode-toggle" type="button" id="activeRideRefresh">Refresh trip</button>
+        <div id="passengerActiveRideList"></div>
+        <div id="driverActiveRideList"></div>
+      </section>
       <p class="auth-footnote">Account access is enabled for the LagosGo pilot. Ride booking and driver dispatch are not yet enabled for real trips.</p>
     </form>
   </dialog>
