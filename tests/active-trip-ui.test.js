@@ -34,3 +34,10 @@ test('driver trip transitions use the authenticated ride status RPC',()=>{
   assert.match(backend,/driver_en_route/);
   assert.match(backend,/completed/);
 });
+
+test('pickup PIN writes are guarded while the preview is read-only', () => {
+  assert.match(backend, /requireRideMutationsEnabled\(\);/);
+  assert.match(backend, /client\.rpc\('lagosgo_issue_pickup_pin'/);
+  assert.match(backend, /client\.rpc\('lagosgo_verify_pickup_pin'/);
+  assert.match(backend, /Pickup PIN disabled in read-only preview/);
+});

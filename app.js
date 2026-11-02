@@ -1,4 +1,5 @@
 (() => {
+  window.LAGOSGO_RIDE_MUTATIONS_ENABLED = false;
   const toast = document.getElementById('toast');
   let toastTimer;
   function notify(message) {
@@ -17,10 +18,14 @@
       button.classList.add('selected');
       button.setAttribute('aria-pressed', 'true');
       selectedRide = {name:button.dataset.ride, price:Number(button.dataset.price)};
-      document.querySelector('.book-button > span:first-child').textContent = 'Confirm ' + selectedRide.name;
+      document.querySelector('.book-button > span:first-child').textContent = window.LAGOSGO_RIDE_MUTATIONS_ENABLED === true ? 'Confirm ' + selectedRide.name : 'Booking disabled';
     });
   });
   document.getElementById('bookBtn').addEventListener('click', async () => {
+    if (window.LAGOSGO_RIDE_MUTATIONS_ENABLED !== true) {
+      notify('Ride booking is disabled in this environment. No ride request has been submitted.');
+      return;
+    }
     const destination = document.getElementById('destination').value.trim();
     const pickup = document.getElementById('pickup').value.trim();
     if (!pickup || !destination) {
@@ -392,6 +397,15 @@
     try {
       const response = await fetch('/api/maps/config', {cache:'no-store'});
       const config = await response.json();
+      window.LAGOSGO_RIDE_MUTATIONS_ENABLED = config.rideMutationsEnabled === true;
+      const bookingButton = document.getElementById('bookBtn');
+      if (bookingButton) {
+        bookingButton.disabled = !window.LAGOSGO_RIDE_MUTATIONS_ENABLED;
+        bookingButton.querySelector('.button-arrow').textContent = window.LAGOSGO_RIDE_MUTATIONS_ENABLED ? '→' : 'Preview';
+        bookingButton.querySelector('span:first-child').textContent = window.LAGOSGO_RIDE_MUTATIONS_ENABLED
+          ? 'Confirm ' + selectedRide.name
+          : 'Booking disabled';
+      }
       if (!config.browserKey) {
         mapAttribution.textContent = 'Interactive map needs GOOGLE_MAPS_BROWSER_KEY in Vercel. Route calculations also need GOOGLE_MAPS_SERVER_KEY. The sample map is illustrative.';
         return;

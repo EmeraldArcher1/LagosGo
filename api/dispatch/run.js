@@ -4,6 +4,8 @@ const MAX_RIDES_PER_RUN = 3;
 const MAX_CANDIDATES_PER_RIDE = 25;
 const MAX_DRIVER_AGE_MS = 3 * 60 * 1000;
 const MAX_PICKUP_RADIUS_KM = 5;
+// Current schema has no verified driver-document or service-zone source. Keep dispatch fail-closed.
+const DISPATCH_ELIGIBILITY_READY = false;
 
 function haversineKm(aLat, aLng, bLat, bLng) {
   const rad = value => value * Math.PI / 180;
@@ -86,8 +88,11 @@ function createHandler(deps = {}) {
     const secret = process.env.LAGOSGO_DISPATCH_CRON_SECRET;
     const supplied = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     if (!secret || supplied !== secret) return res.status(401).json({ error: 'unauthorized' });
+    if (process.env.VERCEL_ENV !== 'production' || process.env.LAGOSGO_DISPATCH_ENABLED !== 'true') {
+      return res.status(503).json({ error: 'dispatch_disabled' });
+    }
 
-    const base = String(process.env.SUPABASE_URL || process.env.POSTGRES_HOST_SUPABASE_URL || 'https://kzbzbkxeuaxyjmenbgaf.supabase.co').replace(/\/$/, '');
+    const base = String(process.env.SUPABASE_URL || process.env.POSTGRES_HOST_SUPABASE_URL || '').replace(/\/$/, '');
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.POSTGRES_HOST_SUPABASE_SERVICE_ROLE_KEY;
     const mapsKey = process.env.GOOGLE_MAPS_SERVER_KEY;
     if (!base || !serviceKey || !mapsKey) {
@@ -96,6 +101,10 @@ function createHandler(deps = {}) {
         ...(!serviceKey ? ['SUPABASE_SERVICE_ROLE_KEY'] : []),
         ...(!mapsKey ? ['GOOGLE_MAPS_SERVER_KEY'] : [])
       ] });
+    }
+
+    if (!DISPATCH_ELIGIBILITY_READY) {
+      return res.status(503).json({ error: 'dispatch_eligibility_not_configured', missing: ['driver_document_verification', 'service_zone_membership'] });
     }
 
     const rest = (path, options) => restRequest(base, serviceKey, path, options);
@@ -167,8 +176,6 @@ function createHandler(deps = {}) {
             isAvailable: true,
             driverApproved: true,
             vehicleApproved: true,
-            documentsCurrent: true,
-            inServiceZone: true,
             locationUpdatedAt: new Date(driver.location_updated_at).getTime(),
             roadEtaSeconds: etaSeconds,
             routeDistanceMeters: Math.round(distanceMeters)

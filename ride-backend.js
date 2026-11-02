@@ -1,3 +1,9 @@
+function requireRideMutationsEnabled() {
+  if (window.LAGOSGO_RIDE_MUTATIONS_ENABLED !== true) {
+    throw new Error('Ride actions are disabled in this environment. No production ride data was changed.');
+  }
+}
+
 (() => {
   const dialog = document.getElementById('authDialog');
   const form = document.getElementById('authForm');
@@ -85,7 +91,9 @@
       driverInboxStatus.textContent = 'No active dispatch offers right now. Keep your driver availability and location up to date.';
       return;
     }
-    driverInboxStatus.textContent = offers.length + ' active offer' + (offers.length === 1 ? '' : 's');
+    const mutationsEnabled = window.LAGOSGO_RIDE_MUTATIONS_ENABLED === true;
+    driverInboxStatus.textContent = offers.length + ' active offer' + (offers.length === 1 ? '' : 's') +
+      (mutationsEnabled ? '' : ' · read-only preview; accept/decline disabled');
     offers.forEach(offer => {
       const card = document.createElement('article');
       card.style.cssText = 'border:1px solid #ddd;border-radius:12px;padding:12px;margin:10px 0;background:#fff;color:#171717';
@@ -106,6 +114,7 @@
       decline.type = 'button';
       decline.textContent = 'Decline';
       decline.className = 'auth-mode-toggle';
+      accept.disabled = decline.disabled = !mutationsEnabled;
       accept.addEventListener('click', async () => {
         accept.disabled = decline.disabled = true;
         driverInboxStatus.textContent = 'Confirming your acceptance…';
@@ -273,7 +282,11 @@
       pinStatus.className = 'pickup-pin-status';
       pinStatus.setAttribute('role','status');
       const issue = document.createElement('button');
-      issue.type = 'button'; issue.className = 'auth-mode-toggle'; issue.textContent = 'Generate pickup PIN';
+      const mutationsEnabled = window.LAGOSGO_RIDE_MUTATIONS_ENABLED === true;
+      issue.type = 'button'; issue.className = 'auth-mode-toggle';
+      issue.disabled = !mutationsEnabled;
+      issue.textContent = mutationsEnabled ? 'Generate pickup PIN' : 'Pickup PIN disabled in read-only preview';
+      if (!mutationsEnabled) pinStatus.textContent = 'PIN issuance is disabled until an isolated test database and explicit pilot activation are available.';
       issue.addEventListener('click',async () => {
         issue.disabled = true; pinStatus.textContent = 'Generating a private pickup PIN…';
         try {
@@ -287,7 +300,9 @@
     }
 
     if (role === 'driver') {
+      const mutationsEnabled = window.LAGOSGO_RIDE_MUTATIONS_ENABLED === true;
       const actionStatus = document.createElement('p'); actionStatus.setAttribute('role','status');
+      if (!mutationsEnabled) actionStatus.textContent = 'Read-only preview: trip changes and PIN verification are disabled until an isolated test database and explicit pilot activation are available.';
       const advance = async (nextStatus,button) => {
         button.disabled = true; actionStatus.textContent = 'Updating trip…';
         try { await window.lagosGoAdvanceRide(ride.id,nextStatus); actionStatus.textContent = 'Trip updated.'; await refreshActiveRides(); }
@@ -297,13 +312,14 @@
         const next = ride.status === 'accepted' ? 'driver_en_route' : 'arrived';
         const button = document.createElement('button'); button.type = 'button'; button.className = 'auth-mode-toggle';
         button.textContent = ride.status === 'accepted' ? 'Start driving to pickup' : 'I have arrived';
+        button.disabled = !mutationsEnabled;
         button.addEventListener('click',() => advance(next,button)); card.append(button);
       } else if (ride.status === 'arrived') {
         const label = document.createElement('label'); label.textContent = 'Passenger pickup PIN';
         const input = document.createElement('input'); input.type = 'text'; input.inputMode = 'numeric';
         input.autocomplete = 'one-time-code'; input.pattern = '[0-9]{4}'; input.maxLength = 4; input.placeholder = '4-digit PIN';
         input.setAttribute('aria-label','Passenger four-digit pickup PIN'); label.append(input);
-        const button = document.createElement('button'); button.type = 'button'; button.className = 'auth-mode-toggle'; button.textContent = 'Verify PIN & start trip';
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'auth-mode-toggle'; button.textContent = 'Verify PIN & start trip'; button.disabled = !mutationsEnabled;
         button.addEventListener('click',async () => {
           if (!/^[0-9]{4}$/.test(input.value)) { actionStatus.textContent = 'Enter the passenger’s four-digit PIN.'; return; }
           button.disabled = true; actionStatus.textContent = 'Verifying passenger PIN…';
@@ -317,7 +333,7 @@
         card.append(label,button);
       } else if (ride.status === 'in_progress') {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'auth-mode-toggle';
-        button.textContent = 'Complete trip'; button.addEventListener('click',() => advance('completed',button)); card.append(button);
+        button.textContent = 'Complete trip'; button.disabled = !mutationsEnabled; button.addEventListener('click',() => advance('completed',button)); card.append(button);
       }
       card.append(actionStatus);
     }
@@ -350,6 +366,7 @@
 
 /* Authenticated ride-request helper. Booking remains blocked unless real coordinates and a signed-in passenger exist. */
 window.lagosGoCreateRideRequest = async function ({ pickup, pickupCoordinates, destination, destinationCoordinates, amountNgn }) {
+  requireRideMutationsEnabled();
   const client = window.lagosGoSupabase;
   if (!client) throw new Error('Account service is still loading. Please retry.');
   const { data: sessionData, error: sessionError } = await client.auth.getSession();
@@ -383,6 +400,7 @@ window.lagosGoCreateRideRequest = async function ({ pickup, pickupCoordinates, d
 /* Authenticated client wrappers for the pickup and safety RPCs.
    These helpers do not imply that a staffed emergency response service is connected. */
 window.lagosGoIssuePickupPin = async function (rideId) {
+  requireRideMutationsEnabled();
   const client = window.lagosGoSupabase;
   if (!client) throw new Error('Account service is still loading.');
   if (typeof rideId !== 'string' || !rideId.trim()) throw new Error('A valid ride ID is required.');
@@ -392,6 +410,7 @@ window.lagosGoIssuePickupPin = async function (rideId) {
 };
 
 window.lagosGoVerifyPickupPin = async function (rideId, pin) {
+  requireRideMutationsEnabled();
   const client = window.lagosGoSupabase;
   if (!client) throw new Error('Account service is still loading.');
   if (typeof rideId !== 'string' || !rideId.trim() || !/^\d{4}$/.test(String(pin || ''))) {
@@ -418,6 +437,7 @@ window.lagosGoListMyActiveRides = async function () {
 };
 
 window.lagosGoAdvanceRide = async function (rideId, nextStatus, reason = null) {
+  requireRideMutationsEnabled();
   const client = window.lagosGoSupabase;
   const allowed = ['driver_en_route','arrived','in_progress','completed'];
   if (!client) throw new Error('Account service is still loading.');
@@ -428,6 +448,7 @@ window.lagosGoAdvanceRide = async function (rideId, nextStatus, reason = null) {
 };
 
 window.lagosGoReportSafetyIncident = async function ({ rideId = null, incidentType = 'other', description } = {}) {
+  requireRideMutationsEnabled();
   const client = window.lagosGoSupabase;
   if (!client) throw new Error('Account service is still loading.');
   const allowed = ['emergency', 'unsafe_driving', 'harassment', 'payment_dispute', 'route_concern', 'other'];
@@ -453,6 +474,7 @@ window.lagosGoListDispatchOffers = async function () {
 };
 
 window.lagosGoRespondToDispatchOffer = async function (offerId, action) {
+  requireRideMutationsEnabled();
   const client = window.lagosGoSupabase;
   if (!client) throw new Error('Account service is still loading.');
   if (typeof offerId !== 'string' || !offerId.trim() || !['accept','decline'].includes(action)) {

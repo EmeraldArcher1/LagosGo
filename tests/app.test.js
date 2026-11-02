@@ -6,6 +6,8 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+const backend = fs.readFileSync(path.join(root, 'ride-backend.js'), 'utf8');
+const mapsConfig = fs.readFileSync(path.join(root, 'api/maps/config.js'), 'utf8');
 const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 
 test('LagosGo product stays separate from other businesses', () => {
@@ -40,4 +42,14 @@ test('Google Maps supports map, satellite, hybrid and terrain layers with extern
   assert.match(app, /googleMap\.setMapTypeId/);
   assert.match(app, /https:\/\/www\.google\.com\/maps\/dir\//);
   assert.match(app, /travelmode:'driving'/);
+});
+
+test('ride mutations remain disabled unless explicitly enabled in production', () => {
+  assert.match(html, /id="bookBtn"[^>]*disabled/);
+  assert.match(app, /window\.LAGOSGO_RIDE_MUTATIONS_ENABLED = false/);
+  assert.match(app, /Ride booking is disabled in this environment/);
+  assert.match(mapsConfig, /VERCEL_ENV === "production"/);
+  assert.match(mapsConfig, /LAGOSGO_RIDE_MUTATIONS_ENABLED/);
+  assert.match(backend, /function requireRideMutationsEnabled/);
+  assert.match(backend, /requireRideMutationsEnabled\(\);/);
 });
